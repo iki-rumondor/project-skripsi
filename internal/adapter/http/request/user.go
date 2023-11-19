@@ -8,6 +8,6 @@ type Register struct {
 }
 
 type Login struct {
-	Email    string `json:"email" valid:"required~please make sure to provide password in the request, email"`
-	Password string `json:"password" valid:"required~please make sure to provide password in the request "`
+	Username    string `json:"username" valid:"required~field email is required"`
+	Password string `json:"password" valid:"required~field password is required "`
 }

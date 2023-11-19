@@ -72,13 +72,21 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	user := domain.User{
-		Email:    body.Email,
+		Username: body.Username,
 		Password: body.Password,
 	}
 
 	jwt, err := h.Service.VerifyUser(&user)
 
 	if err != nil {
+		if err.Error() == "wrong" {
+			c.AbortWithStatusJSON(http.StatusNotFound, response.Message{
+				Success: false,
+				Message: "username or password is wrong",
+			})
+			return
+		}
+
 		c.AbortWithStatusJSON(http.StatusInternalServerError, response.Message{
 			Success: false,
 			Message: err.Error(),

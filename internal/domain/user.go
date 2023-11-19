@@ -21,7 +21,7 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-func (u *User) BeforeSave(tx *gorm.DB) error {
+func (u *User) BeforeCreate(tx *gorm.DB) error {
 
 	var user User
 	if result := tx.First(&user, "email = ? AND id != ?", u.Email, u.ID).RowsAffected; result > 0 {

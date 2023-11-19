@@ -38,13 +38,13 @@ func (s *AuthService) CreateUser(request *request.Register) error {
 
 func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 
-	result, err := s.Repo.FindByEmail(user.Email)
+	result, err := s.Repo.FindByUsername(user.Username)
 	if err != nil {
-		return "", errors.New("sorry, the provided email is not registered in our system")
+		return "", errors.New("wrong")
 	}
 
 	if err := utils.ComparePassword(result.Password, user.Password); err != nil {
-		return "", errors.New("whoops! password mismatch")
+		return "", errors.New("wrong")
 	}
 
 	data := map[string]interface{}{
