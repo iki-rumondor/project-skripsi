@@ -33,10 +33,23 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 	{
 		admin.GET("/", handlers.AuthHandler.GetUsers)
 		admin.GET("prodi", handlers.ProdiHandler.GetAllProdi)
-		admin.POST("prodi", handlers.ProdiHandler.CreateProdi)
 		admin.GET("prodi/:id", handlers.ProdiHandler.GetProdiByID)
+		admin.GET("instrumen/indikator", handlers.AdminHandler.GetAllIndikator)
+		admin.GET("instrumen/instrumen-type", handlers.AdminHandler.GetAllInstrumenType)
+		admin.GET("instrumen/indikator-type", handlers.AdminHandler.GetAllIndikatorType)
+		admin.GET("instrumen/indikator/:id", handlers.AdminHandler.GetIndikator)
+		
+		admin.POST("prodi", handlers.ProdiHandler.CreateProdi)
+		admin.POST("instrumen/indikator", handlers.AdminHandler.CreateIndikator)
+		admin.POST("instrumen/instrumen-type", handlers.AdminHandler.CreateInstrumenType)
+		admin.POST("instrumen/indikator-type", handlers.AdminHandler.CreateIndikatorType)
+		
 		admin.DELETE("prodi/:id", handlers.ProdiHandler.DeleteProdi)
+		admin.DELETE("instrumen/instrumen-type/:id", handlers.AdminHandler.DeleteInstrumenType)
+		admin.DELETE("instrumen/indikator-type/:id", handlers.AdminHandler.DeleteIndikatorType)
+		
 		admin.PUT("prodi/:id", handlers.ProdiHandler.UpdateProdi)
+		admin.PUT("instrumen/indikator/:id", handlers.AdminHandler.UpdateIndikator)
 	}	
 
 	return router
