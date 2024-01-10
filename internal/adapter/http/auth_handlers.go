@@ -118,7 +118,7 @@ func (h *AuthHandler) GetUsers(c *gin.Context) {
 			Uuid:     user.Uuid,
 			Username: user.Username,
 			Email:    user.Email,
-			Role:     user.Role.Name,
+			Role:     user.Role,
 		})
 	}
 

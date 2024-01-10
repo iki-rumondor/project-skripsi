@@ -14,8 +14,7 @@ type User struct {
 	Username string `gorm:"unique;not_null;varchar(120)"`
 	Email    string `gorm:"unique;not_null;varchar(120)"`
 	Password string `gorm:"not_null;varchar(120)"`
-	RoleID   uint
-	Role     Role
+	Role     string `gorm:"not_null;varchar(16)"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

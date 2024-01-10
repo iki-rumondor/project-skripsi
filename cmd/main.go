@@ -7,6 +7,7 @@ import (
 	customHTTP "github.com/iki-rumondor/init-golang-service/internal/adapter/http"
 	"github.com/iki-rumondor/init-golang-service/internal/application"
 	"github.com/iki-rumondor/init-golang-service/internal/domain"
+	"github.com/iki-rumondor/init-golang-service/internal/registry"
 	"github.com/iki-rumondor/init-golang-service/internal/repository"
 	"github.com/iki-rumondor/init-golang-service/internal/routes"
 	"gorm.io/gorm"
@@ -18,8 +19,15 @@ func main() {
 		log.Fatal(err.Error())
 		return
 	}
-	
-	// autoMigration(gormDB)
+
+	for _, model := range registry.RegisterModels() {
+		if err := gormDB.Debug().AutoMigrate(model.Model); err != nil {
+			log.Fatal(err.Error())
+			return
+		}
+	}
+
+	// dbSeeder(gormDB)
 
 	auth_repo := repository.NewAuthRepository(gormDB)
 	auth_service := application.NewAuthService(auth_repo)
@@ -32,18 +40,16 @@ func main() {
 	prodi_repo := repository.NewProdiRepository(gormDB)
 	prodi_service := application.NewProdiService(prodi_repo)
 	prodi_handler := customHTTP.NewProdiHandler(prodi_service)
-	
+
 	instrumen_repo := repository.NewInstrumenRepository(gormDB)
 	admin_service := application.NewAdminService(repository.Repositories{
 		InstrumenRepository: instrumen_repo,
 	})
 	admin_handler := customHTTP.NewAdminHandler(admin_service)
 
-
-
 	handlers := &customHTTP.Handlers{
-		AuthHandler: auth_handler,
-		UtilHandler: util_handler,
+		AuthHandler:  auth_handler,
+		UtilHandler:  util_handler,
 		ProdiHandler: prodi_handler,
 		AdminHandler: admin_handler,
 	}
@@ -52,47 +58,14 @@ func main() {
 	routes.StartServer(handlers).Run(PORT)
 }
 
-func autoMigration(db *gorm.DB) {
-
-	db.Migrator().DropTable(&domain.Role{})
-	db.Migrator().CreateTable(&domain.Role{})
-
-	db.Migrator().DropTable(&domain.Jurusan{})
-	db.Migrator().CreateTable(&domain.Jurusan{})
-
-	db.Migrator().DropTable(&domain.Prodi{})
-	db.Migrator().CreateTable(&domain.Prodi{})
-
-	db.Migrator().DropTable(&domain.User{})
-	db.Migrator().CreateTable(&domain.User{})
-
-	db.Migrator().DropTable(&domain.InstrumenType{})
-	db.Migrator().CreateTable(&domain.InstrumenType{})
-
-	db.Migrator().DropTable(&domain.InstrumenType{})
-	db.Migrator().CreateTable(&domain.InstrumenType{})
-	db.Migrator().DropTable(&domain.IndikatorType{})
-	db.Migrator().CreateTable(&domain.IndikatorType{})
-	db.Migrator().DropTable(&domain.Indikator{})
-	db.Migrator().CreateTable(&domain.Indikator{})
-
-	roles := []domain.Role{
-		{
-			Name: "Admin",
-		},
-		{
-			Name: "User",
-		},
-	}
-
-	db.Create(&roles)
+func dbSeeder(db *gorm.DB) {
 
 	db.Create(&domain.User{
-		Uuid: "useruuid",
+		Uuid:     "useruuid",
 		Username: "admin",
-		Email: "admin@admin.com",
+		Email:    "admin@admin.com",
 		Password: "123",
-		RoleID: 1,
+		Role:     "ADMIN",
 	})
 
 	db.Create(&domain.Jurusan{

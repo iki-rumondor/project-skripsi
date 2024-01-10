@@ -26,10 +26,10 @@ func (s *AuthService) CreateUser(request *request.Register) error {
 		Username: request.Username,
 		Email:    request.Email,
 		Password: request.Password,
-		RoleID:   request.RoleID,
+		Role:     request.Role,
 	}
 
-	if err := s.Repo.SaveUser(user); err != nil{
+	if err := s.Repo.SaveUser(user); err != nil {
 		return err
 	}
 
@@ -49,7 +49,7 @@ func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 
 	data := map[string]interface{}{
 		"id":   result.ID,
-		"role": result.RoleID,
+		"role": result.Role,
 	}
 
 	jwt, err := utils.GenerateToken(data)
@@ -63,8 +63,8 @@ func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 func (s *AuthService) GetUsers() (*[]domain.User, error) {
 
 	users, err := s.Repo.FindUsers()
-	
-	if err != nil{
+
+	if err != nil {
 		return nil, err
 	}
 

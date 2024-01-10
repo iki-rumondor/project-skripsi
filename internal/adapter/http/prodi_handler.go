@@ -11,6 +11,7 @@ import (
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/response"
 	"github.com/iki-rumondor/init-golang-service/internal/application"
 	"github.com/iki-rumondor/init-golang-service/internal/domain"
+	"github.com/iki-rumondor/init-golang-service/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -106,10 +107,18 @@ func (h *ProdiHandler) CreateProdi(c *gin.Context) {
 		return
 	}
 
+	jurusanID, err := strconv.Atoi(body.JurusanID)
+	if err != nil {
+		utils.HandleError(c, &response.Error{
+			Code:    404,
+			Message: "Data jurusan tidak valid",
+		})
+	}
+
 	prodi := domain.Prodi{
 		Nama:      body.Nama,
 		Kaprodi:   body.Kaprodi,
-		JurusanID: body.JurusanID,
+		JurusanID: uint(jurusanID),
 	}
 
 	if err := h.Service.CreateProdi(&prodi); err != nil {
@@ -161,11 +170,19 @@ func (h *ProdiHandler) UpdateProdi(c *gin.Context) {
 		return
 	}
 
+	jurusanID, err := strconv.Atoi(body.JurusanID)
+	if err != nil {
+		utils.HandleError(c, &response.Error{
+			Code:    404,
+			Message: "Data jurusan tidak valid",
+		})
+	}
+
 	prodi := domain.Prodi{
-		ID: uint(prodiID),
-		Nama: body.Nama,
-		Kaprodi: body.Kaprodi,
-		JurusanID: body.JurusanID,
+		ID:        uint(prodiID),
+		Nama:      body.Nama,
+		Kaprodi:   body.Kaprodi,
+		JurusanID: uint(jurusanID),
 	}
 
 	if err := h.Service.UpdateProdi(&prodi); err != nil {
