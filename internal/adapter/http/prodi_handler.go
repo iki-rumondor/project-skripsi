@@ -40,11 +40,14 @@ func (h *ProdiHandler) GetAllProdi(c *gin.Context) {
 
 	for _, p := range *prodi {
 		res = append(res, &response.Prodi{
-			ID:        p.ID,
-			Nama:      p.Nama,
-			Kaprodi:   p.Kaprodi,
-			Jurusan:   p.Jurusan.Nama,
-			JurusanID: p.Jurusan.ID,
+			ID:      p.ID,
+			Nama:    p.Nama,
+			Kaprodi: p.Kaprodi,
+			Jurusan: &response.JurusanData{
+				ID:        p.Jurusan.ID,
+				Nama:      p.Jurusan.Nama,
+				CreatedAt: p.CreatedAt,
+			},
 			CreatedAt: p.CreatedAt,
 			UpdatedAt: p.UpdatedAt,
 		})
@@ -80,8 +83,11 @@ func (h *ProdiHandler) GetProdiByID(c *gin.Context) {
 		ID:        prodi.ID,
 		Nama:      prodi.Nama,
 		Kaprodi:   prodi.Kaprodi,
-		Jurusan:   prodi.Jurusan.Nama,
-		JurusanID: prodi.Jurusan.ID,
+		Jurusan: &response.JurusanData{
+			ID:        prodi.Jurusan.ID,
+			Nama:      prodi.Jurusan.Nama,
+			CreatedAt: prodi.CreatedAt,
+		},
 		CreatedAt: prodi.CreatedAt,
 		UpdatedAt: prodi.UpdatedAt,
 	}

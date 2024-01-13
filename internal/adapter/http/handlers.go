@@ -1,8 +1,8 @@
 package customHTTP
 
-type Handlers struct{
-	AuthHandler *AuthHandler
-	UtilHandler *UtilHandler
-	ProdiHandler *ProdiHandler
-	AdminHandler *AdminHandler
+type Handlers struct {
+	AuthHandler      *AuthHandler
+	ProdiHandler     *ProdiHandler
+	InstrumenHandler *InstrumenHandler
+	UtilHandler      *UtilHandler
 }

@@ -1,5 +1,8 @@
 package repository
 
-type Repositories struct{
-	InstrumenRepository InstrumenRepository
+type Repositories struct {
+	AuthRepo      AuthRepository
+	InstrumenRepo InstrumenRepository
+	ProdiRepo     ProdiRepository
+	UtilRepo      UtilRepository
 }

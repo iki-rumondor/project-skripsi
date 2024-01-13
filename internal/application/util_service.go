@@ -6,10 +6,10 @@ import (
 )
 
 type UtilService struct {
-	Repo repository.UtilRepository
+	Repo *repository.Repositories
 }
 
-func NewUtilService(repo repository.UtilRepository) *UtilService {
+func NewUtilService(repo *repository.Repositories) *UtilService {
 	return &UtilService{
 		Repo: repo,
 	}
@@ -17,7 +17,7 @@ func NewUtilService(repo repository.UtilRepository) *UtilService {
 
 func (s *UtilService) GetAllJurusan() (*[]domain.Jurusan, error) {
 
-	jurusan, err := s.Repo.FindAllJurusan()
+	jurusan, err := s.Repo.UtilRepo.FindAllJurusan()
 	if err != nil {
 		return nil, err
 	}

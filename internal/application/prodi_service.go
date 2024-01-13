@@ -6,10 +6,10 @@ import (
 )
 
 type ProdiService struct {
-	Repo repository.ProdiRepository
+	Repo *repository.Repositories
 }
 
-func NewProdiService(repo repository.ProdiRepository) *ProdiService {
+func NewProdiService(repo *repository.Repositories) *ProdiService {
 	return &ProdiService{
 		Repo: repo,
 	}
@@ -17,7 +17,7 @@ func NewProdiService(repo repository.ProdiRepository) *ProdiService {
 
 func (s *ProdiService) GetAllProdi() (*[]domain.Prodi, error) {
 
-	jurusan, err := s.Repo.FindAllProdi()
+	jurusan, err := s.Repo.ProdiRepo.FindAllProdi()
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (s *ProdiService) GetAllProdi() (*[]domain.Prodi, error) {
 
 func (s *ProdiService) GetProdiByID(id uint) (*domain.Prodi, error) {
 
-	jurusan, err := s.Repo.FindProdi(id)
+	jurusan, err := s.Repo.ProdiRepo.FindProdi(id)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (s *ProdiService) GetProdiByID(id uint) (*domain.Prodi, error) {
 
 func (s *ProdiService) CreateProdi(prodi *domain.Prodi) error {
 
-	if err := s.Repo.CreateProdi(prodi); err != nil {
+	if err := s.Repo.ProdiRepo.CreateProdi(prodi); err != nil {
 		return err
 	}
 
@@ -46,7 +46,7 @@ func (s *ProdiService) CreateProdi(prodi *domain.Prodi) error {
 
 func (s *ProdiService) DeleteProdi(prodi *domain.Prodi) error {
 
-	if err := s.Repo.DeleteProdi(prodi); err != nil {
+	if err := s.Repo.ProdiRepo.DeleteProdi(prodi); err != nil {
 		return err
 	}
 
@@ -55,7 +55,7 @@ func (s *ProdiService) DeleteProdi(prodi *domain.Prodi) error {
 
 func (s *ProdiService) UpdateProdi(prodi *domain.Prodi) error {
 
-	if err := s.Repo.UpdateProdi(prodi); err != nil {
+	if err := s.Repo.ProdiRepo.UpdateProdi(prodi); err != nil {
 		return err
 	}
 

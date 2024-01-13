@@ -115,9 +115,7 @@ func (h *AuthHandler) GetUsers(c *gin.Context) {
 
 	for _, user := range *users {
 		res = append(res, &response.User{
-			Uuid:     user.Uuid,
 			Username: user.Username,
-			Email:    user.Email,
 			Role:     user.Role,
 		})
 	}

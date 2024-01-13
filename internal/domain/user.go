@@ -10,9 +10,7 @@ import (
 
 type User struct {
 	ID       uint   `gorm:"primaryKey"`
-	Uuid     string `gorm:"not_null;varchar(120)"`
 	Username string `gorm:"unique;not_null;varchar(120)"`
-	Email    string `gorm:"unique;not_null;varchar(120)"`
 	Password string `gorm:"not_null;varchar(120)"`
 	Role     string `gorm:"not_null;varchar(16)"`
 
@@ -23,9 +21,6 @@ type User struct {
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 
 	var user User
-	if result := tx.First(&user, "email = ? AND id != ?", u.Email, u.ID).RowsAffected; result > 0 {
-		return errors.New("the email has already been taken")
-	}
 
 	if result := tx.First(&user, "username = ? AND id != ?", u.Username, u.ID).RowsAffected; result > 0 {
 		return errors.New("the username has already been taken")

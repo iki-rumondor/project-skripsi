@@ -34,22 +34,22 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		admin.GET("/", handlers.AuthHandler.GetUsers)
 		admin.GET("prodi", handlers.ProdiHandler.GetAllProdi)
 		admin.GET("prodi/:id", handlers.ProdiHandler.GetProdiByID)
-		admin.GET("instrumen/indikator", handlers.AdminHandler.GetAllIndikator)
-		admin.GET("instrumen/instrumen-type", handlers.AdminHandler.GetAllInstrumenType)
-		admin.GET("instrumen/indikator-type", handlers.AdminHandler.GetAllIndikatorType)
-		admin.GET("instrumen/indikator/:id", handlers.AdminHandler.GetIndikator)
+		admin.GET("instrumen/indikator", handlers.InstrumenHandler.GetAllIndikator)
+		admin.GET("instrumen/instrumen-type", handlers.InstrumenHandler.GetAllInstrumenType)
+		admin.GET("instrumen/indikator-type", handlers.InstrumenHandler.GetAllIndikatorType)
+		admin.GET("instrumen/indikator/:id", handlers.InstrumenHandler.GetIndikator)
 
 		admin.POST("prodi", handlers.ProdiHandler.CreateProdi)
-		admin.POST("instrumen/indikator", handlers.AdminHandler.CreateIndikator)
-		admin.POST("instrumen/instrumen-type", handlers.AdminHandler.CreateInstrumenType)
-		admin.POST("instrumen/indikator-type", handlers.AdminHandler.CreateIndikatorType)
+		admin.POST("instrumen/indikator", handlers.InstrumenHandler.CreateIndikator)
+		admin.POST("instrumen/instrumen-type", handlers.InstrumenHandler.CreateInstrumenType)
+		admin.POST("instrumen/indikator-type", handlers.InstrumenHandler.CreateIndikatorType)
 
 		admin.DELETE("prodi/:id", handlers.ProdiHandler.DeleteProdi)
-		admin.DELETE("instrumen/instrumen-type/:id", handlers.AdminHandler.DeleteInstrumenType)
-		admin.DELETE("instrumen/indikator-type/:id", handlers.AdminHandler.DeleteIndikatorType)
+		admin.DELETE("instrumen/instrumen-type/:id", handlers.InstrumenHandler.DeleteInstrumenType)
+		admin.DELETE("instrumen/indikator-type/:id", handlers.InstrumenHandler.DeleteIndikatorType)
 
 		admin.PUT("prodi/:id", handlers.ProdiHandler.UpdateProdi)
-		admin.PUT("instrumen/indikator/:id", handlers.AdminHandler.UpdateIndikator)
+		admin.PUT("instrumen/indikator/:id", handlers.InstrumenHandler.UpdateIndikator)
 	}
 
 	return router

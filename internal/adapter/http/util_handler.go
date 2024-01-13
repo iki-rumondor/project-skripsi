@@ -29,10 +29,10 @@ func (h *UtilHandler) GetAllJurusan(c *gin.Context) {
 		return
 	}
 
-	var res = []*response.Jurusan{}
+	var res = []*response.JurusanData{}
 
 	for _, j := range *jurusan {
-		res = append(res, &response.Jurusan{
+		res = append(res, &response.JurusanData{
 			ID: j.ID,
 			Nama: j.Nama,
 			CreatedAt: j.CreatedAt,

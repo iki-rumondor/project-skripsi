@@ -13,17 +13,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdminHandler struct {
-	Service *application.AdminService
+type InstrumenHandler struct {
+	Service *application.InstrumenService
 }
 
-func NewAdminHandler(service *application.AdminService) *AdminHandler {
-	return &AdminHandler{
+func NewInstrumenHandler(service *application.InstrumenService) *InstrumenHandler {
+	return &InstrumenHandler{
 		Service: service,
 	}
 }
 
-func (h *AdminHandler) GetAllIndikator(c *gin.Context) {
+func (h *InstrumenHandler) GetAllIndikator(c *gin.Context) {
 
 	result, err := h.Service.GetAllIndikator()
 	
@@ -61,7 +61,7 @@ func (h *AdminHandler) GetAllIndikator(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) GetIndikator(c *gin.Context) {
+func (h *InstrumenHandler) GetIndikator(c *gin.Context) {
 
 	urlParam := c.Param("id")
 	id, err := strconv.Atoi(urlParam)
@@ -102,7 +102,7 @@ func (h *AdminHandler) GetIndikator(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (h *AdminHandler) CreateIndikator(c *gin.Context) {
+func (h *InstrumenHandler) CreateIndikator(c *gin.Context) {
 
 	var body request.Indikator
 	if err := c.BindJSON(&body); err != nil {
@@ -139,7 +139,7 @@ func (h *AdminHandler) CreateIndikator(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) UpdateIndikator(c *gin.Context) {
+func (h *InstrumenHandler) UpdateIndikator(c *gin.Context) {
 
 	var body request.Indikator
 	if err := c.BindJSON(&body); err != nil {
@@ -185,7 +185,7 @@ func (h *AdminHandler) UpdateIndikator(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) DeleteIndikator(c *gin.Context) {
+func (h *InstrumenHandler) DeleteIndikator(c *gin.Context) {
 
 	urlParam := c.Param("id")
 	id, err := strconv.Atoi(urlParam)
@@ -216,7 +216,7 @@ func (h *AdminHandler) DeleteIndikator(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) CreateInstrumenType(c *gin.Context) {
+func (h *InstrumenHandler) CreateInstrumenType(c *gin.Context) {
 
 	var body request.CreateInstrumenType
 	if err := c.BindJSON(&body); err != nil {
@@ -253,7 +253,7 @@ func (h *AdminHandler) CreateInstrumenType(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) GetAllInstrumenType(c *gin.Context) {
+func (h *InstrumenHandler) GetAllInstrumenType(c *gin.Context) {
 
 	result, err := h.Service.GetAllInstrumenType()
 	
@@ -288,7 +288,7 @@ func (h *AdminHandler) GetAllInstrumenType(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) DeleteInstrumenType(c *gin.Context) {
+func (h *InstrumenHandler) DeleteInstrumenType(c *gin.Context) {
 
 	urlParam := c.Param("id")
 	id, err := strconv.Atoi(urlParam)
@@ -317,7 +317,7 @@ func (h *AdminHandler) DeleteInstrumenType(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) GetAllIndikatorType(c *gin.Context) {
+func (h *InstrumenHandler) GetAllIndikatorType(c *gin.Context) {
 
 	result, err := h.Service.GetAllIndikatorType()
 	
@@ -353,7 +353,7 @@ func (h *AdminHandler) GetAllIndikatorType(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) CreateIndikatorType(c *gin.Context) {
+func (h *InstrumenHandler) CreateIndikatorType(c *gin.Context) {
 
 	var body request.CreateIndikatorType
 	if err := c.BindJSON(&body); err != nil {
@@ -390,7 +390,7 @@ func (h *AdminHandler) CreateIndikatorType(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) DeleteIndikatorType(c *gin.Context) {
+func (h *InstrumenHandler) DeleteIndikatorType(c *gin.Context) {
 
 	urlParam := c.Param("id")
 	id, err := strconv.Atoi(urlParam)

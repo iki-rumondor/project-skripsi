@@ -3,7 +3,6 @@ package application
 import (
 	"errors"
 
-	"github.com/google/uuid"
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/request"
 	"github.com/iki-rumondor/init-golang-service/internal/domain"
 	"github.com/iki-rumondor/init-golang-service/internal/repository"
@@ -11,10 +10,10 @@ import (
 )
 
 type AuthService struct {
-	Repo repository.AuthRepository
+	Repo *repository.Repositories
 }
 
-func NewAuthService(repo repository.AuthRepository) *AuthService {
+func NewAuthService(repo *repository.Repositories) *AuthService {
 	return &AuthService{
 		Repo: repo,
 	}
@@ -22,14 +21,12 @@ func NewAuthService(repo repository.AuthRepository) *AuthService {
 
 func (s *AuthService) CreateUser(request *request.Register) error {
 	user := &domain.User{
-		Uuid:     uuid.NewString(),
 		Username: request.Username,
-		Email:    request.Email,
 		Password: request.Password,
 		Role:     request.Role,
 	}
 
-	if err := s.Repo.SaveUser(user); err != nil {
+	if err := s.Repo.AuthRepo.SaveUser(user); err != nil {
 		return err
 	}
 
@@ -38,7 +35,7 @@ func (s *AuthService) CreateUser(request *request.Register) error {
 
 func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 
-	result, err := s.Repo.FindByUsername(user.Username)
+	result, err := s.Repo.AuthRepo.FindByUsername(user.Username)
 	if err != nil {
 		return "", errors.New("wrong")
 	}
@@ -62,7 +59,7 @@ func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 
 func (s *AuthService) GetUsers() (*[]domain.User, error) {
 
-	users, err := s.Repo.FindUsers()
+	users, err := s.Repo.AuthRepo.FindUsers()
 
 	if err != nil {
 		return nil, err
