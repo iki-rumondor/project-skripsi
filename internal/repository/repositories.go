@@ -1,9 +1,10 @@
 package repository
 
 type Repositories struct {
-	AuthRepo      AuthRepository
-	InstrumenRepo InstrumenRepository
-	ProdiRepo     ProdiRepository
-	UtilRepo      UtilRepository
-	AssTypeRepo   AssTypeRepository
+	AuthRepo        AuthRepository
+	InstrumenRepo   InstrumenRepository
+	ProdiRepo       ProdiRepository
+	UtilRepo        UtilRepository
+	AssTypeRepo     AssTypeRepository
+	AssQuestionRepo AssQuestionRepository
 }

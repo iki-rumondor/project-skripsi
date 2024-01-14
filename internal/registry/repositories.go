@@ -7,10 +7,11 @@ import (
 
 func GetRepositories(db *gorm.DB) *repository.Repositories {
 	return &repository.Repositories{
-		AuthRepo:      repository.NewAuthRepository(db),
-		InstrumenRepo: repository.NewInstrumenRepository(db),
-		ProdiRepo:     repository.NewProdiRepository(db),
-		UtilRepo:      repository.NewUtilRepository(db),
-		AssTypeRepo:   repository.NewAssTypeRepository(db),
+		AuthRepo:        repository.NewAuthRepository(db),
+		InstrumenRepo:   repository.NewInstrumenRepository(db),
+		ProdiRepo:       repository.NewProdiRepository(db),
+		UtilRepo:        repository.NewUtilRepository(db),
+		AssTypeRepo:     repository.NewAssTypeRepository(db),
+		AssQuestionRepo: repository.NewAssQuestionRepository(db),
 	}
 }
