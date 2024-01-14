@@ -9,6 +9,7 @@ import (
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/response"
 	"github.com/iki-rumondor/init-golang-service/internal/application"
 	"github.com/iki-rumondor/init-golang-service/internal/domain"
+	"github.com/iki-rumondor/init-golang-service/internal/utils"
 )
 
 type AuthHandler struct {
@@ -79,18 +80,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	jwt, err := h.Service.VerifyUser(&user)
 
 	if err != nil {
-		if err.Error() == "wrong" {
-			c.AbortWithStatusJSON(http.StatusNotFound, response.Message{
-				Success: false,
-				Message: "username or password is wrong",
-			})
-			return
-		}
-
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.Message{
-			Success: false,
-			Message: err.Error(),
-		})
+		utils.HandleError(c, err)
 		return
 	}
 

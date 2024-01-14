@@ -5,4 +5,5 @@ type Repositories struct {
 	InstrumenRepo InstrumenRepository
 	ProdiRepo     ProdiRepository
 	UtilRepo      UtilRepository
+	AssTypeRepo   AssTypeRepository
 }
