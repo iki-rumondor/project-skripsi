@@ -56,7 +56,6 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		admin.GET("assessments/type/:uuid", handlers.AssTypeHandler.GetAssTypeByUuid)
 		admin.PUT("assessments/type/:uuid", handlers.AssTypeHandler.UpdateAssType)
 		admin.DELETE("assessments/type/:uuid", handlers.AssTypeHandler.DeleteAssType)
-
 	}
 
 	return router
