@@ -5,4 +5,5 @@ type Handlers struct {
 	ProdiHandler     *ProdiHandler
 	InstrumenHandler *InstrumenHandler
 	UtilHandler      *UtilHandler
+	AssTypeHandler   *AssTypeHandler
 }

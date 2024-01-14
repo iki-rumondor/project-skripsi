@@ -29,6 +29,12 @@ func HandleError(c *gin.Context, err error) {
 			Message: res.Message,
 		})
 		return
+	case 403:
+		c.AbortWithStatusJSON(http.StatusUnauthorized, response.FailedResponse{
+			Success: false,
+			Message: res.Message,
+		})
+		return
 	default:
 		c.AbortWithStatusJSON(http.StatusInternalServerError, response.FailedResponse{
 			Success: false,

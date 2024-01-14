@@ -11,11 +11,13 @@ func GetHandlers(repo *repository.Repositories) *customHTTP.Handlers {
 	prodi_service := application.NewProdiService(repo)
 	instrumen_service := application.NewInstrumenService(repo)
 	util_service := application.NewUtilService(repo)
+	ass_type_service := application.NewAssTypeService(repo)
 
 	return &customHTTP.Handlers{
 		AuthHandler:      customHTTP.NewAuthHandler(auth_service),
 		ProdiHandler:     customHTTP.NewProdiHandler(prodi_service),
 		InstrumenHandler: customHTTP.NewInstrumenHandler(instrumen_service),
 		UtilHandler:      customHTTP.NewUtilHandler(util_service),
+		AssTypeHandler:   customHTTP.NewAssTypeHandler(ass_type_service),
 	}
 }

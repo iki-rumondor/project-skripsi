@@ -1,9 +1,8 @@
 package application
 
 import (
-	"errors"
-
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/request"
+	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/response"
 	"github.com/iki-rumondor/init-golang-service/internal/domain"
 	"github.com/iki-rumondor/init-golang-service/internal/repository"
 	"github.com/iki-rumondor/init-golang-service/internal/utils"
@@ -37,19 +36,20 @@ func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 
 	result, err := s.Repo.AuthRepo.FindByUsername(user.Username)
 	if err != nil {
-		return "", errors.New("wrong")
+		return "", &response.Error{
+			Code:    403,
+			Message: "Username atau password salah",
+		}
 	}
 
 	if err := utils.ComparePassword(result.Password, user.Password); err != nil {
-		return "", errors.New("wrong")
+		return "", &response.Error{
+			Code:    403,
+			Message: "Username atau password salah",
+		}
 	}
 
-	data := map[string]interface{}{
-		"id":   result.ID,
-		"role": result.Role,
-	}
-
-	jwt, err := utils.GenerateToken(data)
+	jwt, err := utils.GenerateToken(result.ID, result.Role)
 	if err != nil {
 		return "", err
 	}
