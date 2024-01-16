@@ -13,6 +13,7 @@ func GetHandlers(repo *repository.Repositories) *customHTTP.Handlers {
 	util_service := application.NewUtilService(repo)
 	ass_type_service := application.NewAssTypeService(repo)
 	ass_question_service := application.NewAssQuestionService(repo)
+	response_service := application.NewResponseService(repo)
 
 	return &customHTTP.Handlers{
 		AuthHandler:        customHTTP.NewAuthHandler(auth_service),
@@ -21,5 +22,6 @@ func GetHandlers(repo *repository.Repositories) *customHTTP.Handlers {
 		UtilHandler:        customHTTP.NewUtilHandler(util_service),
 		AssTypeHandler:     customHTTP.NewAssTypeHandler(ass_type_service),
 		AssQuestionHandler: customHTTP.NewAssQuestionHandler(ass_question_service),
+		ResponseHandler: customHTTP.NewResponseHandler(response_service),
 	}
 }

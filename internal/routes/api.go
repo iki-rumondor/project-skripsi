@@ -62,6 +62,12 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		admin.GET("assessments/question/:uuid", handlers.AssQuestionHandler.GetAssQuestionByUuid)
 		admin.PUT("assessments/question/:uuid", handlers.AssQuestionHandler.UpdateAssQuestion)
 		admin.DELETE("assessments/question/:uuid", handlers.AssQuestionHandler.DeleteAssQuestion)
+
+		admin.POST("response", handlers.ResponseHandler.CreateResponse)
+		admin.GET("response", handlers.ResponseHandler.GetAllResponse)
+		admin.GET("response/:uuid", handlers.ResponseHandler.GetResponseByUuid)
+		admin.PUT("response/:uuid", handlers.ResponseHandler.UpdateResponse)
+		admin.DELETE("response/:uuid", handlers.ResponseHandler.DeleteResponse)
 	}
 
 	return router

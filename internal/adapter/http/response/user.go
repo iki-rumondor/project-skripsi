@@ -8,6 +8,5 @@ type DataUsers struct {
 type User struct {
 	Uuid     string `json:"uuid"`
 	Username string `json:"username"`
-	Email    string `json:"email"`
 	Role     string `json:"role"`
 }

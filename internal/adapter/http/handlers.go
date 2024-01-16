@@ -7,4 +7,5 @@ type Handlers struct {
 	UtilHandler        *UtilHandler
 	AssTypeHandler     *AssTypeHandler
 	AssQuestionHandler *AssQuestionHandler
+	ResponseHandler    *ResponseHandler
 }

@@ -7,4 +7,6 @@ type Repositories struct {
 	UtilRepo        UtilRepository
 	AssTypeRepo     AssTypeRepository
 	AssQuestionRepo AssQuestionRepository
+	ResponseRepo    ResponseRepository
+	UserRepo        UserRepository
 }
