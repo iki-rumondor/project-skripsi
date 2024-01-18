@@ -123,8 +123,8 @@ func (s *ProdiService) UpdateProdi(uuid string, body *request.Prodi) error {
 	return nil
 }
 
-func (s *ProdiService) CreateSubject(body *request.Subject) error {
-	prodi, err := s.GetProdiByUuid(body.ProdiUuid)
+func (s *ProdiService) CreateSubject(userUuid string, body *request.Subject) error {
+	prodi, err := s.GetProdiByUuid(userUuid)
 	if err != nil {
 		return err
 	}
@@ -153,6 +153,20 @@ func (s *ProdiService) GetAllSubject() (*[]domain.Subject, error) {
 	return result, nil
 }
 
+func (s *ProdiService) GetProdiSubjects(uuid string) (*[]domain.Subject, error) {
+	prodi, err := s.GetProdiByUuid(uuid)
+	if err != nil{
+		return nil, err
+	}
+
+	result, err := s.Repo.SubjectRepo.FindSubjectsWhere("prodi_id", prodi.ID)
+	if err != nil {
+		return nil, internalErr
+	}
+
+	return result, nil
+}
+
 func (s *ProdiService) GetSubjectByUuid(uuid string) (*domain.Subject, error) {
 
 	model, err := s.Repo.SubjectRepo.FindSubjectByUuid(uuid)
@@ -169,14 +183,21 @@ func (s *ProdiService) GetSubjectByUuid(uuid string) (*domain.Subject, error) {
 	return model, nil
 }
 
-func (s *ProdiService) UpdateSubject(uuid string, body *request.Subject) error {
+func (s *ProdiService) UpdateSubject(userUuid, subjectUuid string, body *request.Subject) error {
 
-	subject, err := s.GetSubjectByUuid(uuid)
+	subject, err := s.GetSubjectByUuid(subjectUuid)
 	if err != nil {
 		return err
 	}
 
-	prodi, err := s.GetProdiByUuid(body.ProdiUuid)
+	if subject.Prodi.Uuid != userUuid{
+		return &response.Error{
+			Code: 403,
+			Message: "Mata Kuliah Tidak Terdaftar Di Program Studi ",
+		}
+	}
+
+	prodi, err := s.GetProdiByUuid(userUuid)
 	if err != nil {
 		return err
 	}
@@ -195,10 +216,17 @@ func (s *ProdiService) UpdateSubject(uuid string, body *request.Subject) error {
 	return nil
 }
 
-func (s *ProdiService) DeleteSubject(uuid string) error {
-	model, err := s.GetSubjectByUuid(uuid)
+func (s *ProdiService) DeleteSubject(userUuid, subjectUuid string) error {
+	model, err := s.GetSubjectByUuid(subjectUuid)
 	if err != nil {
 		return err
+	}
+
+	if model.Prodi.Uuid != userUuid{
+		return &response.Error{
+			Code: 403,
+			Message: "Mata Kuliah Tidak Terdaftar Di Program Studi ",
+		}
 	}
 
 	if err := s.Repo.SubjectRepo.DeleteSubject(model); err != nil {

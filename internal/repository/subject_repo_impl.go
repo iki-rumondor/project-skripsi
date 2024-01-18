@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/iki-rumondor/init-golang-service/internal/domain"
 	"gorm.io/gorm"
 )
@@ -31,6 +33,15 @@ func (r *SubjectRepoImplementation) FindAllSubject() (*[]domain.Subject, error) 
 func (r *SubjectRepoImplementation) FindSubjectByUuid(uuid string) (*domain.Subject, error) {
 	var result domain.Subject
 	if err := r.db.Preload("Prodi").First(&result, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *SubjectRepoImplementation) FindSubjectsWhere(column string, value interface{}) (*[]domain.Subject, error) {
+	var result []domain.Subject
+	if err := r.db.Preload("Prodi").Find(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
 		return nil, err
 	}
 

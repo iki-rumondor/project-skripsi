@@ -13,7 +13,7 @@ type Prodi struct {
 	Kaprodi    string `gorm:"not_null, type:varchar(20)"`
 	Credential string `gorm:"not_null, type:varchar(64)"`
 	JurusanID  uint
-	Jurusan    Jurusan
+	Jurusan    *Jurusan
 	Subject    *[]Subject
 	CreatedAt  time.Time
 	UpdatedAt  time.Time

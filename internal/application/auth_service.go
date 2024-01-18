@@ -57,13 +57,20 @@ func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 	return jwt, nil
 }
 
-func (s *AuthService) GetUsers() (*[]domain.User, error) {
+func (s *AuthService) VerifyProdi(credential string) (string, error) {
 
-	users, err := s.Repo.AuthRepo.FindUsers()
-
+	result, err := s.Repo.ProdiRepo.FindBy("credential", credential)
 	if err != nil {
-		return nil, err
+		return "", &response.Error{
+			Code:    403,
+			Message: "Credential Tidak Terdaftar",
+		}
 	}
 
-	return users, nil
+	jwt, err := utils.GenerateToken(result.Uuid, "PRODI")
+	if err != nil {
+		return "", err
+	}
+
+	return jwt, nil
 }

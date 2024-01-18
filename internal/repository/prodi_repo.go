@@ -7,6 +7,7 @@ type ProdiRepository interface {
 	CreateProdi(*domain.Prodi) error
 	FindProdi(uint) (*domain.Prodi, error)
 	FindProdiByUuid(string) (*domain.Prodi, error)
+	FindBy(column string, value interface{}) (*domain.Prodi, error)
 	UpdateProdi(*domain.Prodi) error
 	DeleteProdi(*domain.Prodi) error
 }

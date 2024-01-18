@@ -91,27 +91,19 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 func (h *AuthHandler) LoginProdi(c *gin.Context) {
 
-	users, err := h.Service.GetUsers()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.Message{
-			Success: false,
-			Message: err.Error(),
-		})
+	var body request.LoginProdi
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, badRequestError)
 		return
 	}
 
-	var res []*response.User
-
-	for _, user := range *users {
-		res = append(res, &response.User{
-			Username: user.Username,
-			Role:     user.Role,
-		})
+	jwt, err := h.Service.VerifyProdi(body.Credential)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
 	}
 
-	c.JSON(http.StatusOK, response.DataUsers{
-		Success: true,
-		Data:    res,
+	c.JSON(http.StatusOK, gin.H{
+		"token": jwt,
 	})
 }

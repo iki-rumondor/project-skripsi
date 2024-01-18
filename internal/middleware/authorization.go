@@ -35,3 +35,35 @@ func IsAdmin() gin.HandlerFunc {
 
 	}
 }
+
+func IsProdi() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		jwt := c.GetString("jwt")
+		if jwt == "" {
+			utils.HandleError(c, &response.Error{
+				Code:    403,
+				Message: "Token Anda Tidak Valid",
+			})
+			return
+		}
+
+		mapClaims, err := utils.VerifyToken(jwt)
+		if err != nil {
+			utils.HandleError(c, err)
+			return
+		}
+
+		role := mapClaims["role"].(string)
+		if role != "PRODI" {
+			utils.HandleError(c, &response.Error{
+				Code:    403,
+				Message: "Token Anda Tidak Valid",
+			})
+			return
+		}
+
+		c.Set("user_uuid", mapClaims["uuid"].(string))
+		c.Next()
+
+	}
+}

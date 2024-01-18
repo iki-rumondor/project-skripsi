@@ -9,5 +9,4 @@ type Prodi struct {
 type Subject struct {
 	Name      string `json:"name" binding:"required"`
 	Code      string `json:"code" binding:"required"`
-	ProdiUuid string `json:"prodi_uuid" binding:"required"`
 }

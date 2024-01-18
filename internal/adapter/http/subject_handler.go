@@ -9,13 +9,6 @@ import (
 	"github.com/iki-rumondor/init-golang-service/internal/utils"
 )
 
-var (
-	badRequestError = &response.Error{
-		Code:    400,
-		Message: "Input Yang Anda Masukkan Tidak Valid",
-	}
-)
-
 func (h *ProdiHandler) CreateSubject(c *gin.Context) {
 	var body request.Subject
 	if err := c.BindJSON(&body); err != nil {
@@ -23,7 +16,9 @@ func (h *ProdiHandler) CreateSubject(c *gin.Context) {
 		return
 	}
 
-	if err := h.Service.CreateSubject(&body); err != nil {
+	userUuid := c.GetString("user_uuid")
+
+	if err := h.Service.CreateSubject(userUuid, &body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}
@@ -67,6 +62,34 @@ func (h *ProdiHandler) GetAllSubjects(c *gin.Context) {
 	})
 }
 
+func (h *ProdiHandler) GetProdiSubjects(c *gin.Context) {
+
+	uuid := c.Param("uuid")
+
+	result, err := h.Service.GetProdiSubjects(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var res = []*response.Subject{}
+
+	for _, item := range *result {
+		res = append(res, &response.Subject{
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			Code:      item.Code,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.SuccessResponse{
+		Success: true,
+		Data:    res,
+	})
+}
+
 func (h *ProdiHandler) GetSubjectByUuid(c *gin.Context) {
 
 	uuid := c.Param("uuid")
@@ -98,38 +121,6 @@ func (h *ProdiHandler) GetSubjectByUuid(c *gin.Context) {
 	})
 }
 
-func (h *ProdiHandler) GetProdiSubjects(c *gin.Context) {
-
-	uuid := c.Param("uuid")
-
-	result, err := h.Service.GetSubjectByUuid(uuid)
-	if err != nil {
-		utils.HandleError(c, err)
-		return
-	}
-
-	var res = response.Subject{
-		Uuid: result.Uuid,
-		Name: result.Name,
-		Code: result.Code,
-		Prodi: &response.Prodi{
-			Uuid:      result.Prodi.Uuid,
-			Nama:      result.Prodi.Nama,
-			Kaprodi:   result.Prodi.Kaprodi,
-			CreatedAt: result.Prodi.CreatedAt,
-			UpdatedAt: result.Prodi.UpdatedAt,
-		},
-		CreatedAt: result.CreatedAt,
-		UpdatedAt: result.UpdatedAt,
-	}
-
-	c.JSON(http.StatusOK, response.SuccessResponse{
-		Success: true,
-		Data:    res,
-	})
-}
-
-
 func (h *ProdiHandler) UpdateSubject(c *gin.Context) {
 
 	var body request.Subject
@@ -139,8 +130,9 @@ func (h *ProdiHandler) UpdateSubject(c *gin.Context) {
 	}
 
 	uuid := c.Param("uuid")
+	userUuid := c.GetString("user_uuid")
 
-	if err := h.Service.UpdateSubject(uuid, &body); err != nil {
+	if err := h.Service.UpdateSubject(userUuid, uuid, &body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}
@@ -154,8 +146,9 @@ func (h *ProdiHandler) UpdateSubject(c *gin.Context) {
 func (h *ProdiHandler) DeleteSubject(c *gin.Context) {
 
 	uuid := c.Param("uuid")
+	userUuid := c.GetString("user_uuid")
 
-	if err := h.Service.DeleteSubject(uuid); err != nil {
+	if err := h.Service.DeleteSubject(userUuid, uuid); err != nil {
 		utils.HandleError(c, err)
 		return
 	}

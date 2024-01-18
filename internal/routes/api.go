@@ -25,8 +25,19 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 	{
 		public.POST("register", handlers.AuthHandler.Register)
 		public.POST("login", handlers.AuthHandler.Login)
+		public.POST("credential", handlers.AuthHandler.LoginProdi)
 		public.GET("jurusan", handlers.UtilHandler.GetAllJurusan)
 
+	}
+
+	prodi := router.Group("api").Use(middleware.ValidateHeader(), middleware.IsProdi())
+	{
+		prodi.POST("subjects", handlers.ProdiHandler.CreateSubject)
+		prodi.GET("subjects", handlers.ProdiHandler.GetAllSubjects)
+		prodi.GET("subjects/:uuid", handlers.ProdiHandler.GetSubjectByUuid)
+		prodi.GET("subjects/prodi/:uuid", handlers.ProdiHandler.GetProdiSubjects)
+		prodi.PUT("subjects/:uuid", handlers.ProdiHandler.UpdateSubject)
+		prodi.DELETE("subjects/:uuid", handlers.ProdiHandler.DeleteSubject)
 	}
 
 	admin := router.Group("api").Use(middleware.ValidateHeader(), middleware.IsAdmin())
@@ -68,13 +79,6 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		admin.GET("response/:uuid", handlers.ResponseHandler.GetResponseByUuid)
 		admin.PUT("response/:uuid", handlers.ResponseHandler.UpdateResponse)
 		admin.DELETE("response/:uuid", handlers.ResponseHandler.DeleteResponse)
-
-		admin.POST("subjects", handlers.ProdiHandler.CreateSubject)
-		admin.GET("subjects", handlers.ProdiHandler.GetAllSubjects)
-		admin.GET("subjects/:uuid", handlers.ProdiHandler.GetSubjectByUuid)
-		admin.PUT("subjects/:uuid", handlers.ProdiHandler.UpdateSubject)
-		admin.DELETE("subjects/:uuid", handlers.ProdiHandler.DeleteSubject)
-
 	}
 
 	return router
