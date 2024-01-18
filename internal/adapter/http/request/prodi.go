@@ -5,3 +5,9 @@ type Prodi struct {
 	Kaprodi   string `json:"kaprodi" valid:"required~field kaprodi tidak boleh kosong"`
 	JurusanID string `json:"jurusan" valid:"required~field jurusan tidak boleh kosong"`
 }
+
+type Subject struct {
+	Name      string `json:"name" binding:"required"`
+	Code      string `json:"code" binding:"required"`
+	ProdiUuid string `json:"prodi_uuid" binding:"required"`
+}

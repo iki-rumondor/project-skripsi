@@ -49,7 +49,7 @@ func (s *AuthService) VerifyUser(user *domain.User) (string, error) {
 		}
 	}
 
-	jwt, err := utils.GenerateToken(result.ID, result.Role)
+	jwt, err := utils.GenerateToken(result.Uuid, result.Role)
 	if err != nil {
 		return "", err
 	}

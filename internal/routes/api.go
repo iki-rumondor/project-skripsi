@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	customHTTP "github.com/iki-rumondor/init-golang-service/internal/adapter/http"
+	"github.com/iki-rumondor/init-golang-service/internal/middleware"
 )
 
 func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
@@ -28,12 +29,11 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 
 	}
 
-	// admin := router.Group("api").Use(middleware.ValidateHeader(), middleware.IsAdmin())
-	admin := router.Group("api")
+	admin := router.Group("api").Use(middleware.ValidateHeader(), middleware.IsAdmin())
+	// admin := router.Group("api")
 	{
-		admin.GET("/", handlers.AuthHandler.GetUsers)
 		admin.GET("prodi", handlers.ProdiHandler.GetAllProdi)
-		admin.GET("prodi/:id", handlers.ProdiHandler.GetProdiByID)
+		admin.GET("prodi/:uuid", handlers.ProdiHandler.GetProdiByUuid)
 		admin.GET("instrumen/indikator", handlers.InstrumenHandler.GetAllIndikator)
 		admin.GET("instrumen/instrumen-type", handlers.InstrumenHandler.GetAllInstrumenType)
 		admin.GET("instrumen/indikator-type", handlers.InstrumenHandler.GetAllIndikatorType)
@@ -44,11 +44,11 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		admin.POST("instrumen/instrumen-type", handlers.InstrumenHandler.CreateInstrumenType)
 		admin.POST("instrumen/indikator-type", handlers.InstrumenHandler.CreateIndikatorType)
 
-		admin.DELETE("prodi/:id", handlers.ProdiHandler.DeleteProdi)
+		admin.DELETE("prodi/:uuid", handlers.ProdiHandler.DeleteProdi)
 		admin.DELETE("instrumen/instrumen-type/:id", handlers.InstrumenHandler.DeleteInstrumenType)
 		admin.DELETE("instrumen/indikator-type/:id", handlers.InstrumenHandler.DeleteIndikatorType)
 
-		admin.PUT("prodi/:id", handlers.ProdiHandler.UpdateProdi)
+		admin.PUT("prodi/:uuid", handlers.ProdiHandler.UpdateProdi)
 		admin.PUT("instrumen/indikator/:id", handlers.InstrumenHandler.UpdateIndikator)
 
 		admin.POST("assessments/type", handlers.AssTypeHandler.CreateAssType)
@@ -68,6 +68,13 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		admin.GET("response/:uuid", handlers.ResponseHandler.GetResponseByUuid)
 		admin.PUT("response/:uuid", handlers.ResponseHandler.UpdateResponse)
 		admin.DELETE("response/:uuid", handlers.ResponseHandler.DeleteResponse)
+
+		admin.POST("subjects", handlers.ProdiHandler.CreateSubject)
+		admin.GET("subjects", handlers.ProdiHandler.GetAllSubjects)
+		admin.GET("subjects/:uuid", handlers.ProdiHandler.GetSubjectByUuid)
+		admin.PUT("subjects/:uuid", handlers.ProdiHandler.UpdateSubject)
+		admin.DELETE("subjects/:uuid", handlers.ProdiHandler.DeleteSubject)
+
 	}
 
 	return router

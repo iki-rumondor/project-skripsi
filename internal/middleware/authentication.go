@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/response"
+	"github.com/iki-rumondor/init-golang-service/internal/utils"
 )
 
 func ValidateHeader() gin.HandlerFunc {
@@ -14,8 +14,9 @@ func ValidateHeader() gin.HandlerFunc {
 		var bearer = strings.HasPrefix(headerToken, "Bearer")
 
 		if !bearer {
-			c.AbortWithStatusJSON(http.StatusBadRequest, response.Message{
-				Message: "Bearer token is not valid",
+			utils.HandleError(c, &response.Error{
+				Code:    403,
+				Message: "Bearer Token Tidak Valid",
 			})
 			return
 		}

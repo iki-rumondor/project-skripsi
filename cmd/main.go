@@ -17,6 +17,8 @@ func main() {
 		return
 	}
 
+	// freshDatabase(gormDB)
+
 	for _, model := range registry.RegisterModels() {
 		if err := gormDB.Debug().AutoMigrate(model.Model); err != nil {
 			log.Fatal(err.Error())
@@ -50,4 +52,13 @@ func dbSeeder(db *gorm.DB) {
 	db.Create(&domain.Jurusan{
 		Nama: "Teknik Arsitektur",
 	})
+}
+
+func freshDatabase(db *gorm.DB) {
+	for _, model := range registry.RegisterModels() {
+		if err := db.Migrator().DropTable(model.Model); err != nil {
+			log.Fatal(err.Error())
+			return
+		}
+	}
 }

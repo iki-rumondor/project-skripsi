@@ -7,6 +7,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/request"
 	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/response"
 	"github.com/iki-rumondor/init-golang-service/internal/application"
@@ -40,9 +41,10 @@ func (h *ProdiHandler) GetAllProdi(c *gin.Context) {
 
 	for _, p := range *prodi {
 		res = append(res, &response.Prodi{
-			ID:      p.ID,
-			Nama:    p.Nama,
-			Kaprodi: p.Kaprodi,
+			Uuid:       p.Uuid,
+			Nama:       p.Nama,
+			Kaprodi:    p.Kaprodi,
+			Credential: p.Credential,
 			Jurusan: &response.JurusanData{
 				ID:        p.Jurusan.ID,
 				Nama:      p.Jurusan.Nama,
@@ -59,35 +61,39 @@ func (h *ProdiHandler) GetAllProdi(c *gin.Context) {
 	})
 }
 
-func (h *ProdiHandler) GetProdiByID(c *gin.Context) {
+func (h *ProdiHandler) GetProdiByUuid(c *gin.Context) {
 
-	urlParam := c.Param("id")
-	prodiID, err := strconv.Atoi(urlParam)
+	uuid := c.Param("uuid")
+
+	prodi, err := h.Service.GetProdiByUuid(uuid)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, response.Message{
-			Message: "please check the url and ensure it follows the correct format",
-		})
+		utils.HandleError(c, err)
 		return
 	}
 
-	prodi, err := h.Service.GetProdiByID(uint(prodiID))
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.Message{
-			Success: false,
-			Message: err.Error(),
+	var subjects []response.Subject
+
+	for _, item := range *prodi.Subject {
+		subjects = append(subjects, response.Subject{
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			Code:      item.Code,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
 		})
-		return
 	}
 
 	var res = response.Prodi{
-		ID:        prodi.ID,
-		Nama:      prodi.Nama,
-		Kaprodi:   prodi.Kaprodi,
+		Uuid:       prodi.Uuid,
+		Nama:       prodi.Nama,
+		Kaprodi:    prodi.Kaprodi,
+		Credential: prodi.Credential,
 		Jurusan: &response.JurusanData{
 			ID:        prodi.Jurusan.ID,
 			Nama:      prodi.Jurusan.Nama,
 			CreatedAt: prodi.CreatedAt,
 		},
+		Subject:   &subjects,
 		CreatedAt: prodi.CreatedAt,
 		UpdatedAt: prodi.UpdatedAt,
 	}
@@ -122,9 +128,11 @@ func (h *ProdiHandler) CreateProdi(c *gin.Context) {
 	}
 
 	prodi := domain.Prodi{
-		Nama:      body.Nama,
-		Kaprodi:   body.Kaprodi,
-		JurusanID: uint(jurusanID),
+		Uuid:       uuid.NewString(),
+		Credential: utils.GenerateRandomString(15),
+		Nama:       body.Nama,
+		Kaprodi:    body.Kaprodi,
+		JurusanID:  uint(jurusanID),
 	}
 
 	if err := h.Service.CreateProdi(&prodi); err != nil {
@@ -150,15 +158,6 @@ func (h *ProdiHandler) CreateProdi(c *gin.Context) {
 
 func (h *ProdiHandler) UpdateProdi(c *gin.Context) {
 
-	urlParam := c.Param("id")
-	prodiID, err := strconv.Atoi(urlParam)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, response.Message{
-			Message: "please check the url and ensure it follows the correct format",
-		})
-		return
-	}
-
 	var body request.Prodi
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, response.Message{
@@ -176,34 +175,10 @@ func (h *ProdiHandler) UpdateProdi(c *gin.Context) {
 		return
 	}
 
-	jurusanID, err := strconv.Atoi(body.JurusanID)
-	if err != nil {
-		utils.HandleError(c, &response.Error{
-			Code:    404,
-			Message: "Data jurusan tidak valid",
-		})
-	}
+	uuid := c.Param("uuid")
 
-	prodi := domain.Prodi{
-		ID:        uint(prodiID),
-		Nama:      body.Nama,
-		Kaprodi:   body.Kaprodi,
-		JurusanID: uint(jurusanID),
-	}
-
-	if err := h.Service.UpdateProdi(&prodi); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.AbortWithStatusJSON(http.StatusNotFound, response.Message{
-				Success: false,
-				Message: err.Error(),
-			})
-			return
-		}
-
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.Message{
-			Success: false,
-			Message: err.Error(),
-		})
+	if err := h.Service.UpdateProdi(uuid, &body); err != nil {
+		utils.HandleError(c, err)
 		return
 	}
 
@@ -215,31 +190,10 @@ func (h *ProdiHandler) UpdateProdi(c *gin.Context) {
 
 func (h *ProdiHandler) DeleteProdi(c *gin.Context) {
 
-	urlParam := c.Param("id")
-	prodiID, err := strconv.Atoi(urlParam)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, response.Message{
-			Message: "please check the url and ensure it follows the correct format",
-		})
-		return
-	}
+	uuid := c.Param("uuid")
 
-	prodi := domain.Prodi{
-		ID: uint(prodiID),
-	}
-
-	if err := h.Service.DeleteProdi(&prodi); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.AbortWithStatusJSON(http.StatusNotFound, response.Message{
-				Success: false,
-				Message: err.Error(),
-			})
-		}
-
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.Message{
-			Success: false,
-			Message: err.Error(),
-		})
+	if err := h.Service.DeleteProdi(uuid); err != nil {
+		utils.HandleError(c, err)
 		return
 	}
 

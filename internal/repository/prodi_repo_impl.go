@@ -33,6 +33,15 @@ func (r *ProdiRepoImplementation) FindProdi(id uint) (*domain.Prodi, error) {
 	return &prodi, nil
 }
 
+func (r *ProdiRepoImplementation) FindProdiByUuid(uuid string) (*domain.Prodi, error) {
+	var prodi domain.Prodi
+	if err := r.db.Preload("Jurusan").Preload("Subject").First(&prodi, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &prodi, nil
+}
+
 func (r *ProdiRepoImplementation) CreateProdi(prodi *domain.Prodi) error {
 	return r.db.Save(&prodi).Error
 }

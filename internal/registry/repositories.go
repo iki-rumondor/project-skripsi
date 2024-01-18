@@ -13,5 +13,6 @@ func GetRepositories(db *gorm.DB) *repository.Repositories {
 		UtilRepo:        repository.NewUtilRepository(db),
 		AssTypeRepo:     repository.NewAssTypeRepository(db),
 		AssQuestionRepo: repository.NewAssQuestionRepository(db),
+		SubjectRepo:     repository.NewSubjectRepository(db),
 	}
 }

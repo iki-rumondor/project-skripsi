@@ -17,5 +17,6 @@ func RegisterModels() []Model {
 		{Model: domain.User{}},
 		{Model: domain.AssessmentType{}},
 		{Model: domain.AssessmentQuestion{}},
+		{Model: domain.Subject{}},
 	}
 }

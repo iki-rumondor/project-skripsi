@@ -11,3 +11,7 @@ type Login struct {
 	Username string `json:"username" valid:"required~field username is required"`
 	Password string `json:"password" valid:"required~field password is required "`
 }
+
+type LoginProdi struct {
+	Credential string `json:"credential" binding:"required"`
+}

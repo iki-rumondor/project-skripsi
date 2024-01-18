@@ -9,4 +9,5 @@ type Repositories struct {
 	AssQuestionRepo AssQuestionRepository
 	ResponseRepo    ResponseRepository
 	UserRepo        UserRepository
+	SubjectRepo     SubjectRepository
 }

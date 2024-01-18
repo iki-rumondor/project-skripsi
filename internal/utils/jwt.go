@@ -10,16 +10,16 @@ import (
 var secretKey = "fabsence"
 
 type JwtClaims struct {
-	UserID uint   `json:"user_id"`
-	Role   string `json:"role"`
+	UserUuid string   `json:"uuid"`
+	Role     string `json:"role"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(userID uint, role string) (string, error) {
+func GenerateToken(UserUuid string, role string) (string, error) {
 
 	expireTime := time.Now().Add(time.Duration(1) * 24 * time.Hour)
 	claims := &JwtClaims{
-		UserID: userID,
+		UserUuid: UserUuid,
 		Role:   role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),

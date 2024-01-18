@@ -3,10 +3,21 @@ package response
 import "time"
 
 type Prodi struct {
-	ID        uint         `json:"id"`
-	Nama      string       `json:"nama"`
-	Kaprodi   string       `json:"kaprodi"`
-	Jurusan   *JurusanData `json:"jurusan"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
+	Uuid       string       `json:"uuid"`
+	Nama       string       `json:"nama"`
+	Kaprodi    string       `json:"kaprodi"`
+	Credential string       `json:"credential"`
+	Jurusan    *JurusanData `json:"jurusan"`
+	Subject    *[]Subject   `json:"subjects"`
+	CreatedAt  time.Time    `json:"created_at"`
+	UpdatedAt  time.Time    `json:"updated_at"`
+}
+
+type Subject struct {
+	Uuid      string    `json:"uuid"`
+	Name      string    `json:"name"`
+	Code      string    `json:"code"`
+	Prodi     *Prodi    `json:"prodi"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

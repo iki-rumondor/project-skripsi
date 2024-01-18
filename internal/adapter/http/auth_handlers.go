@@ -89,7 +89,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	})
 }
 
-func (h *AuthHandler) GetUsers(c *gin.Context) {
+func (h *AuthHandler) LoginProdi(c *gin.Context) {
 
 	users, err := h.Service.GetUsers()
 
