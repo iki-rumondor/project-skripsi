@@ -7,7 +7,9 @@ type Subject struct {
 	Uuid      string `gorm:"not null, type:varchar(32)"`
 	Name      string `gorm:"not null, type:varchar(64)"`
 	Code      string `gorm:"not null, type:varchar(16)"`
-	ProdiID   uint   `gorm:"not null; type:int"`
+	RPS       *bool `gorm:""`
+	Practical *bool
+	ProdiID   uint `gorm:"not null; type:int"`
 	Prodi     *Prodi
 	CreatedAt time.Time
 	UpdatedAt time.Time

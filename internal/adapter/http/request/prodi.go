@@ -7,6 +7,10 @@ type Prodi struct {
 }
 
 type Subject struct {
-	Name      string `json:"name" binding:"required"`
-	Code      string `json:"code" binding:"required"`
+	Name string `json:"name" binding:"required"`
+	Code string `json:"code" binding:"required"`
+}
+
+type SubjectRps struct {
+	Rps *bool `json:"rps" binding:"required"`
 }

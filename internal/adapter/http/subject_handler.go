@@ -79,6 +79,7 @@ func (h *ProdiHandler) GetProdiSubjects(c *gin.Context) {
 			Uuid:      item.Uuid,
 			Name:      item.Name,
 			Code:      item.Code,
+			RPS:       item.RPS,
 			CreatedAt: item.CreatedAt,
 			UpdatedAt: item.UpdatedAt,
 		})
@@ -104,6 +105,7 @@ func (h *ProdiHandler) GetSubjectByUuid(c *gin.Context) {
 		Uuid: result.Uuid,
 		Name: result.Name,
 		Code: result.Code,
+		RPS: result.RPS,
 		Prodi: &response.Prodi{
 			Uuid:      result.Prodi.Uuid,
 			Nama:      result.Prodi.Nama,
@@ -140,6 +142,28 @@ func (h *ProdiHandler) UpdateSubject(c *gin.Context) {
 	c.JSON(http.StatusOK, response.Message{
 		Success: true,
 		Message: "Mata Kuliah Berhasil Diupdate",
+	})
+}
+
+func (h *ProdiHandler) UpdateRPS(c *gin.Context) {
+
+	var body request.SubjectRps
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, badRequestError)
+		return
+	}
+
+	userUuid := c.GetString("user_uuid")
+	subjectUuid := c.Param("uuid")
+
+	if err := h.Service.UpdateSubjectRps(userUuid, subjectUuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SuccessResponse{
+		Success: true,
+		Message: "RPS Berhasil Di Update",
 	})
 }
 

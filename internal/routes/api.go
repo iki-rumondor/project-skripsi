@@ -12,7 +12,7 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -37,6 +37,7 @@ func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 		prodi.GET("subjects/:uuid", handlers.ProdiHandler.GetSubjectByUuid)
 		prodi.GET("subjects/prodi/:uuid", handlers.ProdiHandler.GetProdiSubjects)
 		prodi.PUT("subjects/:uuid", handlers.ProdiHandler.UpdateSubject)
+		prodi.PATCH("subjects/:uuid/rps", handlers.ProdiHandler.UpdateRPS)
 		prodi.DELETE("subjects/:uuid", handlers.ProdiHandler.DeleteSubject)
 	}
 

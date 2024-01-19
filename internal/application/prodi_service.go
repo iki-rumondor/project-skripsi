@@ -155,7 +155,7 @@ func (s *ProdiService) GetAllSubject() (*[]domain.Subject, error) {
 
 func (s *ProdiService) GetProdiSubjects(uuid string) (*[]domain.Subject, error) {
 	prodi, err := s.GetProdiByUuid(uuid)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
@@ -190,9 +190,9 @@ func (s *ProdiService) UpdateSubject(userUuid, subjectUuid string, body *request
 		return err
 	}
 
-	if subject.Prodi.Uuid != userUuid{
+	if subject.Prodi.Uuid != userUuid {
 		return &response.Error{
-			Code: 403,
+			Code:    403,
 			Message: "Mata Kuliah Tidak Terdaftar Di Program Studi ",
 		}
 	}
@@ -216,15 +216,41 @@ func (s *ProdiService) UpdateSubject(userUuid, subjectUuid string, body *request
 	return nil
 }
 
+func (s *ProdiService) UpdateSubjectRps(userUuid, subjectUuid string, body *request.SubjectRps) error {
+
+	subject, err := s.GetSubjectByUuid(subjectUuid)
+	if err != nil {
+		return err
+	}
+
+	if subject.Prodi.Uuid != userUuid {
+		return &response.Error{
+			Code:    403,
+			Message: "Mata Kuliah Tidak Terdaftar Di Program Studi ",
+		}
+	}
+
+	model := domain.Subject{
+		ID:  subject.ID,
+		RPS: body.Rps,
+	}
+
+	if err := s.Repo.SubjectRepo.UpdateSubjectRps(&model); err != nil {
+		return internalErr
+	}
+
+	return nil
+}
+
 func (s *ProdiService) DeleteSubject(userUuid, subjectUuid string) error {
 	model, err := s.GetSubjectByUuid(subjectUuid)
 	if err != nil {
 		return err
 	}
 
-	if model.Prodi.Uuid != userUuid{
+	if model.Prodi.Uuid != userUuid {
 		return &response.Error{
-			Code: 403,
+			Code:    403,
 			Message: "Mata Kuliah Tidak Terdaftar Di Program Studi ",
 		}
 	}

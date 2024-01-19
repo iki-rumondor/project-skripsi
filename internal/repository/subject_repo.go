@@ -8,5 +8,6 @@ type SubjectRepository interface {
 	FindAllSubject() (*[]domain.Subject, error)
 	FindSubjectByUuid(uuid string) (*domain.Subject, error)
 	UpdateSubject(model *domain.Subject) error
+	UpdateSubjectRps(model *domain.Subject) error
 	DeleteSubject(model *domain.Subject) error
 }

@@ -52,6 +52,10 @@ func (r *SubjectRepoImplementation) UpdateSubject(model *domain.Subject) error {
 	return r.db.Model(&model).Updates(&model).Error
 }
 
+func (r *SubjectRepoImplementation) UpdateSubjectRps(model *domain.Subject) error {
+	return r.db.Model(&model).Update("rps", model.RPS).Error
+}
+
 func (r *SubjectRepoImplementation) DeleteSubject(model *domain.Subject) error {
 	return r.db.Delete(&model).Error
 }
