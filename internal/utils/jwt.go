@@ -3,8 +3,8 @@ package utils
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/iki-rumondor/init-golang-service/internal/adapter/http/response"
+	"github.com/golang-jwt/jwt"
+	"github.com/iki-rumondor/go-monev/internal/http/response"
 )
 
 var secretKey = "fabsence"

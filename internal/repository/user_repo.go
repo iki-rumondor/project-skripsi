@@ -1,11 +1,27 @@
 package repository
 
-import "github.com/iki-rumondor/init-golang-service/internal/domain"
+import (
+	"fmt"
 
-type UserRepository interface {
-	CreateUser(model *domain.User) error
-	FindAllUser() (*[]domain.User, error)
-	FindUserByUuid(uuid string) (*domain.User, error)
-	UpdateUser(model *domain.User) error
-	DeleteUser(model *domain.User) error
+	"github.com/iki-rumondor/go-monev/internal/interfaces"
+	"github.com/iki-rumondor/go-monev/internal/models"
+	"gorm.io/gorm"
+)
+
+type UserRepository struct {
+	db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) interfaces.UserRepoInterface {
+	return &UserRepository{
+		db: db,
+	}
+}
+
+func (r *UserRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
+	var user models.User
+	if err := r.db.First(fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
