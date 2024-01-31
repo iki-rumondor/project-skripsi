@@ -21,14 +21,11 @@ func NewSubjectService(repo interfaces.SubjectRepoInterface) interfaces.SubjectS
 	}
 }
 
-func (s *SubjectService) CreateSubject(req *request.Subject) error {
-	user, err := s.Repo.FindUserBy("uuid", req.UserUuid)
+func (s *SubjectService) CreateSubject(userUuid string, req *request.Subject) error {
+
+	user, err := s.Repo.FindUserBy("uuid", userUuid)
 	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("User tidak ditemukan")
-		}
-		return response.SERVICE_INTERR
+		return err
 	}
 
 	subject := models.Subject{
@@ -44,8 +41,9 @@ func (s *SubjectService) CreateSubject(req *request.Subject) error {
 	return nil
 }
 
-func (s *SubjectService) GetAllSubjects() (*[]models.Subject, error) {
-	subjects, err := s.Repo.FindSubjects()
+func (s *SubjectService) GetAllSubjects(userUuid string) (*[]models.Subject, error) {
+
+	subjects, err := s.Repo.FindSubjects(userUuid)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR
@@ -54,8 +52,8 @@ func (s *SubjectService) GetAllSubjects() (*[]models.Subject, error) {
 	return subjects, nil
 }
 
-func (s *SubjectService) GetSubject(uuid string) (*models.Subject, error) {
-	subject, err := s.Repo.FindSubjectBy("uuid", uuid)
+func (s *SubjectService) GetSubject(userUuid, uuid string) (*models.Subject, error) {
+	subject, err := s.Repo.FindUserSubject(userUuid, uuid)
 	if err != nil {
 		log.Println(err.Error())
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -67,24 +65,16 @@ func (s *SubjectService) GetSubject(uuid string) (*models.Subject, error) {
 	return subject, nil
 }
 
-func (s *SubjectService) UpdateSubject(uuid string, req *request.Subject) error {
-	user, err := s.Repo.FindUserBy("uuid", req.UserUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("User tidak ditemukan")
-		}
-		return response.SERVICE_INTERR
-	}
+func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.Subject) error {
 
-	subject, err := s.GetSubject(uuid)
+	subject, err := s.GetSubject(userUuid, uuid)
 	if err != nil {
 		return err
 	}
 
 	model := models.Subject{
 		ID:           subject.ID,
-		DepartmentID: user.Department.ID,
+		DepartmentID: subject.DepartmentID,
 		Name:         req.Name,
 		Code:         req.Code,
 	}
@@ -97,8 +87,8 @@ func (s *SubjectService) UpdateSubject(uuid string, req *request.Subject) error 
 	return nil
 }
 
-func (s *SubjectService) DeleteSubject(uuid string) error {
-	subject, err := s.GetSubject(uuid)
+func (s *SubjectService) DeleteSubject(userUuid, uuid string) error {
+	subject, err := s.GetSubject(userUuid, uuid)
 	if err != nil {
 		return err
 	}

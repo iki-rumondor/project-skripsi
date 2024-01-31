@@ -11,18 +11,18 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/utils"
 )
 
-type SubjectHandler struct {
-	Service interfaces.SubjectServiceInterface
+type TeacherHandler struct {
+	Service interfaces.TeacherServiceInterface
 }
 
-func NewSubjectHandler(service interfaces.SubjectServiceInterface) interfaces.SubjectHandlerInterface {
-	return &SubjectHandler{
+func NewTeacherHandler(service interfaces.TeacherServiceInterface) interfaces.TeacherHandlerInterface {
+	return &TeacherHandler{
 		Service: service,
 	}
 }
 
-func (h *SubjectHandler) CreateSubject(c *gin.Context) {
-	var body request.Subject
+func (h *TeacherHandler) CreateTeacher(c *gin.Context) {
+	var body request.Teacher
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
@@ -39,33 +39,32 @@ func (h *SubjectHandler) CreateSubject(c *gin.Context) {
 		return
 	}
 
-	if err := h.Service.CreateSubject(userUuid, &body); err != nil {
+	if err := h.Service.CreateTeacher(userUuid, &body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.SUCCESS_RES("Mata Kuliah Berhasil Ditambahkan"))
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Laboratorium Berhasil Ditambahkan"))
 }
 
-func (h *SubjectHandler) GetAllSubjects(c *gin.Context) {
+func (h *TeacherHandler) GetAllTeachers(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
 
-	subjects, err := h.Service.GetAllSubjects(userUuid)
+	result, err := h.Service.GetAllTeachers(userUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	var resp []*response.Subject
-	for _, item := range *subjects {
-		resp = append(resp, &response.Subject{
+	var resp []*response.Teacher
+	for _, item := range *result {
+		resp = append(resp, &response.Teacher{
 			Uuid: item.Uuid,
 			Name: item.Name,
-			Code: item.Code,
 			Department: &response.Department{
 				Uuid: item.Department.Uuid,
 				Name: item.Department.Name,
@@ -79,7 +78,7 @@ func (h *SubjectHandler) GetAllSubjects(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
-func (h *SubjectHandler) GetSubject(c *gin.Context) {
+func (h *TeacherHandler) GetTeacher(c *gin.Context) {
 	uuid := c.Param("uuid")
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
@@ -87,30 +86,29 @@ func (h *SubjectHandler) GetSubject(c *gin.Context) {
 		return
 	}
 
-	subject, err := h.Service.GetSubject(userUuid, uuid)
+	result, err := h.Service.GetTeacher(userUuid, uuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	resp := &response.Subject{
-		Uuid: subject.Uuid,
-		Name: subject.Name,
-		Code: subject.Code,
+	resp := &response.Teacher{
+		Uuid: result.Uuid,
+		Name: result.Name,
 		Department: &response.Department{
-			Uuid: subject.Department.Uuid,
-			Name: subject.Department.Name,
-			Head: subject.Department.Head,
+			Uuid: result.Department.Uuid,
+			Name: result.Department.Name,
+			Head: result.Department.Head,
 		},
-		CreatedAt: subject.CreatedAt,
-		UpdatedAt: subject.UpdatedAt,
+		CreatedAt: result.CreatedAt,
+		UpdatedAt: result.UpdatedAt,
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
-func (h *SubjectHandler) UpdateSubject(c *gin.Context) {
-	var body request.Subject
+func (h *TeacherHandler) UpdateTeacher(c *gin.Context) {
+	var body request.Teacher
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,
@@ -129,28 +127,28 @@ func (h *SubjectHandler) UpdateSubject(c *gin.Context) {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
-	
+
 	uuid := c.Param("uuid")
-	if err := h.Service.UpdateSubject(userUuid, uuid, &body); err != nil {
+	if err := h.Service.UpdateTeacher(userUuid, uuid, &body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Mata Kuliah Berhasil Diperbarui"))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Laboratorium Berhasil Diperbarui"))
 }
 
-func (h *SubjectHandler) DeleteSubject(c *gin.Context) {
+func (h *TeacherHandler) DeleteTeacher(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
-	
+
 	uuid := c.Param("uuid")
-	if err := h.Service.DeleteSubject(userUuid, uuid); err != nil {
+	if err := h.Service.DeleteTeacher(userUuid, uuid); err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Mata Kuliah Berhasil Dihapus"))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Laboratorium Berhasil Dihapus"))
 }

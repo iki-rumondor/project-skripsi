@@ -25,13 +25,38 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	}
 
-	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"))
+	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"), middleware.SetUserUuid())
 	{
-		department.POST("subjects", middleware.SetUserUuid(), handlers.SubjectHandler.CreateSubject)
+		department.POST("subjects", handlers.SubjectHandler.CreateSubject)
 		department.GET("subjects", handlers.SubjectHandler.GetAllSubjects)
 		department.GET("subjects/:uuid", handlers.SubjectHandler.GetSubject)
-		department.PUT("subjects/:uuid", middleware.SetUserUuid(), handlers.SubjectHandler.UpdateSubject)
+		department.PUT("subjects/:uuid", handlers.SubjectHandler.UpdateSubject)
 		department.DELETE("subjects/:uuid", handlers.SubjectHandler.DeleteSubject)
+
+		department.POST("laboratories", handlers.LaboratoryHandler.CreateLaboratory)
+		department.GET("laboratories", handlers.LaboratoryHandler.GetAllLaboratories)
+		department.GET("laboratories/:uuid", handlers.LaboratoryHandler.GetLaboratory)
+		department.PUT("laboratories/:uuid", handlers.LaboratoryHandler.UpdateLaboratory)
+		department.DELETE("laboratories/:uuid", handlers.LaboratoryHandler.DeleteLaboratory)
+
+		department.POST("teachers", handlers.TeacherHandler.CreateTeacher)
+		department.GET("teachers", handlers.TeacherHandler.GetAllTeachers)
+		department.GET("teachers/:uuid", handlers.TeacherHandler.GetTeacher)
+		department.PUT("teachers/:uuid", handlers.TeacherHandler.UpdateTeacher)
+		department.DELETE("teachers/:uuid", handlers.TeacherHandler.DeleteTeacher)
+
+		department.POST("practical-modules", handlers.PracticalModuleHandler.CreatePracticalModule)
+		department.GET("practical-modules", handlers.PracticalModuleHandler.GetAllPracticalModules)
+		department.GET("practical-modules/:uuid", handlers.PracticalModuleHandler.GetPracticalModule)
+		department.PUT("practical-modules/:uuid", handlers.PracticalModuleHandler.UpdatePracticalModule)
+		department.DELETE("practical-modules/:uuid", handlers.PracticalModuleHandler.DeletePracticalModule)
+
+		department.POST("practical-tools", handlers.PracticalToolHandler.CreatePracticalTool)
+		department.GET("practical-tools", handlers.PracticalToolHandler.GetAllPracticalTools)
+		department.GET("practical-tools/:uuid", handlers.PracticalToolHandler.GetPracticalTool)
+		department.PUT("practical-tools/:uuid", handlers.PracticalToolHandler.UpdatePracticalTool)
+		department.DELETE("practical-tools/:uuid", handlers.PracticalToolHandler.DeletePracticalTool)
+
 	}
 
 	admin := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("ADMIN"))
@@ -47,6 +72,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("departments/:uuid", handlers.DepartmentHandler.GetDepartment)
 		admin.PUT("departments/:uuid", handlers.DepartmentHandler.UpdateDepartment)
 		admin.DELETE("departments/:uuid", handlers.DepartmentHandler.DeleteDepartment)
+
+		admin.POST("academic-years", handlers.AcademicYearHandler.CreateAcademicYear)
+		admin.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
+		admin.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
+		admin.PUT("academic-years/:uuid", handlers.AcademicYearHandler.UpdateAcademicYear)
+		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
 	}
 
 	return router

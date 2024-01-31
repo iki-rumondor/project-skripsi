@@ -15,17 +15,17 @@ type SubjectHandlerInterface interface {
 }
 
 type SubjectServiceInterface interface {
-	CreateSubject(*request.Subject) error
-	GetAllSubjects() (*[]models.Subject, error)
-	GetSubject(string) (*models.Subject, error)
-	UpdateSubject(string, *request.Subject) error
-	DeleteSubject(string) error
+	CreateSubject(userUuid string, req *request.Subject) error
+	GetAllSubjects(userUuid string) (*[]models.Subject, error)
+	GetSubject(userUuid, uuid string) (*models.Subject, error)
+	UpdateSubject(userUuid, uuid string, req *request.Subject) error
+	DeleteSubject(userUuid, uuid string) error
 }
 
 type SubjectRepoInterface interface {
-	FindSubjects() (*[]models.Subject, error)
-	FindSubjectBy(column string, value interface{}) (*models.Subject, error)
+	FindSubjects(userUuid string) (*[]models.Subject, error)
 	FindUserBy(column string, value interface{}) (*models.User, error)
+	FindUserSubject(userUuid, uuid string) (*models.Subject, error)
 	CreateSubject(*models.Subject) error
 	UpdateSubject(*models.Subject) error
 	DeleteSubject(*models.Subject) error
