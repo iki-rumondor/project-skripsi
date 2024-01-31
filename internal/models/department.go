@@ -8,8 +8,8 @@ import (
 type Department struct {
 	ID        uint   `gorm:"primaryKey"`
 	Uuid      string `gorm:"not_null;unique;size:64"`
-	MajorID   uint   `gorm:"not_null;size:2"`
-	UserID    uint   `gorm:"not_null;size:2"`
+	MajorID   uint   `gorm:"not_null"`
+	UserID    uint   `gorm:"not_null"`
 	Name      string `gorm:"not_null;size:32"`
 	Head      string `gorm:"not_null;size:32"`
 	CreatedAt int64  `gorm:"autoCreateTime:milli"`

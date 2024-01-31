@@ -8,8 +8,8 @@ import (
 type PracticalTool struct {
 	ID             uint   `gorm:"primaryKey"`
 	Uuid           string `gorm:"not_null;unique;size:64"`
-	SubjectID      uint   `gorm:"not_null;size:11"`
-	AcademicYearID uint   `gorm:"not_null;size:11"`
+	SubjectID      uint   `gorm:"not_null"`
+	AcademicYearID uint   `gorm:"not_null"`
 	Available      bool   `gorm:"not_null"`
 	Condition      string `gorm:"not_null;size:16"`
 	Note           string `gorm:"not_null;size:144"`
