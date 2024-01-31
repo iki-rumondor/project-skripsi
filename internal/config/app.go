@@ -12,6 +12,7 @@ type Handlers struct {
 	UserHandler       interfaces.UserHandlerInterface
 	DepartmentHandler interfaces.DepartmentHandlerInterface
 	SubjectHandler    interfaces.SubjectHandlerInterface
+	MajorHandler      interfaces.MajorHandlerInterface
 }
 
 // type Handlers struct {
@@ -26,6 +27,10 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	user_service := services.NewUserService(user_repo)
 	user_handler := handlers.NewUserHandler(user_service)
 
+	major_repo := repository.NewMajorRepository(db)
+	major_service := services.NewMajorService(major_repo)
+	major_handler := handlers.NewMajorHandler(major_service)
+
 	department_repo := repository.NewDepartmentRepository(db)
 	department_service := services.NewDepartmentService(department_repo)
 	department_handler := handlers.NewDepartmentHandler(department_service)
@@ -38,5 +43,6 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 		UserHandler:       user_handler,
 		DepartmentHandler: department_handler,
 		SubjectHandler:    subject_handler,
+		MajorHandler:      major_handler,
 	}
 }

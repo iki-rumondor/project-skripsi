@@ -3,8 +3,8 @@ package middleware
 import (
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/utils"
 )
@@ -33,20 +33,19 @@ func IsValidJWT() gin.HandlerFunc {
 	}
 }
 
-func SetUserID() gin.HandlerFunc {
+func SetUserUuid() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		mc := c.MustGet("map_claims")
 		mapClaims := mc.(jwt.MapClaims)
 
-		id, ok := mapClaims["user_id"].(float64)
+		uuid, ok := mapClaims["uuid"].(string)
 		if !ok {
 			utils.HandleError(c, response.UNAUTH_ERR("Token Tidak Valid"))
 			return
 		}
 
-		c.Set("user_id", uint(id))
+		c.Set("uuid", uuid)
 		c.Next()
-
 	}
 }
 

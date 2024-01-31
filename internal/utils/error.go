@@ -20,9 +20,6 @@ func HandleError(c *gin.Context, err error) {
 	case 404:
 		c.AbortWithStatusJSON(http.StatusNotFound, response.ERROR_RES(res.Message))
 		return
-	case 403:
-		c.AbortWithStatusJSON(http.StatusUnauthorized, response.ERROR_RES(res.Message))
-		return
 	case 406:
 		c.AbortWithStatusJSON(http.StatusNotAcceptable, response.ERROR_RES(res.Message))
 		return

@@ -36,17 +36,21 @@ func (r *SubjectRepository) FindSubjectBy(column string, value interface{}) (*mo
 	return &subject, nil
 }
 
-func (r *SubjectRepository) FindDepartmentBy(column string, value interface{}) (*models.Department, error) {
-	var department models.Department
-	if err := r.db.First(&department, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+func (r *SubjectRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
+	var result models.User
+	if err := r.db.Preload("Department").First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
 		return nil, err
 	}
 
-	return &department, nil
+	return &result, nil
 }
 
-func (r *SubjectRepository) UpsertSubject(subject *models.Subject) error {
-	return r.db.Save(&subject).Error
+func (r *SubjectRepository) CreateSubject(subject *models.Subject) error {
+	return r.db.Create(subject).Error
+}
+
+func (r *SubjectRepository) UpdateSubject(subject *models.Subject) error {
+	return r.db.Updates(subject).Error
 }
 
 func (r *SubjectRepository) DeleteSubject(subject *models.Subject) error {

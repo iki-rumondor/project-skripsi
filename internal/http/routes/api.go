@@ -27,15 +27,21 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"))
 	{
-		department.POST("subjects", handlers.SubjectHandler.CreateSubject)
+		department.POST("subjects", middleware.SetUserUuid(), handlers.SubjectHandler.CreateSubject)
 		department.GET("subjects", handlers.SubjectHandler.GetAllSubjects)
 		department.GET("subjects/:uuid", handlers.SubjectHandler.GetSubject)
-		department.PUT("subjects/:uuid", handlers.SubjectHandler.UpdateSubject)
+		department.PUT("subjects/:uuid", middleware.SetUserUuid(), handlers.SubjectHandler.UpdateSubject)
 		department.DELETE("subjects/:uuid", handlers.SubjectHandler.DeleteSubject)
 	}
 
 	admin := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("ADMIN"))
 	{
+		admin.POST("majors", handlers.MajorHandler.CreateMajor)
+		admin.GET("majors", handlers.MajorHandler.GetAllMajors)
+		admin.GET("majors/:uuid", handlers.MajorHandler.GetMajor)
+		admin.PUT("majors/:uuid", handlers.MajorHandler.UpdateMajor)
+		admin.DELETE("majors/:uuid", handlers.MajorHandler.DeleteMajor)
+
 		admin.POST("departments", handlers.DepartmentHandler.CreateDepartment)
 		admin.GET("departments", handlers.DepartmentHandler.GetAllDepartments)
 		admin.GET("departments/:uuid", handlers.DepartmentHandler.GetDepartment)

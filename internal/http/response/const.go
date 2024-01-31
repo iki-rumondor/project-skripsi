@@ -34,7 +34,7 @@ func NOTFOUND_ERR(message string) error {
 
 func UNAUTH_ERR(message string) error {
 	return &Error{
-		Code:    403,
+		Code:    401,
 		Message: message,
 	}
 }

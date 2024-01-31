@@ -25,7 +25,8 @@ type SubjectServiceInterface interface {
 type SubjectRepoInterface interface {
 	FindSubjects() (*[]models.Subject, error)
 	FindSubjectBy(column string, value interface{}) (*models.Subject, error)
-	FindDepartmentBy(column string, value interface{}) (*models.Department, error)
-	UpsertSubject(*models.Subject) error
+	FindUserBy(column string, value interface{}) (*models.User, error)
+	CreateSubject(*models.Subject) error
+	UpdateSubject(*models.Subject) error
 	DeleteSubject(*models.Subject) error
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-monev/internal/http/request"
 	"github.com/iki-rumondor/go-monev/internal/http/response"
@@ -23,6 +24,11 @@ func NewDepartmentHandler(service interfaces.DepartmentServiceInterface) interfa
 func (h *DepartmentHandler) CreateDepartment(c *gin.Context) {
 	var body request.Department
 	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
@@ -100,6 +106,11 @@ func (h *DepartmentHandler) UpdateDepartment(c *gin.Context) {
 			Code:    400,
 			Message: err.Error(),
 		})
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
 

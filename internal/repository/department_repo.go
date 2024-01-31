@@ -47,9 +47,11 @@ func (r *DepartmentRepository) FindMajorBy(column string, value interface{}) (*m
 }
 
 func (r *DepartmentRepository) CreateDepartment(department *models.Department) error {
+	
+	randString := utils.GenerateRandomString(7)
 	user := models.User{
-		Username:   utils.GenerateRandomString(7),
-		Password:   utils.GenerateRandomString(9),
+		Username:   randString,
+		Password:   randString,
 		RoleID:     2,
 		Department: department,
 	}

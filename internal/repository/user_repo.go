@@ -20,7 +20,7 @@ func NewUserRepository(db *gorm.DB) interfaces.UserRepoInterface {
 
 func (r *UserRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
 	var user models.User
-	if err := r.db.First(fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+	if err := r.db.Preload("Role").First(&user, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil

@@ -7,10 +7,11 @@ import (
 
 type Role struct {
 	ID        uint   `gorm:"primaryKey"`
-	Uuid      string `gorm:"not_null; unique; type:varchar; size:64"`
-	Name      string `gorm:"not_null; type:varchar; size:32"`
+	Uuid      string `gorm:"not_null,type:varchar, size:64"`
+	Name      string `gorm:"not_null,type:varchar,size:32"`
 	CreatedAt int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt int64  `gorm:"autoCreateTime:milli; autoUpdateTime:milli"`
+	UpdatedAt int64  `gorm:"autoCreateTime:milli, autoUpdateTime:milli"`
+	User      *User
 }
 
 func (m *Role) BeforeCreate(tx *gorm.DB) error {

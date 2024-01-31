@@ -28,7 +28,7 @@ func (s *UserService) VerifyUser(req *request.SignIn) (string, error) {
 		log.Println(err.Error())
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return "", &response.Error{
-				Code:    403,
+				Code:    401,
 				Message: "Username atau Password Salah",
 			}
 		}
@@ -37,7 +37,7 @@ func (s *UserService) VerifyUser(req *request.SignIn) (string, error) {
 
 	if err := utils.ComparePassword(user.Password, req.Password); err != nil {
 		return "", &response.Error{
-			Code:    403,
+			Code:    401,
 			Message: "Username atau password salah",
 		}
 	}

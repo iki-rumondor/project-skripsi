@@ -8,7 +8,10 @@ type Model struct {
 
 func GetAllModels() []Model {
 	return []Model{
+		{Model: models.Role{}},
 		{Model: models.User{}},
+		{Model: models.Department{}},
 		{Model: models.Subject{}},
+		{Model: models.Major{}},
 	}
 }

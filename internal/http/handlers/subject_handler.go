@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-monev/internal/http/request"
 	"github.com/iki-rumondor/go-monev/internal/http/response"
@@ -26,6 +27,19 @@ func (h *SubjectHandler) CreateSubject(c *gin.Context) {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+	
+	body.UserUuid = userUuid
 
 	if err := h.Service.CreateSubject(&body); err != nil {
 		utils.HandleError(c, err)
@@ -95,6 +109,18 @@ func (h *SubjectHandler) UpdateSubject(c *gin.Context) {
 		return
 	}
 
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+	body.UserUuid = userUuid
+	
 	uuid := c.Param("uuid")
 	if err := h.Service.UpdateSubject(uuid, &body); err != nil {
 		utils.HandleError(c, err)

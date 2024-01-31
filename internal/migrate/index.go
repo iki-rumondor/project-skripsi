@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/iki-rumondor/go-monev/internal/models"
 	"gorm.io/gorm"
 )
 
@@ -34,14 +35,26 @@ func freshDatabase(db *gorm.DB) error {
 		}
 	}
 
+	db.Create(&models.Role{
+		Name: "ADMIN",
+		User: &models.User{
+			Username: "admin",
+			Password: "123",
+		},
+	})
+
+	db.Create(&models.Role{
+		Name: "DEPARTMENT",
+	})
+
 	return nil
 }
+
 func migrateDatabase(db *gorm.DB) error {
 	for _, model := range GetAllModels() {
 		if err := db.Debug().AutoMigrate(model.Model); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }

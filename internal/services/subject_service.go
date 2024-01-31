@@ -22,22 +22,22 @@ func NewSubjectService(repo interfaces.SubjectRepoInterface) interfaces.SubjectS
 }
 
 func (s *SubjectService) CreateSubject(req *request.Subject) error {
-	department, err := s.Repo.FindDepartmentBy("uuid", req.DepartmentUuid)
+	user, err := s.Repo.FindUserBy("uuid", req.UserUuid)
 	if err != nil {
 		log.Println(err.Error())
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Program Studi tidak ditemukan")
+			return response.NOTFOUND_ERR("User tidak ditemukan")
 		}
 		return response.SERVICE_INTERR
 	}
 
 	subject := models.Subject{
-		DepartmentID: department.ID,
+		DepartmentID: user.Department.ID,
 		Name:         req.Name,
 		Code:         req.Code,
 	}
 
-	if err := s.Repo.UpsertSubject(&subject); err != nil {
+	if err := s.Repo.CreateSubject(&subject); err != nil {
 		log.Println(err.Error())
 		return response.SERVICE_INTERR
 	}
@@ -68,11 +68,11 @@ func (s *SubjectService) GetSubject(uuid string) (*models.Subject, error) {
 }
 
 func (s *SubjectService) UpdateSubject(uuid string, req *request.Subject) error {
-	department, err := s.Repo.FindDepartmentBy("uuid", req.DepartmentUuid)
+	user, err := s.Repo.FindUserBy("uuid", req.UserUuid)
 	if err != nil {
 		log.Println(err.Error())
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Program Studi tidak ditemukan")
+			return response.NOTFOUND_ERR("User tidak ditemukan")
 		}
 		return response.SERVICE_INTERR
 	}
@@ -84,12 +84,12 @@ func (s *SubjectService) UpdateSubject(uuid string, req *request.Subject) error 
 
 	model := models.Subject{
 		ID:           subject.ID,
-		DepartmentID: department.ID,
+		DepartmentID: user.Department.ID,
 		Name:         req.Name,
 		Code:         req.Code,
 	}
 
-	if err := s.Repo.UpsertSubject(&model); err != nil {
+	if err := s.Repo.UpdateSubject(&model); err != nil {
 		log.Println(err.Error())
 		return response.SERVICE_INTERR
 	}

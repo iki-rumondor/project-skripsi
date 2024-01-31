@@ -1,6 +1,6 @@
 package request
 
 type SignIn struct {
-	Username string `json:"username" binding:"required~field credential tidak ditemukan"`
-	Password string `json:"password" binding:"required~field credential tidak ditemukan"`
+	Username string `json:"username" valid:"required~field username tidak ditemukan"`
+	Password string `json:"password" valid:"required~field password tidak ditemukan"`
 }
