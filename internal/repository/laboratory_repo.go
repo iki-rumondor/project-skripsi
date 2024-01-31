@@ -25,7 +25,7 @@ func (r *LaboratoryRepository) FindLaboratories(userUuid string) (*[]models.Labo
 	}
 
 	var result []models.Laboratory
-	if err := r.db.Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -39,7 +39,7 @@ func (r *LaboratoryRepository) FindUserLaboratory(userUuid, uuid string) (*model
 	}
 
 	var result models.Laboratory
-	if err := r.db.First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -48,7 +48,7 @@ func (r *LaboratoryRepository) FindUserLaboratory(userUuid, uuid string) (*model
 
 func (r *LaboratoryRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
 	var result models.User
-	if err := r.db.First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+	if err := r.db.Preload("Department").First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
 		return nil, err
 	}
 

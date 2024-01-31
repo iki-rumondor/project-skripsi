@@ -35,7 +35,7 @@ func (s *SubjectService) CreateSubject(userUuid string, req *request.Subject) er
 		Code:         req.Code,
 	}
 
-	if err := s.Repo.UpsertSubject(&subject); err != nil {
+	if err := s.Repo.CreateSubject(&subject); err != nil {
 		log.Println(err.Error())
 		if ok := utils.IsErrorType(err); ok {
 			return err
@@ -83,7 +83,7 @@ func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.Subje
 		Code:         req.Code,
 	}
 
-	if err := s.Repo.UpsertSubject(&model); err != nil {
+	if err := s.Repo.UpdateSubject(&model); err != nil {
 		log.Println(err.Error())
 		if ok := utils.IsErrorType(err); ok {
 			return err

@@ -26,6 +26,7 @@ type SubjectRepoInterface interface {
 	FindSubjects(userUuid string) (*[]models.Subject, error)
 	FindUserBy(column string, value interface{}) (*models.User, error)
 	FindUserSubject(userUuid, uuid string) (*models.Subject, error)
-	UpsertSubject(*models.Subject) error
+	CreateSubject(*models.Subject) error
+	UpdateSubject(*models.Subject) error
 	DeleteSubject(*models.Subject) error
 }
