@@ -55,14 +55,10 @@ func (r *SubjectRepository) FindUserBy(column string, value interface{}) (*model
 	return &result, nil
 }
 
-func (r *SubjectRepository) CreateSubject(model *models.Subject) error {
-	return r.db.Create(model).Error
-}
-
-func (r *SubjectRepository) UpdateSubject(model *models.Subject) error {
-	return r.db.Updates(model).Error
+func (r *SubjectRepository) UpsertSubject(model *models.Subject) error {
+	return r.db.Save(model).Error
 }
 
 func (r *SubjectRepository) DeleteSubject(model *models.Subject) error {
-	return r.db.Delete(model).Error
+	return r.db.Save(model).Error
 }

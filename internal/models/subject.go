@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"gorm.io/gorm"
 )
 
@@ -19,5 +20,12 @@ type Subject struct {
 
 func (m *Subject) BeforeCreate(tx *gorm.DB) error {
 	m.Uuid = uuid.NewString()
+	return nil
+}
+
+func (m *Subject) BeforeSave(tx *gorm.DB) error {
+	if result := tx.First(&Subject{}, "code = ? AND id != ?", m.Code, m.ID).RowsAffected; result > 0{
+		return response.BADREQ_ERR("Kode Mata Kuliah Sudah Terdaftar")
+	}
 	return nil
 }

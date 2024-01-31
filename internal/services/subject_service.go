@@ -8,6 +8,7 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
+	"github.com/iki-rumondor/go-monev/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -34,8 +35,11 @@ func (s *SubjectService) CreateSubject(userUuid string, req *request.Subject) er
 		Code:         req.Code,
 	}
 
-	if err := s.Repo.CreateSubject(&subject); err != nil {
+	if err := s.Repo.UpsertSubject(&subject); err != nil {
 		log.Println(err.Error())
+		if ok := utils.IsErrorType(err); ok {
+			return err
+		}
 		return response.SERVICE_INTERR
 	}
 	return nil
@@ -79,8 +83,11 @@ func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.Subje
 		Code:         req.Code,
 	}
 
-	if err := s.Repo.UpdateSubject(&model); err != nil {
+	if err := s.Repo.UpsertSubject(&model); err != nil {
 		log.Println(err.Error())
+		if ok := utils.IsErrorType(err); ok {
+			return err
+		}
 		return response.SERVICE_INTERR
 	}
 
