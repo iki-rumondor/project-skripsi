@@ -24,12 +24,12 @@ func (r *SubjectRepository) FindSubjects(userUuid string) (*[]models.Subject, er
 		return nil, err
 	}
 
-	var subjects []models.Subject
-	if err := r.db.Preload("Department").Find(&subjects, "department_id = ?", user.Department.ID).Error; err != nil {
+	var result []models.Subject
+	if err := r.db.Preload("Department").Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
-	return &subjects, nil
+	return &result, nil
 }
 
 func (r *SubjectRepository) FindUserSubject(userUuid, uuid string) (*models.Subject, error) {
@@ -37,13 +37,13 @@ func (r *SubjectRepository) FindUserSubject(userUuid, uuid string) (*models.Subj
 	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
 	}
-	
-	var subject models.Subject
-	if err := r.db.Preload("Department").First(&subject, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
+
+	var result models.Subject
+	if err := r.db.Preload("Department").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
-	return &subject, nil
+	return &result, nil
 }
 
 func (r *SubjectRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
@@ -55,22 +55,14 @@ func (r *SubjectRepository) FindUserBy(column string, value interface{}) (*model
 	return &result, nil
 }
 
-func (r *SubjectRepository) CreateSubject(subject *models.Subject) error {
-	return r.db.Create(subject).Error
+func (r *SubjectRepository) CreateSubject(model *models.Subject) error {
+	return r.db.Create(model).Error
 }
 
-func (r *SubjectRepository) UpdateSubject(subject *models.Subject) error {
-	if err := r.db.First(&models.Subject{}, "id = ? AND department_id = ?", subject.ID, subject.DepartmentID).Error; err != nil{
-		return err
-	}
-
-	return r.db.Updates(subject).Error
+func (r *SubjectRepository) UpdateSubject(model *models.Subject) error {
+	return r.db.Updates(model).Error
 }
 
-func (r *SubjectRepository) DeleteSubject(subject *models.Subject) error {
-	if err := r.db.First(&models.Subject{}, "id = ? AND department_id = ?", subject.ID, subject.DepartmentID).Error; err != nil{
-		return err
-	}
-
-	return r.db.Delete(subject).Error
+func (r *SubjectRepository) DeleteSubject(model *models.Subject) error {
+	return r.db.Delete(model).Error
 }

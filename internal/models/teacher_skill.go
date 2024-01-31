@@ -5,15 +5,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type Major struct {
+type TeacherSkill struct {
 	ID        uint   `gorm:"primaryKey"`
-	Uuid      string `gorm:"not_null;unique;size:64"`
-	Name      string `gorm:"not_null;size:32"`
+	Uuid      string `gorm:"not_null,unique;size:64"`
+	Skill     string `gorm:"not_null;size:64"`
+	TeacherID uint   `gorm:"not_null;size:2"`
 	CreatedAt int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	Teacher   *Teacher
 }
 
-func (m *Major) BeforeCreate(tx *gorm.DB) error {
+func (m *TeacherSkill) BeforeCreate(tx *gorm.DB) error {
 	m.Uuid = uuid.NewString()
 	return nil
 }

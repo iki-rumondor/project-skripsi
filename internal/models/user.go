@@ -8,12 +8,12 @@ import (
 
 type User struct {
 	ID         uint   `gorm:"primaryKey"`
-	Uuid       string `gorm:"not_null,unique,type:varchar,size:64"`
-	Username   string `gorm:"not_null,type:varchar,size:16"`
-	Password   string `gorm:"not_null,type:varchar,size:64"`
-	RoleID     uint   `gorm:"not_null,type:uint,size:2"`
+	Uuid       string `gorm:"not_null,unique;size:64"`
+	Username   string `gorm:"not_null;size:16"`
+	Password   string `gorm:"not_null;size:64"`
+	RoleID     uint   `gorm:"not_null;size:2"`
 	CreatedAt  int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt  int64  `gorm:"autoCreateTime:milli, autoUpdateTime:milli"`
+	UpdatedAt  int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	Role       *Role
 	Department *Department
 }

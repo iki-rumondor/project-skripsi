@@ -24,12 +24,12 @@ func (r *TeacherRepository) FindTeachers(userUuid string) (*[]models.Teacher, er
 		return nil, err
 	}
 
-	var Teachers []models.Teacher
-	if err := r.db.Preload("Department").Find(&Teachers, "department_id = ?", user.Department.ID).Error; err != nil {
+	var result []models.Teacher
+	if err := r.db.Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
-	return &Teachers, nil
+	return &result, nil
 }
 
 func (r *TeacherRepository) FindUserTeacher(userUuid, uuid string) (*models.Teacher, error) {
@@ -38,39 +38,31 @@ func (r *TeacherRepository) FindUserTeacher(userUuid, uuid string) (*models.Teac
 		return nil, err
 	}
 
-	var Teacher models.Teacher
-	if err := r.db.Preload("Department").First(&Teacher, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
-		return nil, err
-	}
-
-	return &Teacher, nil
-}
-
-func (r *TeacherRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
-	var result models.User
-	if err := r.db.Preload("Department").First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+	var result models.Teacher
+	if err := r.db.First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (r *TeacherRepository) CreateTeacher(Teacher *models.Teacher) error {
-	return r.db.Create(Teacher).Error
-}
-
-func (r *TeacherRepository) UpdateTeacher(Teacher *models.Teacher) error {
-	if err := r.db.First(&models.Teacher{}, "id = ? AND department_id = ?", Teacher.ID, Teacher.DepartmentID).Error; err != nil {
-		return err
+func (r *TeacherRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
+	var result models.User
+	if err := r.db.First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+		return nil, err
 	}
 
-	return r.db.Updates(Teacher).Error
+	return &result, nil
 }
 
-func (r *TeacherRepository) DeleteTeacher(Teacher *models.Teacher) error {
-	if err := r.db.First(&models.Teacher{}, "id = ? AND department_id = ?", Teacher.ID, Teacher.DepartmentID).Error; err != nil {
-		return err
-	}
+func (r *TeacherRepository) CreateTeacher(model *models.Teacher) error {
+	return r.db.Create(model).Error
+}
 
-	return r.db.Delete(Teacher).Error
+func (r *TeacherRepository) UpdateTeacher(model *models.Teacher) error {
+	return r.db.Updates(model).Error
+}
+
+func (r *TeacherRepository) DeleteTeacher(model *models.Teacher) error {
+	return r.db.Delete(model).Error
 }

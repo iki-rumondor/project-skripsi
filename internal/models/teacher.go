@@ -7,11 +7,11 @@ import (
 
 type Teacher struct {
 	ID           uint   `gorm:"primaryKey"`
-	Uuid         string `gorm:"not_null,unique,type:varchar,size:64"`
-	Name         string `gorm:"not_null,type:varchar,size:32"`
-	DepartmentID uint   `gorm:"not_null,type:uint,size:2"`
+	Uuid         string `gorm:"not_null;unique;size:64"`
+	Name         string `gorm:"not_null;size:32"`
+	DepartmentID uint   `gorm:"not_null;size:2"`
 	CreatedAt    int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt    int64  `gorm:"autoCreateTime:milli,autoUpdateTime:milli"`
+	UpdatedAt    int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	Department   *Department
 }
 

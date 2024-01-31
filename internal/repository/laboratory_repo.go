@@ -24,12 +24,12 @@ func (r *LaboratoryRepository) FindLaboratories(userUuid string) (*[]models.Labo
 		return nil, err
 	}
 
-	var Laboratorys []models.Laboratory
-	if err := r.db.Preload("Department").Find(&Laboratorys, "department_id = ?", user.Department.ID).Error; err != nil {
+	var result []models.Laboratory
+	if err := r.db.Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
-	return &Laboratorys, nil
+	return &result, nil
 }
 
 func (r *LaboratoryRepository) FindUserLaboratory(userUuid, uuid string) (*models.Laboratory, error) {
@@ -38,39 +38,31 @@ func (r *LaboratoryRepository) FindUserLaboratory(userUuid, uuid string) (*model
 		return nil, err
 	}
 
-	var Laboratory models.Laboratory
-	if err := r.db.Preload("Department").First(&Laboratory, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
-		return nil, err
-	}
-
-	return &Laboratory, nil
-}
-
-func (r *LaboratoryRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
-	var result models.User
-	if err := r.db.Preload("Department").First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+	var result models.Laboratory
+	if err := r.db.First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-func (r *LaboratoryRepository) CreateLaboratory(Laboratory *models.Laboratory) error {
-	return r.db.Create(Laboratory).Error
-}
-
-func (r *LaboratoryRepository) UpdateLaboratory(Laboratory *models.Laboratory) error {
-	if err := r.db.First(&models.Laboratory{}, "id = ? AND department_id = ?", Laboratory.ID, Laboratory.DepartmentID).Error; err != nil {
-		return err
+func (r *LaboratoryRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
+	var result models.User
+	if err := r.db.First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+		return nil, err
 	}
 
-	return r.db.Updates(Laboratory).Error
+	return &result, nil
 }
 
-func (r *LaboratoryRepository) DeleteLaboratory(Laboratory *models.Laboratory) error {
-	if err := r.db.First(&models.Laboratory{}, "id = ? AND department_id = ?", Laboratory.ID, Laboratory.DepartmentID).Error; err != nil {
-		return err
-	}
+func (r *LaboratoryRepository) CreateLaboratory(model *models.Laboratory) error {
+	return r.db.Create(model).Error
+}
 
-	return r.db.Delete(Laboratory).Error
+func (r *LaboratoryRepository) UpdateLaboratory(model *models.Laboratory) error {
+	return r.db.Updates(model).Error
+}
+
+func (r *LaboratoryRepository) DeleteLaboratory(model *models.Laboratory) error {
+	return r.db.Delete(model).Error
 }

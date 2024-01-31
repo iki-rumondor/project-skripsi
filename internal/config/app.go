@@ -18,6 +18,7 @@ type Handlers struct {
 	PracticalModuleHandler interfaces.PracticalModuleHandlerInterface
 	PracticalToolHandler   interfaces.PracticalToolHandlerInterface
 	TeacherHandler         interfaces.TeacherHandlerInterface
+	TeacherSkillHandler    interfaces.TeacherSkillHandlerInterface
 }
 
 // type Handlers struct {
@@ -64,6 +65,10 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	practical_tool_service := services.NewPracticalToolService(practical_tool_repo)
 	practical_tool_handler := handlers.NewPracticalToolHandler(practical_tool_service)
 
+	teacher_skill_repo := repository.NewTeacherSkillRepository(db)
+	teacher_skill_service := services.NewTeacherSkillService(teacher_skill_repo)
+	teacher_skill_handler := handlers.NewTeacherSkillHandler(teacher_skill_service)
+
 	return &Handlers{
 		UserHandler:            user_handler,
 		DepartmentHandler:      department_handler,
@@ -74,5 +79,6 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 		PracticalModuleHandler: practical_module_handler,
 		PracticalToolHandler:   practical_tool_handler,
 		TeacherHandler:         teacher_handler,
+		TeacherSkillHandler:    teacher_skill_handler,
 	}
 }
