@@ -20,7 +20,7 @@ func NewAcademicYearRepository(db *gorm.DB) interfaces.AcademicYearRepoInterface
 
 func (r *AcademicYearRepository) FindAcademicYears() (*[]models.AcademicYear, error) {
 	var model []models.AcademicYear
-	if err := r.db.Find(&model).Error; err != nil {
+	if err := r.db.Preload("AcademicPlans").Find(&model).Error; err != nil {
 		return nil, err
 	}
 

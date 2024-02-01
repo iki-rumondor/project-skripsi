@@ -65,6 +65,9 @@ func (h *SubjectHandler) GetAllSubjects(c *gin.Context) {
 		var academicPlan *response.AcademicPlan
 		if item.AcademicPlan != nil {
 			academicPlan = &response.AcademicPlan{
+				AcademicYear: &response.AcademicYear{
+					Uuid: item.AcademicPlan.AcademicYear.Uuid,
+				},
 				Uuid:      item.AcademicPlan.Uuid,
 				Available: item.AcademicPlan.Available,
 				Note:      item.AcademicPlan.Note,
@@ -108,6 +111,9 @@ func (h *SubjectHandler) GetSubjectsByPlanYear(c *gin.Context) {
 		var academicPlan *response.AcademicPlan
 		if item.AcademicPlan != nil {
 			academicPlan = &response.AcademicPlan{
+				AcademicYear: &response.AcademicYear{
+					Uuid: item.AcademicPlan.AcademicYear.Uuid,
+				},
 				Uuid:      item.AcademicPlan.Uuid,
 				Available: item.AcademicPlan.Available,
 				Note:      item.AcademicPlan.Note,

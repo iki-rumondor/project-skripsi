@@ -50,11 +50,19 @@ func (h *AcademicYearHandler) GetAllAcademicYears(c *gin.Context) {
 
 	var resp []*response.AcademicYear
 	for _, item := range *result {
+		var plans = []response.AcademicPlan{}
+		for _, item := range *item.AcademicPlans {
+			plans = append(plans, response.AcademicPlan{
+				Uuid: item.Uuid,
+			})
+		}
+		
 		resp = append(resp, &response.AcademicYear{
-			Uuid:      item.Uuid,
-			Name:      item.Name,
-			CreatedAt: item.CreatedAt,
-			UpdatedAt: item.UpdatedAt,
+			Uuid:         item.Uuid,
+			Name:         item.Name,
+			AcademicPlan: &plans,
+			CreatedAt:    item.CreatedAt,
+			UpdatedAt:    item.UpdatedAt,
 		})
 	}
 
