@@ -117,7 +117,7 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 }
 
 func (h *AcademicPlanHandler) UpdateAcademicPlan(c *gin.Context) {
-	var body request.AcademicPlan
+	var body request.UpdateAcademicPlan
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,

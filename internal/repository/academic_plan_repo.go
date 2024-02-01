@@ -40,7 +40,7 @@ func (r *AcademicPlanRepository) FindUserAcademicPlan(userUuid, uuid string) (*m
 	}
 
 	var model models.AcademicPlan
-	if err := r.db.Joins("Subject").First(&model, "uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "academic_plans.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 

@@ -89,37 +89,17 @@ func (s *AcademicPlanService) GetAcademicPlan(userUuid, uuid string) (*models.Ac
 	return result, nil
 }
 
-func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid string, req *request.AcademicPlan) error {
+func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid string, req *request.UpdateAcademicPlan) error {
 
 	result, err := s.GetAcademicPlan(userUuid, uuid)
 	if err != nil {
 		return err
 	}
 
-	subject, err := s.Repo.FindSubjectBy("uuid", req.SubjectUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Mata Kuliah Tidak Ditemukan")
-		}
-		return response.SERVICE_INTERR
-	}
-
-	academic_year, err := s.Repo.FindAcademicYearBy("uuid", req.AcademicYearUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
-		}
-		return response.SERVICE_INTERR
-	}
-
 	model := models.AcademicPlan{
-		ID:             result.ID,
-		Available:      req.Available,
-		Note:           req.Note,
-		SubjectID:      subject.ID,
-		AcademicYearID: academic_year.ID,
+		ID:        result.ID,
+		Available: req.Available,
+		Note:      req.Note,
 	}
 
 	if err := s.Repo.UpdateAcademicPlan(&model); err != nil {

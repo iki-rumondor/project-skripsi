@@ -18,7 +18,7 @@ type AcademicPlanServiceInterface interface {
 	CreateAcademicPlan(userUuid string, req *request.AcademicPlan) error
 	GetAllAcademicPlans(userUuid string) (*[]models.AcademicPlan, error)
 	GetAcademicPlan(userUuid, uuid string) (*models.AcademicPlan, error)
-	UpdateAcademicPlan(userUuid, uuid string, req *request.AcademicPlan) error
+	UpdateAcademicPlan(userUuid, uuid string, req *request.UpdateAcademicPlan) error
 	DeleteAcademicPlan(userUuid, uuid string) error
 }
 
