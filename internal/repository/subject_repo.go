@@ -32,19 +32,14 @@ func (r *SubjectRepository) FindSubjects(userUuid string) (*[]models.Subject, er
 	return &result, nil
 }
 
-func (r *SubjectRepository) FindSubjectsByPlanYear(userUuid, yearUuid string) (*[]models.Subject, error) {
+func (r *SubjectRepository) FindPracticalSubjects(userUuid string) (*[]models.Subject, error) {
 	var user models.User
 	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
 	}
 
-	var year models.AcademicYear
-	if err := r.db.First(&year, "uuid = ?", yearUuid).Error; err != nil {
-		return nil, err
-	}
-
 	var result []models.Subject
-	if err := r.db.Preload("AcademicPlan.AcademicYear").Joins("AcademicPlan").Find(&result, "department_id = ? AND AcademicPlan.academic_year_id = ?", user.Department.ID, year.ID).Error; err != nil {
+	if err := r.db.Preload("PracticalTool.AcademicYear").Find(&result, "department_id = ? AND practical = 1", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 

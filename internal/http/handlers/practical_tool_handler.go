@@ -119,7 +119,7 @@ func (h *PracticalToolHandler) GetPracticalTool(c *gin.Context) {
 }
 
 func (h *PracticalToolHandler) UpdatePracticalTool(c *gin.Context) {
-	var body request.PracticalTool
+	var body request.UpdatePracticalTool
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,

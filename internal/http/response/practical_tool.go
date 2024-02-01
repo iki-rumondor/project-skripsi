@@ -2,7 +2,7 @@ package response
 
 type PracticalTool struct {
 	Uuid         string        `json:"uuid"`
-	Available    bool          `json:"available"`
+	Available    *bool         `json:"available"`
 	Condition    string        `json:"condition"`
 	Note         string        `json:"note"`
 	Subject      *Subject      `json:"subject"`

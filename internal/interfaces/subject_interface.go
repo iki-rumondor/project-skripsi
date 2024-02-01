@@ -9,7 +9,7 @@ import (
 type SubjectHandlerInterface interface {
 	CreateSubject(*gin.Context)
 	GetAllSubjects(*gin.Context)
-	GetSubjectsByPlanYear(*gin.Context)
+	GetAllPracticalSubjects(*gin.Context)
 	GetSubject(*gin.Context)
 	UpdateSubject(*gin.Context)
 	DeleteSubject(*gin.Context)
@@ -17,8 +17,8 @@ type SubjectHandlerInterface interface {
 
 type SubjectServiceInterface interface {
 	CreateSubject(userUuid string, req *request.Subject) error
-	GetSubjectsByPlanYear(userUuid, yearUuid string) (*[]models.Subject, error)
 	GetAllSubjects(userUuid string) (*[]models.Subject, error)
+	GetPracticalSubjects(userUuid string) (*[]models.Subject, error)
 	GetSubject(userUuid, uuid string) (*models.Subject, error)
 	UpdateSubject(userUuid, uuid string, req *request.Subject) error
 	DeleteSubject(userUuid, uuid string) error
@@ -26,7 +26,7 @@ type SubjectServiceInterface interface {
 
 type SubjectRepoInterface interface {
 	FindSubjects(userUuid string) (*[]models.Subject, error)
-	FindSubjectsByPlanYear(userUuid, yearUuid string) (*[]models.Subject, error)
+	FindPracticalSubjects(userUuid string) (*[]models.Subject, error)
 	FindUserBy(column string, value interface{}) (*models.User, error)
 	FindUserSubject(userUuid, uuid string) (*models.Subject, error)
 	CreateSubject(*models.Subject) error

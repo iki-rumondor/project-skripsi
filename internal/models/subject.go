@@ -7,16 +7,17 @@ import (
 )
 
 type Subject struct {
-	ID           uint   `gorm:"primaryKey"`
-	Uuid         string `gorm:"not_null;unique;size:64"`
-	Name         string `gorm:"not_null;size:32"`
-	Code         string `gorm:"not_null;unique;size:16"`
-	DepartmentID uint   `gorm:"not_null"`
-	CreatedAt    int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt    int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
-	Practical    *bool
-	Department   *Department
-	AcademicPlan *AcademicPlan
+	ID            uint   `gorm:"primaryKey"`
+	Uuid          string `gorm:"not_null;unique;size:64"`
+	Name          string `gorm:"not_null;size:32"`
+	Code          string `gorm:"not_null;unique;size:16"`
+	DepartmentID  uint   `gorm:"not_null"`
+	CreatedAt     int64  `gorm:"autoCreateTime:milli"`
+	UpdatedAt     int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	Practical     *bool
+	Department    *Department
+	AcademicPlan  *AcademicPlan
+	PracticalTool *PracticalTool
 }
 
 func (m *Subject) BeforeCreate(tx *gorm.DB) error {

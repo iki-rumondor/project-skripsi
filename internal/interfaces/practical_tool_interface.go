@@ -18,7 +18,7 @@ type PracticalToolServiceInterface interface {
 	CreatePracticalTool(userUuid string, req *request.PracticalTool) error
 	GetAllPracticalTools(userUuid string) (*[]models.PracticalTool, error)
 	GetPracticalTool(userUuid, uuid string) (*models.PracticalTool, error)
-	UpdatePracticalTool(userUuid, uuid string, req *request.PracticalTool) error
+	UpdatePracticalTool(userUuid, uuid string, req *request.UpdatePracticalTool) error
 	DeletePracticalTool(userUuid, uuid string) error
 }
 

@@ -90,29 +90,15 @@ func (s *PracticalToolService) GetPracticalTool(userUuid, uuid string) (*models.
 	return result, nil
 }
 
-func (s *PracticalToolService) UpdatePracticalTool(userUuid, uuid string, req *request.PracticalTool) error {
+func (s *PracticalToolService) UpdatePracticalTool(userUuid, uuid string, req *request.UpdatePracticalTool) error {
 
 	result, err := s.GetPracticalTool(userUuid, uuid)
 	if err != nil {
 		return err
 	}
 
-	subject, err := s.Repo.FindSubjectBy("uuid", req.SubjectUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Mata Kuliah Tidak Ditemukan")
-		}
-		return response.SERVICE_INTERR
-	}
-
-	academic_year, err := s.Repo.FindAcademicYearBy("uuid", req.AcademicYearUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
-		}
-		return response.SERVICE_INTERR
+	if req.Condition == ""{
+		req.Condition = "NONE"
 	}
 
 	model := models.PracticalTool{
@@ -120,8 +106,6 @@ func (s *PracticalToolService) UpdatePracticalTool(userUuid, uuid string, req *r
 		Condition:      req.Condition,
 		Available:      req.Available,
 		Note:           req.Note,
-		SubjectID:      subject.ID,
-		AcademicYearID: academic_year.ID,
 	}
 
 	if err := s.Repo.UpdatePracticalTool(&model); err != nil {

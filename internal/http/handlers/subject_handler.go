@@ -93,42 +93,41 @@ func (h *SubjectHandler) GetAllSubjects(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
-func (h *SubjectHandler) GetSubjectsByPlanYear(c *gin.Context) {
-	yearUuid := c.Param("uuid")
+func (h *SubjectHandler) GetAllPracticalSubjects(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
 
-	subjects, err := h.Service.GetSubjectsByPlanYear(userUuid, yearUuid)
+	subjects, err := h.Service.GetPracticalSubjects(userUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	var resp []*response.Subject
+	var resp []*response.PracticalSubject
+
 	for _, item := range *subjects {
-		var academicPlan *response.AcademicPlan
-		if item.AcademicPlan != nil {
-			academicPlan = &response.AcademicPlan{
+		var tools *response.PracticalTool
+		if item.PracticalTool != nil {
+			tools = &response.PracticalTool{
 				AcademicYear: &response.AcademicYear{
-					Uuid: item.AcademicPlan.AcademicYear.Uuid,
+					Uuid: item.PracticalTool.AcademicYear.Uuid,
 				},
-				Uuid:      item.AcademicPlan.Uuid,
-				Available: item.AcademicPlan.Available,
-				Note:      item.AcademicPlan.Note,
+				Uuid:      item.PracticalTool.Uuid,
+				Available: item.PracticalTool.Available,
+				Note:      item.PracticalTool.Note,
 			}
 		}
 
-		resp = append(resp, &response.Subject{
-			Uuid:         item.Uuid,
-			Name:         item.Name,
-			Code:         item.Code,
-			Practical:    item.Practical,
-			AcademicPlan: academicPlan,
-			CreatedAt:    item.CreatedAt,
-			UpdatedAt:    item.UpdatedAt,
+		resp = append(resp, &response.PracticalSubject{
+			Uuid:          item.Uuid,
+			Name:          item.Name,
+			Code:          item.Code,
+			PracticalTool: tools,
+			CreatedAt:     item.CreatedAt,
+			UpdatedAt:     item.UpdatedAt,
 		})
 	}
 

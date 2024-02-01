@@ -57,9 +57,9 @@ func (s *SubjectService) GetAllSubjects(userUuid string) (*[]models.Subject, err
 	return subjects, nil
 }
 
-func (s *SubjectService) GetSubjectsByPlanYear(userUuid, yearUuid string) (*[]models.Subject, error) {
+func (s *SubjectService) GetPracticalSubjects(userUuid string) (*[]models.Subject, error) {
 
-	subjects, err := s.Repo.FindSubjectsByPlanYear(userUuid, yearUuid)
+	subjects, err := s.Repo.FindPracticalSubjects(userUuid)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR

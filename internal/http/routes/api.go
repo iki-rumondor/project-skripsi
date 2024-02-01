@@ -69,7 +69,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("practical-tools/:uuid", handlers.PracticalToolHandler.UpdatePracticalTool)
 		department.DELETE("practical-tools/:uuid", handlers.PracticalToolHandler.DeletePracticalTool)
 
-		department.GET("subjects/plans/years/:uuid", handlers.SubjectHandler.GetSubjectsByPlanYear)
+		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
 
 	}
 
