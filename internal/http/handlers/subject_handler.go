@@ -75,9 +75,10 @@ func (h *SubjectHandler) GetAllSubjects(c *gin.Context) {
 		}
 
 		resp = append(resp, &response.Subject{
-			Uuid: item.Uuid,
-			Name: item.Name,
-			Code: item.Code,
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			Code:      item.Code,
+			Practical: item.Practical,
 			Department: &response.Department{
 				Uuid: item.Department.Uuid,
 				Name: item.Department.Name,
@@ -124,6 +125,7 @@ func (h *SubjectHandler) GetSubjectsByPlanYear(c *gin.Context) {
 			Uuid:         item.Uuid,
 			Name:         item.Name,
 			Code:         item.Code,
+			Practical:    item.Practical,
 			AcademicPlan: academicPlan,
 			CreatedAt:    item.CreatedAt,
 			UpdatedAt:    item.UpdatedAt,
@@ -147,22 +149,31 @@ func (h *SubjectHandler) GetSubject(c *gin.Context) {
 		return
 	}
 
+	var academicPlan *response.AcademicPlan
+	if subject.AcademicPlan != nil {
+		academicPlan = &response.AcademicPlan{
+			AcademicYear: &response.AcademicYear{
+				Uuid: subject.AcademicPlan.AcademicYear.Uuid,
+			},
+			Uuid:      subject.AcademicPlan.Uuid,
+			Available: subject.AcademicPlan.Available,
+			Note:      subject.AcademicPlan.Note,
+		}
+	}
+
 	resp := &response.Subject{
-		Uuid: subject.Uuid,
-		Name: subject.Name,
-		Code: subject.Code,
+		Uuid:      subject.Uuid,
+		Name:      subject.Name,
+		Code:      subject.Code,
+		Practical: subject.Practical,
 		Department: &response.Department{
 			Uuid: subject.Department.Uuid,
 			Name: subject.Department.Name,
 			Head: subject.Department.Head,
 		},
-		AcademicPlan: &response.AcademicPlan{
-			Uuid:      subject.AcademicPlan.Uuid,
-			Available: subject.AcademicPlan.Available,
-			Note:      subject.AcademicPlan.Note,
-		},
-		CreatedAt: subject.CreatedAt,
-		UpdatedAt: subject.UpdatedAt,
+		AcademicPlan: academicPlan,
+		CreatedAt:    subject.CreatedAt,
+		UpdatedAt:    subject.UpdatedAt,
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))

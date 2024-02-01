@@ -58,7 +58,7 @@ func (r *SubjectRepository) FindUserSubject(userUuid, uuid string) (*models.Subj
 	}
 
 	var result models.Subject
-	if err := r.db.Preload("Department").Preload("AcademicPlan").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").Preload("AcademicPlan.AcademicYear").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 

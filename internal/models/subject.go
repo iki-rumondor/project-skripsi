@@ -14,6 +14,7 @@ type Subject struct {
 	DepartmentID uint   `gorm:"not_null"`
 	CreatedAt    int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt    int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	Practical    *bool
 	Department   *Department
 	AcademicPlan *AcademicPlan
 }

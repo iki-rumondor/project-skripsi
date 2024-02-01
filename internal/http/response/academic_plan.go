@@ -2,7 +2,7 @@ package response
 
 type AcademicPlan struct {
 	Uuid         string        `json:"uuid"`
-	Available    bool          `json:"available"`
+	Available    *bool         `json:"available"`
 	Note         string        `json:"note"`
 	Subject      *Subject      `json:"subject"`
 	AcademicYear *AcademicYear `json:"academic_year"`

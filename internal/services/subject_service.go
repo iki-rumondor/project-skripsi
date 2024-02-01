@@ -32,6 +32,7 @@ func (s *SubjectService) CreateSubject(userUuid string, req *request.Subject) er
 	subject := models.Subject{
 		DepartmentID: user.Department.ID,
 		Name:         req.Name,
+		Practical:    req.Practical,
 		Code:         req.Code,
 	}
 
@@ -91,6 +92,7 @@ func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.Subje
 		ID:           subject.ID,
 		DepartmentID: subject.DepartmentID,
 		Name:         req.Name,
+		Practical:    req.Practical,
 		Code:         req.Code,
 	}
 
