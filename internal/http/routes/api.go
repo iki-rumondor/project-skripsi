@@ -25,6 +25,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	}
 
+	user := router.Group("api").Use(middleware.IsValidJWT())
+	{
+		user.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
+		user.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
+	}
+
 	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"), middleware.SetUserUuid())
 	{
 		department.POST("subjects", handlers.SubjectHandler.CreateSubject)
@@ -45,6 +51,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("teachers/:uuid", handlers.TeacherHandler.UpdateTeacher)
 		department.DELETE("teachers/:uuid", handlers.TeacherHandler.DeleteTeacher)
 
+		department.POST("academic-plans", handlers.AcademicPlanHandler.CreateAcademicPlan)
+		department.GET("academic-plans", handlers.AcademicPlanHandler.GetAllAcademicPlans)
+		department.GET("academic-plans/:uuid", handlers.AcademicPlanHandler.GetAcademicPlan)
+		department.PUT("academic-plans/:uuid", handlers.AcademicPlanHandler.UpdateAcademicPlan)
+		department.DELETE("academic-plans/:uuid", handlers.AcademicPlanHandler.DeleteAcademicPlan)
+
 		department.POST("practical-modules", handlers.PracticalModuleHandler.CreatePracticalModule)
 		department.GET("practical-modules", handlers.PracticalModuleHandler.GetAllPracticalModules)
 		department.GET("practical-modules/:uuid", handlers.PracticalModuleHandler.GetPracticalModule)
@@ -56,6 +68,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.GET("practical-tools/:uuid", handlers.PracticalToolHandler.GetPracticalTool)
 		department.PUT("practical-tools/:uuid", handlers.PracticalToolHandler.UpdatePracticalTool)
 		department.DELETE("practical-tools/:uuid", handlers.PracticalToolHandler.DeletePracticalTool)
+
+		department.GET("subjects/plans/years/:uuid", handlers.SubjectHandler.GetSubjectsByPlanYear)
 
 	}
 
@@ -74,8 +88,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.DELETE("departments/:uuid", handlers.DepartmentHandler.DeleteDepartment)
 
 		admin.POST("academic-years", handlers.AcademicYearHandler.CreateAcademicYear)
-		admin.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
-		admin.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
 		admin.PUT("academic-years/:uuid", handlers.AcademicYearHandler.UpdateAcademicYear)
 		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
 	}

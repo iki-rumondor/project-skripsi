@@ -64,7 +64,6 @@ func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 	for _, item := range *result {
 		resp = append(resp, &response.AcademicPlan{
 			Uuid:      item.Uuid,
-			Name:      item.Name,
 			Available: item.Available,
 			Note:      item.Note,
 			AcademicYear: &response.AcademicYear{
@@ -99,7 +98,6 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 
 	resp := &response.AcademicPlan{
 		Uuid:      result.Uuid,
-		Name:      result.Name,
 		Available: result.Available,
 		Note:      result.Note,
 		AcademicYear: &response.AcademicYear{

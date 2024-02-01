@@ -25,7 +25,26 @@ func (r *SubjectRepository) FindSubjects(userUuid string) (*[]models.Subject, er
 	}
 
 	var result []models.Subject
-	if err := r.db.Preload("Department").Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").Preload("AcademicPlan").Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *SubjectRepository) FindSubjectsByPlanYear(userUuid, yearUuid string) (*[]models.Subject, error) {
+	var user models.User
+	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var year models.AcademicYear
+	if err := r.db.First(&year, "uuid = ?", yearUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var result []models.Subject
+	if err := r.db.Joins("AcademicPlan").Find(&result, "department_id = ? AND AcademicPlan.academic_year_id = ?", user.Department.ID, year.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -39,7 +58,7 @@ func (r *SubjectRepository) FindUserSubject(userUuid, uuid string) (*models.Subj
 	}
 
 	var result models.Subject
-	if err := r.db.Preload("Department").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").Preload("AcademicPlan").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 

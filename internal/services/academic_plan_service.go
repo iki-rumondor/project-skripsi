@@ -46,7 +46,6 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.A
 	}
 
 	model := models.AcademicPlan{
-		Name:           req.Name,
 		Available:      req.Available,
 		Note:           req.Note,
 		SubjectID:      subject.ID,
@@ -117,7 +116,6 @@ func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid string, req *req
 
 	model := models.AcademicPlan{
 		ID:             result.ID,
-		Name:           req.Name,
 		Available:      req.Available,
 		Note:           req.Note,
 		SubjectID:      subject.ID,

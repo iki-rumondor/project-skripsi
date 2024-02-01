@@ -2,7 +2,6 @@ package response
 
 type AcademicPlan struct {
 	Uuid         string        `json:"uuid"`
-	Name         string        `json:"name"`
 	Available    bool          `json:"available"`
 	Note         string        `json:"note"`
 	Subject      *Subject      `json:"subject"`

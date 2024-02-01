@@ -16,6 +16,7 @@ type Department struct {
 	UpdatedAt int64  `gorm:"autoCreateTime:milli; autoUpdateTime:milli"`
 	Major     *Major
 	User      *User
+	Teachers  *[]Teacher
 	Subjects  *[]Subject
 }
 

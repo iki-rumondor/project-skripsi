@@ -25,7 +25,7 @@ func (s *TeacherService) CreateTeacher(userUuid string, req *request.Teacher) er
 
 	user, err := s.Repo.FindUserBy("uuid", userUuid)
 	if err != nil {
-		return err
+		return response.SERVICE_INTERR
 	}
 
 	model := models.Teacher{

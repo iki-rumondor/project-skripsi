@@ -25,7 +25,7 @@ func (r *TeacherRepository) FindTeachers(userUuid string) (*[]models.Teacher, er
 	}
 
 	var result []models.Teacher
-	if err := r.db.Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").Find(&result, "department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -39,7 +39,7 @@ func (r *TeacherRepository) FindUserTeacher(userUuid, uuid string) (*models.Teac
 	}
 
 	var result models.Teacher
-	if err := r.db.First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("Department").First(&result, "uuid = ? AND department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -48,7 +48,7 @@ func (r *TeacherRepository) FindUserTeacher(userUuid, uuid string) (*models.Teac
 
 func (r *TeacherRepository) FindUserBy(column string, value interface{}) (*models.User, error) {
 	var result models.User
-	if err := r.db.First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+	if err := r.db.Preload("Department").First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
 		return nil, err
 	}
 

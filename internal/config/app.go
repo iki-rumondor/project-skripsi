@@ -15,6 +15,7 @@ type Handlers struct {
 	MajorHandler           interfaces.MajorHandlerInterface
 	LaboratoryHandler      interfaces.LaboratoryHandlerInterface
 	AcademicYearHandler    interfaces.AcademicYearHandlerInterface
+	AcademicPlanHandler    interfaces.AcademicPlanHandlerInterface
 	PracticalModuleHandler interfaces.PracticalModuleHandlerInterface
 	PracticalToolHandler   interfaces.PracticalToolHandlerInterface
 	TeacherHandler         interfaces.TeacherHandlerInterface
@@ -57,6 +58,10 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	academic_year_service := services.NewAcademicYearService(academic_year_repo)
 	academic_year_handler := handlers.NewAcademicYearHandler(academic_year_service)
 
+	academic_plan_repo := repository.NewAcademicPlanRepository(db)
+	academic_plan_service := services.NewAcademicPlanService(academic_plan_repo)
+	academic_plan_handler := handlers.NewAcademicPlanHandler(academic_plan_service)
+
 	practical_module_repo := repository.NewPracticalModuleRepository(db)
 	practical_module_service := services.NewPracticalModuleService(practical_module_repo)
 	practical_module_handler := handlers.NewPracticalModuleHandler(practical_module_service)
@@ -76,6 +81,7 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 		MajorHandler:           major_handler,
 		LaboratoryHandler:      laboratory_handler,
 		AcademicYearHandler:    academic_year_handler,
+		AcademicPlanHandler:    academic_plan_handler,
 		PracticalModuleHandler: practical_module_handler,
 		PracticalToolHandler:   practical_tool_handler,
 		TeacherHandler:         teacher_handler,

@@ -10,7 +10,6 @@ type AcademicPlan struct {
 	Uuid           string `gorm:"not_null;unique;size:64"`
 	SubjectID      uint   `gorm:"not_null"`
 	AcademicYearID uint   `gorm:"not_null"`
-	Name           string `gorm:"not_null;size:32"`
 	Available      bool   `gorm:"not_null"`
 	Note           string `gorm:"not_null;size:144"`
 	CreatedAt      int64  `gorm:"autoCreateTime:milli"`

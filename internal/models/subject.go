@@ -7,15 +7,15 @@ import (
 )
 
 type Subject struct {
-	ID            uint   `gorm:"primaryKey"`
-	Uuid          string `gorm:"not_null;unique;size:64"`
-	Name          string `gorm:"not_null;size:32"`
-	Code          string `gorm:"not_null;unique;size:16"`
-	DepartmentID  uint   `gorm:"not_null"`
-	CreatedAt     int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt     int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
-	Department    *Department
-	AcademicPlans *[]AcademicPlan
+	ID           uint   `gorm:"primaryKey"`
+	Uuid         string `gorm:"not_null;unique;size:64"`
+	Name         string `gorm:"not_null;size:32"`
+	Code         string `gorm:"not_null;unique;size:16"`
+	DepartmentID uint   `gorm:"not_null"`
+	CreatedAt    int64  `gorm:"autoCreateTime:milli"`
+	UpdatedAt    int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	Department   *Department
+	AcademicPlan *AcademicPlan
 }
 
 func (m *Subject) BeforeCreate(tx *gorm.DB) error {
@@ -24,7 +24,7 @@ func (m *Subject) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (m *Subject) BeforeSave(tx *gorm.DB) error {
-	if result := tx.First(&Subject{}, "code = ? AND id != ?", m.Code, m.ID).RowsAffected; result > 0{
+	if result := tx.First(&Subject{}, "code = ? AND id != ?", m.Code, m.ID).RowsAffected; result > 0 {
 		return response.BADREQ_ERR("Kode Mata Kuliah Sudah Terdaftar")
 	}
 	return nil
