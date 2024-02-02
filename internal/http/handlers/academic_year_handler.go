@@ -64,13 +64,21 @@ func (h *AcademicYearHandler) GetAllAcademicYears(c *gin.Context) {
 			})
 		}
 
+		var modules = []response.PracticalModule{}
+		for _, item := range *item.PracticalModules {
+			modules = append(modules, response.PracticalModule{
+				Uuid: item.Uuid,
+			})
+		}
+
 		resp = append(resp, &response.AcademicYear{
-			Uuid:          item.Uuid,
-			Name:          item.Name,
-			AcademicPlan:  &plans,
-			PracticalTool: &tools,
-			CreatedAt:     item.CreatedAt,
-			UpdatedAt:     item.UpdatedAt,
+			Uuid:            item.Uuid,
+			Name:            item.Name,
+			AcademicPlan:    &plans,
+			PracticalTool:   &tools,
+			PracticalModule: &modules,
+			CreatedAt:       item.CreatedAt,
+			UpdatedAt:       item.UpdatedAt,
 		})
 	}
 

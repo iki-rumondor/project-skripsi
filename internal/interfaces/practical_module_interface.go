@@ -18,7 +18,7 @@ type PracticalModuleServiceInterface interface {
 	CreatePracticalModule(userUuid string, req *request.PracticalModule) error
 	GetAllPracticalModules(userUuid string) (*[]models.PracticalModule, error)
 	GetPracticalModule(userUuid, uuid string) (*models.PracticalModule, error)
-	UpdatePracticalModule(userUuid, uuid string, req *request.PracticalModule) error
+	UpdatePracticalModule(userUuid, uuid string, req *request.UpdatePracticalModule) error
 	DeletePracticalModule(userUuid, uuid string) error
 }
 

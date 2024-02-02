@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
@@ -27,7 +26,7 @@ func (r *PracticalModuleRepository) FindPracticalModules(userUuid string) (*[]mo
 
 	var result []models.PracticalModule
 
-	if err := r.db.Preload("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "subjects.department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "subject.department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -41,12 +40,8 @@ func (r *PracticalModuleRepository) FindUserPracticalModule(userUuid, uuid strin
 	}
 
 	var model models.PracticalModule
-	if err := r.db.Preload("Subject").Preload("AcademicYear").Preload("Laboratory").First(&model, "uuid = ?", uuid).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").First(&model, "practical_modules.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
-	}
-
-	if user.Department.ID != model.Subject.DepartmentID {
-		return nil, errors.New("not user academic plan")
 	}
 
 	return &model, nil

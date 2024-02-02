@@ -121,13 +121,26 @@ func (h *SubjectHandler) GetAllPracticalSubjects(c *gin.Context) {
 			}
 		}
 
+		var modules *response.PracticalModule
+		if item.PracticalModule != nil {
+			modules = &response.PracticalModule{
+				AcademicYear: &response.AcademicYear{
+					Uuid: item.PracticalModule.AcademicYear.Uuid,
+				},
+				Uuid:      item.PracticalModule.Uuid,
+				Available: item.PracticalModule.Available,
+				Note:      item.PracticalModule.Note,
+			}
+		}
+
 		resp = append(resp, &response.PracticalSubject{
-			Uuid:          item.Uuid,
-			Name:          item.Name,
-			Code:          item.Code,
-			PracticalTool: tools,
-			CreatedAt:     item.CreatedAt,
-			UpdatedAt:     item.UpdatedAt,
+			Uuid:            item.Uuid,
+			Name:            item.Name,
+			Code:            item.Code,
+			PracticalTool:   tools,
+			PracticalModule: modules,
+			CreatedAt:       item.CreatedAt,
+			UpdatedAt:       item.UpdatedAt,
 		})
 	}
 

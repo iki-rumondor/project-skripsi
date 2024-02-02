@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/iki-rumondor/go-monev/internal/http/request"
 	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
@@ -118,9 +119,10 @@ func (s *SubjectService) DeleteSubject(userUuid, uuid string) error {
 	}
 
 	if err := s.Repo.DeleteSubject(&model); err != nil {
-		if errors.Is(err, gorm.ErrForeignKeyViolated) {
+		if mysqlErr, _ := err.(*mysql.MySQLError); mysqlErr.Number == 1451 {
 			return response.VIOLATED_ERR
 		}
+
 		return response.SERVICE_INTERR
 	}
 

@@ -49,3 +49,21 @@ func (s *UserService) VerifyUser(req *request.SignIn) (string, error) {
 
 	return jwt, nil
 }
+
+func (s *UserService) GetCountSubjects() (*response.SubjectsCount, error) {
+	subjects, err := s.Repo.FindSubjects()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	practicalSubjects, err := s.Repo.FindPracticalSubjects()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	return &response.SubjectsCount{
+		General:   len(*subjects),
+		Practical: len(*practicalSubjects),
+	}, nil
+
+}

@@ -5,3 +5,8 @@ type User struct {
 	Username string `json:"username"`
 	Role     string `json:"role"`
 }
+
+type SubjectsCount struct {
+	General   int `json:"general"`
+	Practical int `json:"practical"`
+}

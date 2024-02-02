@@ -12,11 +12,12 @@ type Subject struct {
 }
 
 type PracticalSubject struct {
-	Uuid          string         `json:"uuid"`
-	Name          string         `json:"name"`
-	Code          string         `json:"code"`
-	CreatedAt     int64          `json:"created_at"`
-	UpdatedAt     int64          `json:"updated_at"`
-	Department    *Department    `json:"department"`
-	PracticalTool *PracticalTool `json:"practical_tool"`
+	Uuid            string           `json:"uuid"`
+	Name            string           `json:"name"`
+	Code            string           `json:"code"`
+	CreatedAt       int64            `json:"created_at"`
+	UpdatedAt       int64            `json:"updated_at"`
+	Department      *Department      `json:"department"`
+	PracticalTool   *PracticalTool   `json:"practical_tool"`
+	PracticalModule *PracticalModule `json:"practical_module"`
 }

@@ -39,7 +39,7 @@ func (r *SubjectRepository) FindPracticalSubjects(userUuid string) (*[]models.Su
 	}
 
 	var result []models.Subject
-	if err := r.db.Preload("PracticalTool.AcademicYear").Find(&result, "department_id = ? AND practical = 1", user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("PracticalTool.AcademicYear").Preload("PracticalModule.AcademicYear").Find(&result, "department_id = ? AND practical = 1", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 

@@ -125,7 +125,7 @@ func (h *PracticalModuleHandler) GetPracticalModule(c *gin.Context) {
 }
 
 func (h *PracticalModuleHandler) UpdatePracticalModule(c *gin.Context) {
-	var body request.PracticalModule
+	var body request.UpdatePracticalModule
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,

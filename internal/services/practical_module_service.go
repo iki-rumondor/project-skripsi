@@ -99,29 +99,11 @@ func (s *PracticalModuleService) GetPracticalModule(userUuid, uuid string) (*mod
 	return result, nil
 }
 
-func (s *PracticalModuleService) UpdatePracticalModule(userUuid, uuid string, req *request.PracticalModule) error {
+func (s *PracticalModuleService) UpdatePracticalModule(userUuid, uuid string, req *request.UpdatePracticalModule) error {
 
 	result, err := s.GetPracticalModule(userUuid, uuid)
 	if err != nil {
 		return err
-	}
-
-	subject, err := s.Repo.FindSubjectBy("uuid", req.SubjectUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Mata Kuliah Tidak Ditemukan")
-		}
-		return response.SERVICE_INTERR
-	}
-
-	academic_year, err := s.Repo.FindAcademicYearBy("uuid", req.AcademicYearUuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
-		}
-		return response.SERVICE_INTERR
 	}
 
 	laboratory, err := s.Repo.FindLaboratoryBy("uuid", req.LaboratoryUuid)
@@ -134,12 +116,10 @@ func (s *PracticalModuleService) UpdatePracticalModule(userUuid, uuid string, re
 	}
 
 	model := models.PracticalModule{
-		ID:             result.ID,
-		Available:      req.Available,
-		Note:           req.Note,
-		SubjectID:      subject.ID,
-		AcademicYearID: academic_year.ID,
-		LaboratoryID:   laboratory.ID,
+		ID:           result.ID,
+		Available:    req.Available,
+		Note:         req.Note,
+		LaboratoryID: laboratory.ID,
 	}
 
 	if err := s.Repo.UpdatePracticalModule(&model); err != nil {

@@ -43,3 +43,13 @@ func (h *UserHandler) SignIn(c *gin.Context) {
 		"token": jwt,
 	})
 }
+
+func (h *UserHandler) GetCountSubjects(c *gin.Context) {
+	res, err := h.Service.GetCountSubjects()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(res))
+}

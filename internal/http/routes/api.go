@@ -90,6 +90,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.POST("academic-years", handlers.AcademicYearHandler.CreateAcademicYear)
 		admin.PUT("academic-years/:uuid", handlers.AcademicYearHandler.UpdateAcademicYear)
 		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
+
+		admin.GET("dashboards/subjects", handlers.UserHandler.GetCountSubjects)
 	}
 
 	return router
