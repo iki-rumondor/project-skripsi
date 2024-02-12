@@ -26,7 +26,7 @@ func main() {
 
 	var PORT = os.Getenv("PORT")
 	if PORT == "" {
-		PORT = "8080"
+		PORT = "8081"
 	}
 
 	routes.StartServer(handlers).Run(fmt.Sprintf(":%s", PORT))

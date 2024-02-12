@@ -82,7 +82,7 @@ func (s *SubjectService) GetSubject(userUuid, uuid string) (*models.Subject, err
 	return subject, nil
 }
 
-func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.Subject) error {
+func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.UpdateSubject) error {
 
 	subject, err := s.GetSubject(userUuid, uuid)
 	if err != nil {
@@ -93,7 +93,6 @@ func (s *SubjectService) UpdateSubject(userUuid, uuid string, req *request.Subje
 		ID:           subject.ID,
 		DepartmentID: subject.DepartmentID,
 		Name:         req.Name,
-		Practical:    req.Practical,
 		Code:         req.Code,
 	}
 

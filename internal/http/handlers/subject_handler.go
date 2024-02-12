@@ -192,7 +192,7 @@ func (h *SubjectHandler) GetSubject(c *gin.Context) {
 }
 
 func (h *SubjectHandler) UpdateSubject(c *gin.Context) {
-	var body request.Subject
+	var body request.UpdateSubject
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,

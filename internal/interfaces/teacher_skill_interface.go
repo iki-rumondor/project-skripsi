@@ -26,6 +26,7 @@ type TeacherSkillRepoInterface interface {
 	FindTeacherSkills(userUuid string) (*[]models.TeacherSkill, error)
 	FindUserTeacherSkill(userUuid, uuid string) (*models.TeacherSkill, error)
 	FindTeacherBy(column string, value interface{}) (*models.Teacher, error)
+	FindSubjectByUuid(uuid string) (*models.Subject, error)
 	CreateTeacherSkill(*models.TeacherSkill) error
 	UpdateTeacherSkill(*models.TeacherSkill) error
 	DeleteTeacherSkill(*models.TeacherSkill) error

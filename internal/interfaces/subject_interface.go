@@ -20,7 +20,7 @@ type SubjectServiceInterface interface {
 	GetAllSubjects(userUuid string) (*[]models.Subject, error)
 	GetPracticalSubjects(userUuid string) (*[]models.Subject, error)
 	GetSubject(userUuid, uuid string) (*models.Subject, error)
-	UpdateSubject(userUuid, uuid string, req *request.Subject) error
+	UpdateSubject(userUuid, uuid string, req *request.UpdateSubject) error
 	DeleteSubject(userUuid, uuid string) error
 }
 

@@ -36,9 +36,19 @@ func (s *TeacherSkillService) CreateTeacherSkill(userUuid string, req *request.T
 		return response.NOTFOUND_ERR("Kemampuan Dosen Tidak Ditemukan")
 	}
 
+	subject, err := s.Repo.FindSubjectByUuid(req.SubjectUuid)
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Mata Kuliah tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
 	model := models.TeacherSkill{
 		Skill:     req.Skill,
 		TeacherID: teacher.ID,
+		SubjectID: subject.ID,
 	}
 
 	if err := s.Repo.CreateTeacherSkill(&model); err != nil {
@@ -88,10 +98,20 @@ func (s *TeacherSkillService) UpdateTeacherSkill(userUuid, uuid string, req *req
 		return response.SERVICE_INTERR
 	}
 
+	subject, err := s.Repo.FindSubjectByUuid(req.SubjectUuid)
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Mata Kuliah tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
 	model := models.TeacherSkill{
 		ID:        result.ID,
 		Skill:     req.Skill,
 		TeacherID: teacher.ID,
+		SubjectID: subject.ID,
 	}
 
 	if err := s.Repo.UpdateTeacherSkill(&model); err != nil {

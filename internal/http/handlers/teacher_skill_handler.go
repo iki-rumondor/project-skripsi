@@ -44,7 +44,7 @@ func (h *TeacherSkillHandler) CreateTeacherSkill(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.SUCCESS_RES("Alat Praktikum Berhasil Ditambahkan"))
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Kemampuan Dosen Berhasil Ditambahkan"))
 }
 
 func (h *TeacherSkillHandler) GetAllTeacherSkills(c *gin.Context) {
@@ -70,6 +70,12 @@ func (h *TeacherSkillHandler) GetAllTeacherSkills(c *gin.Context) {
 				Name:      item.Teacher.Name,
 				CreatedAt: item.Teacher.CreatedAt,
 				UpdatedAt: item.Teacher.UpdatedAt,
+			},
+			Subject: &response.Subject{
+				Uuid:      item.Subject.Uuid,
+				Name:      item.Subject.Name,
+				Code:      item.Subject.Code,
+				Practical: item.Subject.Practical,
 			},
 			CreatedAt: item.CreatedAt,
 			UpdatedAt: item.UpdatedAt,
@@ -100,6 +106,12 @@ func (h *TeacherSkillHandler) GetTeacherSkill(c *gin.Context) {
 			Name:      result.Teacher.Name,
 			CreatedAt: result.Teacher.CreatedAt,
 			UpdatedAt: result.Teacher.UpdatedAt,
+		},
+		Subject: &response.Subject{
+			Uuid:      result.Subject.Uuid,
+			Name:      result.Subject.Name,
+			Code:      result.Subject.Code,
+			Practical: result.Subject.Practical,
 		},
 		CreatedAt: result.CreatedAt,
 		UpdatedAt: result.UpdatedAt,
@@ -134,7 +146,7 @@ func (h *TeacherSkillHandler) UpdateTeacherSkill(c *gin.Context) {
 		utils.HandleError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Alat Praktikum Berhasil Diperbarui"))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kemampuan Dosen Berhasil Diperbarui"))
 }
 
 func (h *TeacherSkillHandler) DeleteTeacherSkill(c *gin.Context) {
@@ -150,5 +162,5 @@ func (h *TeacherSkillHandler) DeleteTeacherSkill(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Alat Praktikum Berhasil Dihapus"))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kemampuan Dosen Berhasil Dihapus"))
 }

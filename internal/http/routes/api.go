@@ -29,6 +29,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	{
 		user.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
 		user.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
+		user.GET("dashboards/subjects", handlers.UserHandler.GetCountSubjects)
 	}
 
 	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"), middleware.SetUserUuid())
@@ -69,6 +70,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("practical-tools/:uuid", handlers.PracticalToolHandler.UpdatePracticalTool)
 		department.DELETE("practical-tools/:uuid", handlers.PracticalToolHandler.DeletePracticalTool)
 
+		department.POST("teacher-skills", handlers.TeacherSkillHandler.CreateTeacherSkill)
+		department.GET("teacher-skills", handlers.TeacherSkillHandler.GetAllTeacherSkills)
+		department.GET("teacher-skills/:uuid", handlers.TeacherSkillHandler.GetTeacherSkill)
+		department.PUT("teacher-skills/:uuid", handlers.TeacherSkillHandler.UpdateTeacherSkill)
+		department.DELETE("teacher-skills/:uuid", handlers.TeacherSkillHandler.DeleteTeacherSkill)
+
 		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
 
 	}
@@ -91,7 +98,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PUT("academic-years/:uuid", handlers.AcademicYearHandler.UpdateAcademicYear)
 		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
 
-		admin.GET("dashboards/subjects", handlers.UserHandler.GetCountSubjects)
 	}
 
 	return router
