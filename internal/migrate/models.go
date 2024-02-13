@@ -20,5 +20,6 @@ func GetAllModels() []Model {
 		{Model: models.PracticalTool{}},
 		{Model: models.Teacher{}},
 		{Model: models.TeacherSkill{}},
+		{Model: models.Facility{}},
 	}
 }

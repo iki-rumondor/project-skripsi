@@ -46,6 +46,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("laboratories/:uuid", handlers.LaboratoryHandler.UpdateLaboratory)
 		department.DELETE("laboratories/:uuid", handlers.LaboratoryHandler.DeleteLaboratory)
 
+		department.POST("facilities", handlers.FacilityHandler.CreateFacility)
+		department.GET("facilities", handlers.FacilityHandler.GetAllFacilities)
+		department.GET("facilities/:uuid", handlers.FacilityHandler.GetFacility)
+		department.PUT("facilities/:uuid", handlers.FacilityHandler.UpdateFacility)
+		department.DELETE("facilities/:uuid", handlers.FacilityHandler.DeleteFacility)
+
 		department.POST("teachers", handlers.TeacherHandler.CreateTeacher)
 		department.GET("teachers", handlers.TeacherHandler.GetAllTeachers)
 		department.GET("teachers/:uuid", handlers.TeacherHandler.GetTeacher)
