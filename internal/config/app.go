@@ -9,18 +9,19 @@ import (
 )
 
 type Handlers struct {
-	UserHandler            interfaces.UserHandlerInterface
-	DepartmentHandler      interfaces.DepartmentHandlerInterface
-	SubjectHandler         interfaces.SubjectHandlerInterface
-	MajorHandler           interfaces.MajorHandlerInterface
-	LaboratoryHandler      interfaces.LaboratoryHandlerInterface
-	AcademicYearHandler    interfaces.AcademicYearHandlerInterface
-	AcademicPlanHandler    interfaces.AcademicPlanHandlerInterface
-	PracticalModuleHandler interfaces.PracticalModuleHandlerInterface
-	PracticalToolHandler   interfaces.PracticalToolHandlerInterface
-	TeacherHandler         interfaces.TeacherHandlerInterface
-	TeacherSkillHandler    interfaces.TeacherSkillHandlerInterface
-	FacilityHandler        interfaces.FacilityHandlerInterface
+	UserHandler              interfaces.UserHandlerInterface
+	DepartmentHandler        interfaces.DepartmentHandlerInterface
+	SubjectHandler           interfaces.SubjectHandlerInterface
+	MajorHandler             interfaces.MajorHandlerInterface
+	LaboratoryHandler        interfaces.LaboratoryHandlerInterface
+	AcademicYearHandler      interfaces.AcademicYearHandlerInterface
+	AcademicPlanHandler      interfaces.AcademicPlanHandlerInterface
+	PracticalModuleHandler   interfaces.PracticalModuleHandlerInterface
+	PracticalToolHandler     interfaces.PracticalToolHandlerInterface
+	TeacherHandler           interfaces.TeacherHandlerInterface
+	TeacherSkillHandler      interfaces.TeacherSkillHandlerInterface
+	FacilityHandler          interfaces.FacilityHandlerInterface
+	FacilityConditionHandler interfaces.FacilityConditionHandlerInterface
 }
 
 func GetAppHandlers(db *gorm.DB) *Handlers {
@@ -73,18 +74,23 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	facility_service := services.NewFacilityService(facility_repo)
 	facility_handler := handlers.NewFacilityHandler(facility_service)
 
+	facility_condition_repo := repository.NewFacilityConditionRepository(db)
+	facility_condition_service := services.NewFacilityConditionService(facility_condition_repo)
+	facility_condition_handler := handlers.NewFacilityConditionHandler(facility_condition_service)
+
 	return &Handlers{
-		UserHandler:            user_handler,
-		DepartmentHandler:      department_handler,
-		SubjectHandler:         subject_handler,
-		MajorHandler:           major_handler,
-		LaboratoryHandler:      laboratory_handler,
-		AcademicYearHandler:    academic_year_handler,
-		AcademicPlanHandler:    academic_plan_handler,
-		PracticalModuleHandler: practical_module_handler,
-		PracticalToolHandler:   practical_tool_handler,
-		TeacherHandler:         teacher_handler,
-		TeacherSkillHandler:    teacher_skill_handler,
-		FacilityHandler:        facility_handler,
+		UserHandler:              user_handler,
+		DepartmentHandler:        department_handler,
+		SubjectHandler:           subject_handler,
+		MajorHandler:             major_handler,
+		LaboratoryHandler:        laboratory_handler,
+		AcademicYearHandler:      academic_year_handler,
+		AcademicPlanHandler:      academic_plan_handler,
+		PracticalModuleHandler:   practical_module_handler,
+		PracticalToolHandler:     practical_tool_handler,
+		TeacherHandler:           teacher_handler,
+		TeacherSkillHandler:      teacher_skill_handler,
+		FacilityHandler:          facility_handler,
+		FacilityConditionHandler: facility_condition_handler,
 	}
 }

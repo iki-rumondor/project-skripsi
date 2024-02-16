@@ -82,8 +82,15 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("teacher-skills/:uuid", handlers.TeacherSkillHandler.UpdateTeacherSkill)
 		department.DELETE("teacher-skills/:uuid", handlers.TeacherSkillHandler.DeleteTeacherSkill)
 
-		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
+		department.POST("facility-conditions", handlers.FacilityConditionHandler.CreateFacilityCondition)
+		department.GET("facility-conditions/years/:yearUuid", handlers.FacilityConditionHandler.GetFacilityConditionsByYear)
+		department.GET("facility-conditions/years/:yearUuid/options", handlers.FacilityConditionHandler.GetFacilityOptions)
+		department.GET("facility-conditions/:uuid", handlers.FacilityConditionHandler.GetFacilityCondition)
+		department.PUT("facility-conditions/:uuid", handlers.FacilityConditionHandler.UpdateFacilityCondition)
+		department.DELETE("facility-conditions/:uuid", handlers.FacilityConditionHandler.DeleteFacilityCondition)
 
+		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
+		department.GET("users/first-monev/years/:yearUuid", handlers.UserHandler.CountMonevByYear)
 	}
 
 	admin := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("ADMIN"))

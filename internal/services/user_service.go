@@ -65,5 +65,14 @@ func (s *UserService) GetCountSubjects() (*response.SubjectsCount, error) {
 		General:   len(*subjects),
 		Practical: len(*practicalSubjects),
 	}, nil
+}
 
+func (s *UserService) CountMonevByYear(userUuid, yearUuid string) (map[string]int, error) {
+
+	result, err := s.Repo.CountMonevByYear(userUuid, yearUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
 }

@@ -53,3 +53,45 @@ func (h *UserHandler) GetCountSubjects(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.DATA_RES(res))
 }
+
+func (h *UserHandler) CountMonevByYear(c *gin.Context) {
+
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.CountMonevByYear(userUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	res := []response.MonevCount{
+		{
+			Name:   "Ketersediaan RPS",
+			Amount: result["plans"],
+		},
+		{
+			Name:   "Ketersediaan Modul Praktikum",
+			Amount: result["modules"],
+		},
+		{
+			Name:   "Ketersediaan Alat Praktikum",
+			Amount: result["tools"],
+		},
+		{
+			Name:   "Kesesuaian Kemampuan Dosen Dengan Mata Kuliah",
+			Amount: result["skills"],
+		},
+		{
+			Name:   "Fasilitas, Sarana, dan Prasarana",
+			Amount: result["facilities"],
+		},
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(res))
+}
