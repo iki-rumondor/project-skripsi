@@ -102,9 +102,10 @@ func (h *MiddleMonevHandler) GetTeacherAttendences(c *gin.Context) {
 	var resp []*response.TeacherAttendence
 	for _, item := range *result {
 		resp = append(resp, &response.TeacherAttendence{
-			Uuid:   item.Uuid,
-			Middle: fmt.Sprintf("%d", item.Middle),
-			Last:   fmt.Sprintf("%d", item.Last),
+			Uuid:        item.Uuid,
+			Middle:      fmt.Sprintf("%d", item.Middle),
+			Last:        fmt.Sprintf("%d", item.Last),
+			GeadeOnTime: item.GradeOnTime,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
 				Name: item.AcademicYear.Name,
@@ -113,6 +114,10 @@ func (h *MiddleMonevHandler) GetTeacherAttendences(c *gin.Context) {
 				Uuid: item.Subject.Uuid,
 				Name: item.Subject.Name,
 				Code: item.Subject.Code,
+			},
+			Teacher: &response.Teacher{
+				Uuid: item.Teacher.Uuid,
+				Name: item.Teacher.Name,
 			},
 			CreatedAt: item.CreatedAt,
 			UpdatedAt: item.UpdatedAt,
@@ -188,6 +193,8 @@ func (h *MiddleMonevHandler) GetStudentAttendences(c *gin.Context) {
 			StudentAmount: fmt.Sprintf("%d", item.StudentAmount),
 			Middle:        fmt.Sprintf("%d", item.Middle),
 			Last:          fmt.Sprintf("%d", item.Last),
+			PassedAmount:  fmt.Sprintf("%d", item.PassedAmount),
+			FinalAmount:   fmt.Sprintf("%d", item.FinalAmount),
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
 				Name: item.AcademicYear.Name,

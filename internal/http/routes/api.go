@@ -105,9 +105,17 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.GET("middle-monev/student-attendences/years/:yearUuid", handlers.MiddleMonevHandler.GetStudentAttendences)
 		department.DELETE("middle-monev/student-attendences/:uuid", handlers.MiddleMonevHandler.DeleteStudentAttendence)
 
+		department.GET("last-monev/years/:yearUuid", handlers.LastMonevHandler.CountLastMonev)
+		department.GET("last-monev/student-passed/years/:yearUuid", handlers.LastMonevHandler.GetAllUserStudentPassed)
+		department.PATCH("last-monev/student-passed/:uuid", handlers.LastMonevHandler.UpdateStudentPass)
+		department.PATCH("last-monev/student-final/:uuid", handlers.LastMonevHandler.UpdateStudentFinal)
+		department.DELETE("last-monev/student-passed/:uuid", handlers.LastMonevHandler.DeleteStudentPassed)
+		department.PATCH("last-monev/grade/teacher-attendences/:uuid", handlers.LastMonevHandler.UpdateTeacherGrade)
+
 		department.GET("subjects/teacher-attendences/years/:yearUuid", handlers.SubjectHandler.GetTeacherAttendenceSubjects)
 		department.GET("subjects/student-attendences/years/:yearUuid", handlers.SubjectHandler.GetStudentAttendenceSubjects)
 		department.GET("subjects/tables/:tableName/years/:yearUuid", handlers.SubjectHandler.GetOuterSubjects)
+
 		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
 		department.GET("users/first-monev/years/:yearUuid", handlers.UserHandler.CountMonevByYear)
 	}

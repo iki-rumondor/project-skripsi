@@ -35,11 +35,18 @@ func (s *MiddleMonevService) CreateTeacherAttendence(userUuid string, req *reque
 		return response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
 	}
 
+	teacher, err := s.Repo.FindTeacher(req.TeacherUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
+
 	middle, _ := strconv.Atoi(req.Middle)
 
 	model := models.TeacherAttendence{
 		SubjectID:      subject.ID,
 		AcademicYearID: academicYear.ID,
+		TeacherID:      teacher.ID,
 		Middle:         uint(middle),
 	}
 

@@ -41,6 +41,7 @@ type MiddleMonevRepoInterface interface {
 	FindStudentAttendence(userUuid, uuid string) (*models.StudentAttendence, error)
 	FindUserSubject(userUuid, uuid string) (*models.Subject, error)
 	FindAcademicYear(uuid string) (*models.AcademicYear, error)
+	FindTeacher(uuid string) (*models.Teacher, error)
 	CountTotalMonev(userUuid string, yearID uint) (map[string]int, error)
 	UpdateTeacherAttendence(model *models.TeacherAttendence) error
 	UpdateStudentAttendence(model *models.StudentAttendence) error

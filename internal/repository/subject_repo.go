@@ -120,6 +120,10 @@ func (r *SubjectRepository) FindOuterSubjects(departmentID, yearID uint, tableNa
 		return nil, err
 	}
 
+	if len(subjectIDs) == 0 {
+		subjectIDs = append(subjectIDs, 0)
+	}
+
 	if err := r.db.Find(&result, "department_id = ? AND id NOT IN (?)", departmentID, subjectIDs).Error; err != nil {
 		return nil, err
 	}

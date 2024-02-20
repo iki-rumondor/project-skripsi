@@ -3,20 +3,21 @@ package request
 type CreateTeacherAttendence struct {
 	SubjectUuid      string `json:"subject_uuid" valid:"required~field mata kuliah tidak ditemukan"`
 	AcademicYearUuid string `json:"academic_year_uuid" valid:"required~field tahun ajaran tidak ditemukan"`
+	TeacherUuid      string `json:"teacher_uuid" valid:"required~field penanggung jawab mata kuliah tidak ditemukan"`
 	Middle           string `json:"middle" valid:"required~field middle tidak ditemukan"`
 }
 
 type CreateStudentAttendence struct {
 	SubjectUuid      string `json:"subject_uuid" valid:"required~field mata kuliah tidak ditemukan"`
 	AcademicYearUuid string `json:"academic_year_uuid" valid:"required~field tahun ajaran tidak ditemukan"`
-	StudentAmount    string `json:"student_amount" valid:"required~field jumlah mahasiswa tidak ditemukan, int~field jumlah mahasiswa tidak valid"`
-	Middle           string `json:"middle" valid:"required~field jumlah kehadiran mahasiswa tidak ditemukan, int~field jumlah kehadiran mahasiswa tidak valid"`
+	StudentAmount    string `json:"student_amount" valid:"required~field jumlah mahasiswa tidak ditemukan, range(1|9999)~field jumlah minimal 1"`
+	Middle           string `json:"middle" valid:"required~field jumlah kehadiran mahasiswa tidak ditemukan, range(1|9999)~field jumlah minimal 1"`
 }
 
 type LastTeacherAttendence struct {
-	Last string `json:"last" valid:"required~field jumlah kehadiran mahasiswa tidak ditemukan, int~field jumlah kehadiran mahasiswa tidak valid"`
+	Last string `json:"last" valid:"required~field jumlah kehadiran mahasiswa tidak ditemukan, range(1|9999)~field jumlah minimal 1"`
 }
 
 type LastStudentAttendence struct {
-	Last string `json:"last" valid:"required~field persentase tidak ditemukan, int~field persentase tidak valid"`
+	Last string `json:"last" valid:"required~field persentase tidak ditemukan, range(1|9999)~field jumlah minimal 1"`
 }

@@ -27,7 +27,7 @@ func (r *MiddleMonevRepository) FindTeacherAttendences(userUuid string, yearID u
 	}
 
 	var result []models.TeacherAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("Teacher").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -41,7 +41,7 @@ func (r *MiddleMonevRepository) FindTeacherAttendence(userUuid, uuid string) (*m
 	}
 
 	var result models.TeacherAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "subject.department_id = ? AND teacher_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("Teacher").Preload("AcademicYear").First(&result, "subject.department_id = ? AND teacher_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
 		return nil, err
 	}
 
@@ -82,6 +82,15 @@ func (r *MiddleMonevRepository) FindStudentAttendence(userUuid, uuid string) (*m
 
 func (r *MiddleMonevRepository) FindAcademicYear(uuid string) (*models.AcademicYear, error) {
 	var result models.AcademicYear
+	if err := r.db.First(&result, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *MiddleMonevRepository) FindTeacher(uuid string) (*models.Teacher, error) {
+	var result models.Teacher
 	if err := r.db.First(&result, "uuid = ?", uuid).Error; err != nil {
 		return nil, err
 	}
