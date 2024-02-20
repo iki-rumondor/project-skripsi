@@ -12,6 +12,10 @@ type AcademicPlanHandlerInterface interface {
 	GetAcademicPlan(*gin.Context)
 	UpdateAcademicPlan(*gin.Context)
 	DeleteAcademicPlan(*gin.Context)
+
+	GetMiddle(*gin.Context)
+	UpdateMiddle(*gin.Context)
+	UpdateLast(*gin.Context)
 }
 
 type AcademicPlanServiceInterface interface {
@@ -20,6 +24,11 @@ type AcademicPlanServiceInterface interface {
 	GetAcademicPlan(userUuid, uuid string) (*models.AcademicPlan, error)
 	UpdateAcademicPlan(userUuid, uuid string, req *request.UpdateAcademicPlan) error
 	DeleteAcademicPlan(userUuid, uuid string) error
+
+	GetUser(userUuid string) (*models.User, error)
+	GetAcademicYear(yearUuid string) (*models.AcademicYear, error)
+	GetMiddle(userUuid, yearUuid string) (*[]models.AcademicPlan, error)
+	UpdateOne(userUuid, uuid, column string, value interface{}) error
 }
 
 type AcademicPlanRepoInterface interface {
@@ -30,4 +39,8 @@ type AcademicPlanRepoInterface interface {
 	CreateAcademicPlan(*models.AcademicPlan) error
 	UpdateAcademicPlan(*models.AcademicPlan) error
 	DeleteAcademicPlan(*models.AcademicPlan) error
+
+	UpdateOne(id uint, column string, value interface{}) error
+	FindUser(userUuid string) (*models.User, error)
+	FindBy(departmentID, yearID uint, column string, value interface{}) (*[]models.AcademicPlan, error)
 }

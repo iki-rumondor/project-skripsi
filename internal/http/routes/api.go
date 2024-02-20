@@ -64,6 +64,10 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("academic-plans/:uuid", handlers.AcademicPlanHandler.UpdateAcademicPlan)
 		department.DELETE("academic-plans/:uuid", handlers.AcademicPlanHandler.DeleteAcademicPlan)
 
+		department.GET("academic-plans/middle/years/:yearUuid", handlers.AcademicPlanHandler.GetMiddle)
+		department.PATCH("academic-plans/:uuid/middle", handlers.AcademicPlanHandler.UpdateMiddle)
+		department.PATCH("academic-plans/:uuid/last", handlers.AcademicPlanHandler.UpdateLast)
+
 		department.POST("practical-modules", handlers.PracticalModuleHandler.CreatePracticalModule)
 		department.GET("practical-modules", handlers.PracticalModuleHandler.GetAllPracticalModules)
 		department.GET("practical-modules/:uuid", handlers.PracticalModuleHandler.GetPracticalModule)
@@ -78,6 +82,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		department.POST("teacher-skills", handlers.TeacherSkillHandler.CreateTeacherSkill)
 		department.GET("teacher-skills", handlers.TeacherSkillHandler.GetAllTeacherSkills)
+		department.GET("teacher-skills/years/:yearUuid", handlers.TeacherSkillHandler.GetByYear)
 		department.GET("teacher-skills/:uuid", handlers.TeacherSkillHandler.GetTeacherSkill)
 		department.PUT("teacher-skills/:uuid", handlers.TeacherSkillHandler.UpdateTeacherSkill)
 		department.DELETE("teacher-skills/:uuid", handlers.TeacherSkillHandler.DeleteTeacherSkill)
@@ -89,6 +94,20 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PUT("facility-conditions/:uuid", handlers.FacilityConditionHandler.UpdateFacilityCondition)
 		department.DELETE("facility-conditions/:uuid", handlers.FacilityConditionHandler.DeleteFacilityCondition)
 
+		department.GET("middle-monev/years/:yearUuid", handlers.MiddleMonevHandler.CountTotalMonev)
+		department.POST("middle-monev/teacher-attendences", handlers.MiddleMonevHandler.CreateTeacherAttendence)
+		department.GET("middle-monev/teacher-attendences/years/:yearUuid", handlers.MiddleMonevHandler.GetTeacherAttendences)
+		department.PATCH("middle-monev/last/teacher-attendences/:uuid", handlers.MiddleMonevHandler.UpdateLastTeacherAttendence)
+		department.PATCH("middle-monev/last/student-attendences/:uuid", handlers.MiddleMonevHandler.UpdateLastStudentAttendence)
+		department.DELETE("middle-monev/teacher-attendences/:uuid", handlers.MiddleMonevHandler.DeleteTeacherAttendence)
+
+		department.POST("middle-monev/student-attendences", handlers.MiddleMonevHandler.CreateStudentAttendence)
+		department.GET("middle-monev/student-attendences/years/:yearUuid", handlers.MiddleMonevHandler.GetStudentAttendences)
+		department.DELETE("middle-monev/student-attendences/:uuid", handlers.MiddleMonevHandler.DeleteStudentAttendence)
+
+		department.GET("subjects/teacher-attendences/years/:yearUuid", handlers.SubjectHandler.GetTeacherAttendenceSubjects)
+		department.GET("subjects/student-attendences/years/:yearUuid", handlers.SubjectHandler.GetStudentAttendenceSubjects)
+		department.GET("subjects/tables/:tableName/years/:yearUuid", handlers.SubjectHandler.GetOuterSubjects)
 		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
 		department.GET("users/first-monev/years/:yearUuid", handlers.UserHandler.CountMonevByYear)
 	}

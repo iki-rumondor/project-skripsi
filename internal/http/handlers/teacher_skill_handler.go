@@ -85,6 +85,46 @@ func (h *TeacherSkillHandler) GetAllTeacherSkills(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *TeacherSkillHandler) GetByYear(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetTeacherSkillsByYear(userUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.TeacherSkill
+	for _, item := range *result {
+		resp = append(resp, &response.TeacherSkill{
+			Uuid:  item.Uuid,
+			Skill: item.Skill,
+			Teacher: &response.Teacher{
+				Uuid:      item.Teacher.Uuid,
+				Name:      item.Teacher.Name,
+				CreatedAt: item.Teacher.CreatedAt,
+				UpdatedAt: item.Teacher.UpdatedAt,
+			},
+			Subject: &response.Subject{
+				Uuid:      item.Subject.Uuid,
+				Name:      item.Subject.Name,
+				Code:      item.Subject.Code,
+				Practical: item.Subject.Practical,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *TeacherSkillHandler) GetTeacherSkill(c *gin.Context) {
 	uuid := c.Param("uuid")
 	userUuid := c.GetString("uuid")
@@ -121,7 +161,7 @@ func (h *TeacherSkillHandler) GetTeacherSkill(c *gin.Context) {
 }
 
 func (h *TeacherSkillHandler) UpdateTeacherSkill(c *gin.Context) {
-	var body request.TeacherSkill
+	var body request.UpdateTeacherSkill
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,

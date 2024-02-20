@@ -11,7 +11,7 @@ type SubjectsCount struct {
 	Practical int `json:"practical"`
 }
 
-type MonevCount struct {
+type MonevAmount struct {
 	Name   string `json:"name"`
 	Amount int    `json:"amount"`
 }

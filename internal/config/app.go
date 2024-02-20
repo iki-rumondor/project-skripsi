@@ -22,6 +22,7 @@ type Handlers struct {
 	TeacherSkillHandler      interfaces.TeacherSkillHandlerInterface
 	FacilityHandler          interfaces.FacilityHandlerInterface
 	FacilityConditionHandler interfaces.FacilityConditionHandlerInterface
+	MiddleMonevHandler       interfaces.MiddleMonevHandlerInterface
 }
 
 func GetAppHandlers(db *gorm.DB) *Handlers {
@@ -78,6 +79,10 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	facility_condition_service := services.NewFacilityConditionService(facility_condition_repo)
 	facility_condition_handler := handlers.NewFacilityConditionHandler(facility_condition_service)
 
+	middle_monev_repo := repository.NewMiddleMonevRepository(db)
+	middle_monev_service := services.NewMiddleMonevService(middle_monev_repo)
+	middle_monev_handler := handlers.NewMiddleMonevHandler(middle_monev_service)
+
 	return &Handlers{
 		UserHandler:              user_handler,
 		DepartmentHandler:        department_handler,
@@ -92,5 +97,6 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 		TeacherSkillHandler:      teacher_skill_handler,
 		FacilityHandler:          facility_handler,
 		FacilityConditionHandler: facility_condition_handler,
+		MiddleMonevHandler:       middle_monev_handler,
 	}
 }

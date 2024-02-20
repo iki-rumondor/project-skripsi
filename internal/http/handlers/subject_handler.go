@@ -147,6 +147,91 @@ func (h *SubjectHandler) GetAllPracticalSubjects(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *SubjectHandler) GetTeacherAttendenceSubjects(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetTeacherAttendenceSubjects(userUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.Subject
+	for _, item := range *result {
+		resp = append(resp, &response.Subject{
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *SubjectHandler) GetStudentAttendenceSubjects(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetStudentAttendenceSubjects(userUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.Subject
+	for _, item := range *result {
+		resp = append(resp, &response.Subject{
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *SubjectHandler) GetOuterSubjects(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	if userUuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	tableName := c.Param("tableName")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetOuterSubjects(userUuid, yearUuid, tableName)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.Subject
+	for _, item := range *result {
+		resp = append(resp, &response.Subject{
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *SubjectHandler) GetSubject(c *gin.Context) {
 	uuid := c.Param("uuid")
 	userUuid := c.GetString("uuid")

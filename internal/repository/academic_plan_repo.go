@@ -65,12 +65,34 @@ func (r *AcademicPlanRepository) FindAcademicYearBy(column string, value interfa
 	return &model, nil
 }
 
+func (r *AcademicPlanRepository) FindUser(userUuid string) (*models.User, error) {
+	var result models.User
+	if err := r.db.Preload("Department").First(&result, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *AcademicPlanRepository) FindBy(departmentID, yearID uint, column string, value interface{}) (*[]models.AcademicPlan, error) {
+	var model []models.AcademicPlan
+	if err := r.db.Preload("AcademicYear").Joins("Subject").Find(&model, fmt.Sprintf("academic_plans.%s = ? AND subject.department_id = ? AND academic_plans.academic_year_id = ?", column), value, departmentID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
+
 func (r *AcademicPlanRepository) CreateAcademicPlan(model *models.AcademicPlan) error {
 	return r.db.Create(model).Error
 }
 
 func (r *AcademicPlanRepository) UpdateAcademicPlan(model *models.AcademicPlan) error {
 	return r.db.Updates(model).Error
+}
+
+func (r *AcademicPlanRepository) UpdateOne(id uint, column string, value interface{}) error {
+	return r.db.Model(&models.AcademicPlan{ID: id}).Update(column, value).Error
 }
 
 func (r *AcademicPlanRepository) DeleteAcademicPlan(model *models.AcademicPlan) error {

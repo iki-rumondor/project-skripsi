@@ -61,12 +61,6 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.A
 
 func (s *AcademicPlanService) GetAllAcademicPlans(userUuid string) (*[]models.AcademicPlan, error) {
 
-	// department, err := s.Repo.FindUserBy("uuid")
-	// if err != nil{
-	// 	log.Println(err.Error())
-	// 	return nil, response.SERVICE_INTERR
-	// }
-
 	result, err := s.Repo.FindAcademicPlans(userUuid)
 	if err != nil {
 		log.Println(err.Error())
@@ -88,6 +82,68 @@ func (s *AcademicPlanService) GetAcademicPlan(userUuid, uuid string) (*models.Ac
 
 	return result, nil
 }
+
+func (s *AcademicPlanService) GetUser(userUuid string) (*models.User, error) {
+	result, err := s.Repo.FindUser(userUuid)
+
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, response.NOTFOUND_ERR("User Tidak Ditemukan")
+		}
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *AcademicPlanService) GetAcademicYear(yearUuid string) (*models.AcademicYear, error) {
+	result, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+		}
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *AcademicPlanService) GetMiddle(userUuid, yearUuid string) (*[]models.AcademicPlan, error) {
+	user, err := s.GetUser(userUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	year, err := s.GetAcademicYear(yearUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := s.Repo.FindBy(user.Department.ID, year.ID, "available", true)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *AcademicPlanService) UpdateOne(userUuid, uuid, column string, value interface{}) error {
+	result, err := s.GetAcademicPlan(userUuid, uuid)
+	if err != nil {
+		return err
+	}
+
+	if err := s.Repo.UpdateOne(result.ID, column, value); err != nil{
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
 
 func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid string, req *request.UpdateAcademicPlan) error {
 

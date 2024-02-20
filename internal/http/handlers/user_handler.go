@@ -70,7 +70,7 @@ func (h *UserHandler) CountMonevByYear(c *gin.Context) {
 		return
 	}
 
-	res := []response.MonevCount{
+	res := []response.MonevAmount{
 		{
 			Name:   "Ketersediaan RPS",
 			Amount: result["plans"],

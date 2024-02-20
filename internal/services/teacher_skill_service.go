@@ -45,10 +45,20 @@ func (s *TeacherSkillService) CreateTeacherSkill(userUuid string, req *request.T
 		return response.SERVICE_INTERR
 	}
 
+	academicYear, err := s.Repo.FindAcademicYearByUuid(req.AcademicYearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Tahun Ajaran tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
 	model := models.TeacherSkill{
-		Skill:     req.Skill,
-		TeacherID: teacher.ID,
-		SubjectID: subject.ID,
+		Skill:          req.Skill,
+		TeacherID:      teacher.ID,
+		SubjectID:      subject.ID,
+		AcademicYearID: academicYear.ID,
 	}
 
 	if err := s.Repo.CreateTeacherSkill(&model); err != nil {
@@ -61,6 +71,21 @@ func (s *TeacherSkillService) CreateTeacherSkill(userUuid string, req *request.T
 func (s *TeacherSkillService) GetAllTeacherSkills(userUuid string) (*[]models.TeacherSkill, error) {
 
 	result, err := s.Repo.FindTeacherSkills(userUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *TeacherSkillService) GetTeacherSkillsByYear(userUuid, yearUuid string) (*[]models.TeacherSkill, error) {
+
+	year, err := s.Repo.FindAcademicYearByUuid(yearUuid)
+	if err != nil{
+		return nil, response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
+	result, err := s.Repo.FindTeacherSkillsByYear(userUuid, year.ID)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR
@@ -82,7 +107,7 @@ func (s *TeacherSkillService) GetTeacherSkill(userUuid, uuid string) (*models.Te
 	return result, nil
 }
 
-func (s *TeacherSkillService) UpdateTeacherSkill(userUuid, uuid string, req *request.TeacherSkill) error {
+func (s *TeacherSkillService) UpdateTeacherSkill(userUuid, uuid string, req *request.UpdateTeacherSkill) error {
 
 	result, err := s.GetTeacherSkill(userUuid, uuid)
 	if err != nil {

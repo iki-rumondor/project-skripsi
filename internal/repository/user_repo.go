@@ -66,7 +66,7 @@ func (r *UserRepository) CountMonevByYear(userUuid, yearUuid string) (map[string
 	r.db.Find(&plans, "subject_id IN (?) AND academic_year_id = ?", subjects, year.ID)
 	r.db.Find(&modules, "subject_id IN (?) AND academic_year_id = ?", subjects, year.ID)
 	r.db.Find(&tools, "subject_id IN (?) AND academic_year_id = ?", subjects, year.ID)
-	r.db.Find(&skills, "teacher_id IN (?)", teachers)
+	r.db.Find(&skills, "teacher_id IN (?) AND academic_year_id = ?", teachers, year.ID)
 	r.db.Find(&facilities, "facility_id IN (?) AND academic_year_id = ?", fas, year.ID)
 
 	res := map[string]int{

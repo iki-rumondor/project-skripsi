@@ -46,6 +46,20 @@ func (r *TeacherSkillRepository) FindUserTeacherSkill(userUuid, uuid string) (*m
 	return &result, nil
 }
 
+func (r *TeacherSkillRepository) FindTeacherSkillsByYear(userUuid string, yearID uint) (*[]models.TeacherSkill, error) {
+	var user models.User
+	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var result []models.TeacherSkill
+	if err := r.db.Joins("Teacher").Preload("Subject").Find(&result, "teacher.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func (r *TeacherSkillRepository) FindTeacherBy(column string, value interface{}) (*models.Teacher, error) {
 	var result models.Teacher
 	if err := r.db.Preload("Department.User").First(&result, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
@@ -57,6 +71,15 @@ func (r *TeacherSkillRepository) FindTeacherBy(column string, value interface{})
 
 func (r *TeacherSkillRepository) FindSubjectByUuid(uuid string) (*models.Subject, error) {
 	var result models.Subject
+	if err := r.db.First(&result, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *TeacherSkillRepository) FindAcademicYearByUuid(uuid string) (*models.AcademicYear, error) {
+	var result models.AcademicYear
 	if err := r.db.First(&result, "uuid = ?", uuid).Error; err != nil {
 		return nil, err
 	}
