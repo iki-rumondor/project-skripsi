@@ -1,5 +1,10 @@
 package request
 
 type AcademicYear struct {
-	Name      string `json:"name" valid:"required~field name tidak ditemukan"`
+	Year     string `json:"year" valid:"required~field tahun tidak ditemukan"`
+	Semester string `json:"semester" valid:"required~field semester tidak ditemukan"`
+}
+
+type AcademicYearOpen struct {
+	Open bool `json:"open" `
 }

@@ -100,25 +100,3 @@ func (r *LastMonevRepository) FindUserSubject(userUuid, uuid string) (*models.Su
 
 	return &result, nil
 }
-
-func (r *LastMonevRepository) FindAllStudentPassed(departmentID, yearID uint) (*[]models.StudentPassed, error) {
-	var result []models.StudentPassed
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
-		return nil, err
-	}
-
-	return &result, nil
-}
-
-func (r *LastMonevRepository) FindStudentPassed(departmentID uint, uuid string) (*models.StudentPassed, error) {
-	var result models.StudentPassed
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "subject.department_id = ? AND student_passeds.uuid = ?", departmentID, uuid).Error; err != nil {
-		return nil, err
-	}
-
-	return &result, nil
-}
-
-func (r *LastMonevRepository) DeleteStudentPassed(model *models.StudentPassed) error {
-	return r.db.Delete(model).Error
-}

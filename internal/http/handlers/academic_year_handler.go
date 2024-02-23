@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -71,9 +72,14 @@ func (h *AcademicYearHandler) GetAllAcademicYears(c *gin.Context) {
 			})
 		}
 
+		yearName := fmt.Sprintf("%s %s", item.Semester, item.Year)
+
 		resp = append(resp, &response.AcademicYear{
 			Uuid:            item.Uuid,
-			Name:            item.Name,
+			Name:            yearName,
+			Semester:        item.Semester,
+			Year:            item.Year,
+			Open:            item.Open,
 			AcademicPlan:    &plans,
 			PracticalTool:   &tools,
 			PracticalModule: &modules,
@@ -92,10 +98,14 @@ func (h *AcademicYearHandler) GetAcademicYear(c *gin.Context) {
 		utils.HandleError(c, err)
 		return
 	}
+	yearName := fmt.Sprintf("%s %s", result.Semester, result.Year)
 
 	resp := &response.AcademicYear{
 		Uuid:      result.Uuid,
-		Name:      result.Name,
+		Semester:  result.Semester,
+		Year:      result.Year,
+		Open:      result.Open,
+		Name:      yearName,
 		CreatedAt: result.CreatedAt,
 		UpdatedAt: result.UpdatedAt,
 	}
@@ -134,4 +144,20 @@ func (h *AcademicYearHandler) DeleteAcademicYear(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Tahun Ajaran Berhasil Dihapus"))
+}
+
+func (h *AcademicYearHandler) UpdateOpen(c *gin.Context) {
+	var body request.AcademicYearOpen
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateOne(uuid, "open", body.Open); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Tahun Ajaran Berhasil Diperbarui"))
 }

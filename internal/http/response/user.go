@@ -15,3 +15,9 @@ type MonevAmount struct {
 	Name   string `json:"name"`
 	Amount int    `json:"amount"`
 }
+
+type Setting struct {
+	ID    interface{} `json:"id"`
+	Name  interface{} `json:"name"`
+	Value interface{} `json:"value"`
+}

@@ -8,7 +8,9 @@ import (
 type AcademicYear struct {
 	ID               uint   `gorm:"primaryKey"`
 	Uuid             string `gorm:"not_null;unique;size:64"`
-	Name             string `gorm:"not_null;size:16"`
+	Year             string `gorm:"not_null;size:16"`
+	Semester         string `gorm:"not_null;size:16"`
+	Open             bool   `gorm:"not_null; default:true"`
 	CreatedAt        int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt        int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	AcademicPlans    *[]AcademicPlan

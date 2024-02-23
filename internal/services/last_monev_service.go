@@ -78,24 +78,6 @@ func (s *LastMonevService) GetSubject(userUuid, uuid string) (*models.Subject, e
 	return subject, nil
 }
 
-func (s *LastMonevService) GetStudentPassed(userUuid, uuid string) (*models.StudentPassed, error) {
-	user, err := s.GetUser(userUuid)
-	if err != nil {
-		return nil, err
-	}
-
-	result, err := s.Repo.FindStudentPassed(user.Department.ID, uuid)
-	if err != nil {
-		log.Println(err.Error())
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, response.NOTFOUND_ERR("Kelulusan Mahasiswa Tidak Ditemukan")
-		}
-		return nil, response.SERVICE_INTERR
-	}
-
-	return result, nil
-}
-
 func (s *LastMonevService) GetStudentAttendence(userUuid, uuid string) (*models.StudentAttendence, error) {
 	result, err := s.Repo.FindStudentAttendence(userUuid, uuid)
 	if err != nil {
@@ -152,37 +134,3 @@ func (s *LastMonevService) UpdateTeacherAttendence(userUuid, uuid, column string
 	return nil
 }
 
-func (s *LastMonevService) GetAllUserStudentPassed(userUuid, yearUuid string) (*[]models.StudentPassed, error) {
-	year, err := s.GetAcademicYear(yearUuid)
-	if err != nil {
-		return nil, err
-	}
-
-	user, err := s.GetUser(userUuid)
-	if err != nil {
-		return nil, err
-	}
-
-	result, err := s.Repo.FindAllStudentPassed(user.Department.ID, year.ID)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, response.SERVICE_INTERR
-	}
-
-	return result, nil
-}
-
-func (s *LastMonevService) DeleteStudentPassed(userUuid, uuid string) error {
-
-	result, err := s.GetStudentPassed(userUuid, uuid)
-	if err != nil {
-		return err
-	}
-
-	if err := s.Repo.DeleteStudentPassed(result); err != nil {
-		log.Println(err.Error())
-		return response.SERVICE_INTERR
-	}
-
-	return nil
-}

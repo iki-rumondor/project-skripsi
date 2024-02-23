@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -68,7 +69,7 @@ func (h *PracticalModuleHandler) GetAllPracticalModules(c *gin.Context) {
 			Note:      item.Note,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
 			},
 			Subject: &response.Subject{
 				Uuid: item.Subject.Uuid,
@@ -106,7 +107,7 @@ func (h *PracticalModuleHandler) GetPracticalModule(c *gin.Context) {
 		Note:      result.Note,
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
-			Name: result.AcademicYear.Name,
+			Name: fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year),
 		},
 		Subject: &response.Subject{
 			Uuid: result.Subject.Uuid,

@@ -108,7 +108,7 @@ func (h *MiddleMonevHandler) GetTeacherAttendences(c *gin.Context) {
 			GeadeOnTime: item.GradeOnTime,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
 			},
 			Subject: &response.Subject{
 				Uuid: item.Subject.Uuid,
@@ -197,7 +197,7 @@ func (h *MiddleMonevHandler) GetStudentAttendences(c *gin.Context) {
 			FinalAmount:   fmt.Sprintf("%d", item.FinalAmount),
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
 			},
 			Subject: &response.Subject{
 				Uuid: item.Subject.Uuid,
@@ -318,7 +318,7 @@ func (h *MiddleMonevHandler) GetTeacherAttendence(c *gin.Context) {
 		Last:   fmt.Sprintf("%d", result.Last),
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
-			Name: result.AcademicYear.Name,
+			Name: fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year),
 		},
 		Subject: &response.Subject{
 			Uuid: result.Subject.Uuid,

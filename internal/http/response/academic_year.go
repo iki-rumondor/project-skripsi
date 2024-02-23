@@ -3,6 +3,9 @@ package response
 type AcademicYear struct {
 	Uuid            string             `json:"uuid"`
 	Name            string             `json:"name"`
+	Year            string             `json:"year"`
+	Semester        string             `json:"semester"`
+	Open            bool               `json:"open"`
 	AcademicPlan    *[]AcademicPlan    `json:"academic_plans"`
 	PracticalTool   *[]PracticalTool   `json:"practical_tools"`
 	PracticalModule *[]PracticalModule `json:"practical_modules"`

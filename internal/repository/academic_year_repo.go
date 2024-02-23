@@ -47,3 +47,7 @@ func (r *AcademicYearRepository) UpdateAcademicYear(model *models.AcademicYear) 
 func (r *AcademicYearRepository) DeleteAcademicYear(model *models.AcademicYear) error {
 	return r.db.Delete(model).Error
 }
+
+func (r *AcademicYearRepository) UpdateOne(id uint, column string, value interface{}) error {
+	return r.db.Model(&models.AcademicYear{ID: id}).Update(column, value).Error
+}

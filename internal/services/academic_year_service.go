@@ -24,7 +24,8 @@ func NewAcademicYearService(repo interfaces.AcademicYearRepoInterface) interface
 func (s *AcademicYearService) CreateAcademicYear(req *request.AcademicYear) error {
 
 	model := models.AcademicYear{
-		Name: req.Name,
+		Semester: req.Semester,
+		Year:     req.Year,
 	}
 
 	if err := s.Repo.CreateAcademicYear(&model); err != nil {
@@ -65,8 +66,9 @@ func (s *AcademicYearService) UpdateAcademicYear(uuid string, req *request.Acade
 	}
 
 	model := models.AcademicYear{
-		ID:   result.ID,
-		Name: req.Name,
+		ID:       result.ID,
+		Semester: req.Semester,
+		Year:     req.Year,
 	}
 
 	if err := s.Repo.UpdateAcademicYear(&model); err != nil {
@@ -91,6 +93,21 @@ func (s *AcademicYearService) DeleteAcademicYear(uuid string) error {
 		if errors.Is(err, gorm.ErrForeignKeyViolated) {
 			return response.VIOLATED_ERR
 		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+
+func (s *AcademicYearService) UpdateOne(uuid, column string, value interface{}) error {
+	result, err := s.GetAcademicYear(uuid)
+	if err != nil {
+		return err
+	}
+
+	if err := s.Repo.UpdateOne(result.ID, column, value); err != nil{
+		log.Println(err.Error())
 		return response.SERVICE_INTERR
 	}
 

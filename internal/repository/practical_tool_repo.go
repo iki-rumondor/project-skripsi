@@ -40,7 +40,7 @@ func (r *PracticalToolRepository) FindUserPracticalTool(userUuid, uuid string) (
 	}
 
 	var model models.PracticalTool
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&model, "uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&model, "practical_tools.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 

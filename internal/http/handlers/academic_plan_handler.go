@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -62,6 +63,7 @@ func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 
 	var resp []*response.AcademicPlan
 	for _, item := range *result {
+		yearName := fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year)
 		resp = append(resp, &response.AcademicPlan{
 			Uuid:      item.Uuid,
 			Available: item.Available,
@@ -70,7 +72,7 @@ func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 			Last:      item.Last,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: yearName,
 			},
 			Subject: &response.Subject{
 				Uuid: item.Subject.Uuid,
@@ -98,6 +100,8 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 		return
 	}
 
+	yearName := fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year)
+
 	resp := &response.AcademicPlan{
 		Uuid:      result.Uuid,
 		Available: result.Available,
@@ -106,7 +110,7 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 		Last:      result.Last,
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
-			Name: result.AcademicYear.Name,
+			Name: yearName,
 		},
 		Subject: &response.Subject{
 			Uuid: result.Subject.Uuid,
@@ -137,6 +141,7 @@ func (h *AcademicPlanHandler) GetMiddle(c *gin.Context) {
 
 	var resp []*response.AcademicPlan
 	for _, item := range *result {
+		yearName := fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year)
 		resp = append(resp, &response.AcademicPlan{
 			Uuid:      item.Uuid,
 			Available: item.Available,
@@ -145,7 +150,7 @@ func (h *AcademicPlanHandler) GetMiddle(c *gin.Context) {
 			Last:      item.Last,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: yearName,
 			},
 			Subject: &response.Subject{
 				Uuid: item.Subject.Uuid,

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -151,57 +150,3 @@ func (h *LastMonevHandler) UpdateTeacherGrade(c *gin.Context) {
 	c.JSON(http.StatusCreated, response.SUCCESS_RES("Pemasukan Nilai Berhasil Diperbarui"))
 }
 
-func (h *LastMonevHandler) GetAllUserStudentPassed(c *gin.Context) {
-	userUuid := c.GetString("uuid")
-	if userUuid == "" {
-		utils.HandleError(c, response.HANDLER_INTERR)
-		return
-	}
-
-	yearUuid := c.Param("yearUuid")
-
-	result, err := h.Service.GetAllUserStudentPassed(userUuid, yearUuid)
-	if err != nil {
-		utils.HandleError(c, err)
-		return
-	}
-
-	var resp []*response.StudentPassed
-	for _, item := range *result {
-		resp = append(resp, &response.StudentPassed{
-			Uuid:          item.Uuid,
-			StudentAmount: fmt.Sprintf("%d", item.StudentAmount),
-			PassedAmount:  fmt.Sprintf("%d", item.PassedAmount),
-			AcademicYear: &response.AcademicYear{
-				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
-			},
-			Subject: &response.Subject{
-				Uuid: item.Subject.Uuid,
-				Name: item.Subject.Name,
-				Code: item.Subject.Code,
-			},
-			CreatedAt: item.CreatedAt,
-			UpdatedAt: item.UpdatedAt,
-		})
-	}
-
-	c.JSON(http.StatusOK, response.DATA_RES(resp))
-}
-
-func (h *LastMonevHandler) DeleteStudentPassed(c *gin.Context) {
-	userUuid := c.GetString("uuid")
-	if userUuid == "" {
-		utils.HandleError(c, response.HANDLER_INTERR)
-		return
-	}
-
-	uuid := c.Param("uuid")
-
-	if err := h.Service.DeleteStudentPassed(userUuid, uuid); err != nil {
-		utils.HandleError(c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Keluluan Mahasiswa Berhasil Dihapus"))
-}

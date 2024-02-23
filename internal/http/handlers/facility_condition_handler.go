@@ -73,7 +73,7 @@ func (h *FacilityConditionHandler) GetFacilityConditionsByYear(c *gin.Context) {
 			Note:     item.Note,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
 			},
 			Facility: &response.Facility{
 				Uuid: item.Facility.Uuid,
@@ -136,7 +136,7 @@ func (h *FacilityConditionHandler) GetFacilityCondition(c *gin.Context) {
 		Note:     result.Note,
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
-			Name: result.AcademicYear.Name,
+			Name: fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year),
 		},
 		Facility: &response.Facility{
 			Uuid: result.Facility.Uuid,

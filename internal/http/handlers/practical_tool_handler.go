@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -69,7 +70,7 @@ func (h *PracticalToolHandler) GetAllPracticalTools(c *gin.Context) {
 			Condition: item.Condition,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
-				Name: item.AcademicYear.Name,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
 			},
 			Subject: &response.Subject{
 				Uuid: item.Subject.Uuid,
@@ -104,7 +105,7 @@ func (h *PracticalToolHandler) GetPracticalTool(c *gin.Context) {
 		Condition: result.Condition,
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
-			Name: result.AcademicYear.Name,
+			Name: fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year),
 		},
 		Subject: &response.Subject{
 			Uuid: result.Subject.Uuid,

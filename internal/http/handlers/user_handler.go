@@ -95,3 +95,66 @@ func (h *UserHandler) CountMonevByYear(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.DATA_RES(res))
 }
+
+func (h *UserHandler) GetSettings(c *gin.Context) {
+
+	result, err := h.Service.GetAll("settings")
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []response.Setting
+	for _, item := range result {
+		resp = append(resp, response.Setting{
+			ID:    item["id"],
+			Name:  item["name"],
+			Value: item["value"],
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *UserHandler) GetDepartmentMonev(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.CountDepartmentMonev(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	resp := map[string]interface{}{
+		"first_monev": []int{
+			result["plans"],
+			result["modules"],
+			result["tools"],
+			result["skills"],
+			result["facilities"],
+		},
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *UserHandler) UpdateStepMonev(c *gin.Context) {
+	var body request.StepMonev
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.Update(body.ID, "settings", "value", body.Step); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Tahapan Monev Berhasil Diperbarui"))
+}

@@ -47,6 +47,11 @@ func freshDatabase(db *gorm.DB) error {
 		Name: "DEPARTMENT",
 	})
 
+	db.Create(&models.Setting{
+		Name: "step_monev",
+		Value: "1",
+	})
+
 	return nil
 }
 

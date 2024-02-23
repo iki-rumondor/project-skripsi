@@ -30,6 +30,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
 		user.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
 		user.GET("dashboards/subjects", handlers.UserHandler.GetCountSubjects)
+		user.GET("settings", handlers.UserHandler.GetSettings)
 	}
 
 	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"), middleware.SetUserUuid())
@@ -106,10 +107,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.DELETE("middle-monev/student-attendences/:uuid", handlers.MiddleMonevHandler.DeleteStudentAttendence)
 
 		department.GET("last-monev/years/:yearUuid", handlers.LastMonevHandler.CountLastMonev)
-		department.GET("last-monev/student-passed/years/:yearUuid", handlers.LastMonevHandler.GetAllUserStudentPassed)
 		department.PATCH("last-monev/student-passed/:uuid", handlers.LastMonevHandler.UpdateStudentPass)
 		department.PATCH("last-monev/student-final/:uuid", handlers.LastMonevHandler.UpdateStudentFinal)
-		department.DELETE("last-monev/student-passed/:uuid", handlers.LastMonevHandler.DeleteStudentPassed)
 		department.PATCH("last-monev/grade/teacher-attendences/:uuid", handlers.LastMonevHandler.UpdateTeacherGrade)
 
 		department.GET("subjects/teacher-attendences/years/:yearUuid", handlers.SubjectHandler.GetTeacherAttendenceSubjects)
@@ -136,7 +135,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		admin.POST("academic-years", handlers.AcademicYearHandler.CreateAcademicYear)
 		admin.PUT("academic-years/:uuid", handlers.AcademicYearHandler.UpdateAcademicYear)
+		admin.PATCH("academic-years/:uuid/open", handlers.AcademicYearHandler.UpdateOpen)
 		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
+
+		admin.PATCH("settings/step", handlers.UserHandler.UpdateStepMonev)
+		
+		admin.GET("monev/departments/:departmentUuid/years/:yearUuid", handlers.UserHandler.GetDepartmentMonev)
 
 	}
 
