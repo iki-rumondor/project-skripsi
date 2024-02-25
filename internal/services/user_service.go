@@ -63,7 +63,7 @@ func (s *UserService) VerifyUser(req *request.SignIn) (string, error) {
 	return jwt, nil
 }
 
-func (s *UserService) GetCountSubjects() (*response.SubjectsCount, error) {
+func (s *UserService) GetDashboardAdmin() (map[string]interface{}, error) {
 	subjects, err := s.Repo.FindSubjects()
 	if err != nil {
 		return nil, response.SERVICE_INTERR
@@ -74,10 +74,30 @@ func (s *UserService) GetCountSubjects() (*response.SubjectsCount, error) {
 		return nil, response.SERVICE_INTERR
 	}
 
-	return &response.SubjectsCount{
-		General:   len(*subjects),
-		Practical: len(*practicalSubjects),
-	}, nil
+	teachers, err := s.Repo.GetAll("teachers")
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	years, err := s.Repo.GetAll("academic_years")
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	setting, err := s.Repo.GetOne("settings", "name", "step_monev")
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := map[string]interface{}{
+		"g_subject": len(*subjects),
+		"p_subject": len(*practicalSubjects),
+		"teacher":   len(teachers),
+		"year":      len(years),
+		"step":      setting["value"],
+	}
+
+	return resp, nil
 }
 
 func (s *UserService) CountMonevByYear(userUuid, yearUuid string) (map[string]int, error) {
@@ -145,4 +165,3 @@ func (s *UserService) GetAll(tableName string) ([]map[string]interface{}, error)
 
 	return result, nil
 }
-

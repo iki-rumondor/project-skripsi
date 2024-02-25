@@ -44,8 +44,8 @@ func (h *UserHandler) SignIn(c *gin.Context) {
 	})
 }
 
-func (h *UserHandler) GetCountSubjects(c *gin.Context) {
-	res, err := h.Service.GetCountSubjects()
+func (h *UserHandler) GetDashboardAdmin(c *gin.Context) {
+	res, err := h.Service.GetDashboardAdmin()
 	if err != nil {
 		utils.HandleError(c, err)
 		return

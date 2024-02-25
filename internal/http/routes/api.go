@@ -29,7 +29,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	{
 		user.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
 		user.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
-		user.GET("dashboards/subjects", handlers.UserHandler.GetCountSubjects)
+		user.GET("dashboards", handlers.UserHandler.GetDashboardAdmin)
 		user.GET("settings", handlers.UserHandler.GetSettings)
 	}
 

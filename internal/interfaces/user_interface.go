@@ -3,13 +3,12 @@ package interfaces
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-monev/internal/http/request"
-	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/models"
 )
 
 type UserHandlerInterface interface {
 	SignIn(*gin.Context)
-	GetCountSubjects(*gin.Context)
+	GetDashboardAdmin(*gin.Context)
 	CountMonevByYear(*gin.Context)
 	UpdateStepMonev(*gin.Context)
 	GetSettings(*gin.Context)
@@ -19,7 +18,7 @@ type UserHandlerInterface interface {
 
 type UserServiceInterface interface {
 	VerifyUser(*request.SignIn) (string, error)
-	GetCountSubjects() (*response.SubjectsCount, error)
+	GetDashboardAdmin() (map[string]interface{}, error)
 	GetUser(column string, value interface{}) (*models.User, error)
 	CountMonevByYear(userUuid, yearUuid string) (map[string]int, error)
 	CountDepartmentMonev(departmentUuid, yearUuid string) (map[string]int, error)

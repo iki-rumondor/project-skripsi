@@ -111,7 +111,7 @@ func (r *UserRepository) Update(id uint, tableName, column string, value interfa
 
 func (r *UserRepository) GetAll(tableName string) ([]map[string]interface{}, error) {
 	var result []map[string]interface{}
-	if err := r.db.Table(tableName).Take(&result).Error; err != nil {
+	if err := r.db.Table(tableName).Find(&result).Error; err != nil {
 		return nil, err
 	}
 	return result, nil
