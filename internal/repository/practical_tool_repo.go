@@ -6,6 +6,7 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type PracticalToolRepository struct {
@@ -18,7 +19,7 @@ func NewPracticalToolRepository(db *gorm.DB) interfaces.PracticalToolRepoInterfa
 	}
 }
 
-func (r *PracticalToolRepository) FindPracticalTools(userUuid string) (*[]models.PracticalTool, error) {
+func (r *PracticalToolRepository) FindPracticalTools(userUuid string, yearID uint) (*[]models.PracticalTool, error) {
 	var user models.User
 	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
@@ -26,7 +27,7 @@ func (r *PracticalToolRepository) FindPracticalTools(userUuid string) (*[]models
 
 	var result []models.PracticalTool
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -75,4 +76,23 @@ func (r *PracticalToolRepository) UpdatePracticalTool(model *models.PracticalToo
 
 func (r *PracticalToolRepository) DeletePracticalTool(model *models.PracticalTool) error {
 	return r.db.Delete(model).Error
+}
+
+func (r *PracticalToolRepository) FindDepartment(uuid string) (*models.Department, error) {
+	var department models.Department
+	if err := r.db.First(&department, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &department, nil
+}
+
+func (r *PracticalToolRepository) FindByDepartment(departmentID, yearID uint) (*[]models.PracticalTool, error) {
+	var result []models.PracticalTool
+
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

@@ -13,6 +13,8 @@ type TeacherSkillHandlerInterface interface {
 	GetTeacherSkill(*gin.Context)
 	UpdateTeacherSkill(*gin.Context)
 	DeleteTeacherSkill(*gin.Context)
+
+	GetByDepartment(*gin.Context)
 }
 
 type TeacherSkillServiceInterface interface {
@@ -22,6 +24,8 @@ type TeacherSkillServiceInterface interface {
 	GetTeacherSkill(userUuid, uuid string) (*models.TeacherSkill, error)
 	UpdateTeacherSkill(userUuid, uuid string, req *request.UpdateTeacherSkill) error
 	DeleteTeacherSkill(userUuid, uuid string) error
+
+	GetByDepartment(departmentUuid, yearUuid string) (*[]models.TeacherSkill, error)
 }
 
 type TeacherSkillRepoInterface interface {
@@ -34,4 +38,8 @@ type TeacherSkillRepoInterface interface {
 	CreateTeacherSkill(*models.TeacherSkill) error
 	UpdateTeacherSkill(*models.TeacherSkill) error
 	DeleteTeacherSkill(*models.TeacherSkill) error
+
+	FindAcademicYearBy(column string, value interface{}) (*models.AcademicYear, error)
+	FindDepartment(uuid string) (*models.Department, error)
+	FindByDepartment(departmentID, yearID uint) (*[]models.TeacherSkill, error)
 }

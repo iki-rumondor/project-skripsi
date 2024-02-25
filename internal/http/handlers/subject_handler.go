@@ -224,6 +224,7 @@ func (h *SubjectHandler) GetOuterSubjects(c *gin.Context) {
 		resp = append(resp, &response.Subject{
 			Uuid:      item.Uuid,
 			Name:      item.Name,
+			Practical: item.Practical,
 			CreatedAt: item.CreatedAt,
 			UpdatedAt: item.UpdatedAt,
 		})

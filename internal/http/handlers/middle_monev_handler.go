@@ -331,3 +331,77 @@ func (h *MiddleMonevHandler) GetTeacherAttendence(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, response.DATA_RES(resp))
 }
+
+func (h *MiddleMonevHandler) GetTeacherAttendencesByDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetTeacherAttendencesByDepartment(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.TeacherAttendence
+	for _, item := range *result {
+		resp = append(resp, &response.TeacherAttendence{
+			Uuid:        item.Uuid,
+			Middle:      fmt.Sprintf("%d", item.Middle),
+			Last:        fmt.Sprintf("%d", item.Last),
+			GeadeOnTime: item.GradeOnTime,
+			AcademicYear: &response.AcademicYear{
+				Uuid: item.AcademicYear.Uuid,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
+			},
+			Subject: &response.Subject{
+				Uuid: item.Subject.Uuid,
+				Name: item.Subject.Name,
+				Code: item.Subject.Code,
+			},
+			Teacher: &response.Teacher{
+				Uuid: item.Teacher.Uuid,
+				Name: item.Teacher.Name,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *MiddleMonevHandler) GetStudentAttendencesByDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetStudentAttendencesByDepartment(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.StudentAttendence
+	for _, item := range *result {
+		resp = append(resp, &response.StudentAttendence{
+			Uuid:          item.Uuid,
+			StudentAmount: fmt.Sprintf("%d", item.StudentAmount),
+			Middle:        fmt.Sprintf("%d", item.Middle),
+			Last:          fmt.Sprintf("%d", item.Last),
+			PassedAmount:  fmt.Sprintf("%d", item.PassedAmount),
+			FinalAmount:   fmt.Sprintf("%d", item.FinalAmount),
+			AcademicYear: &response.AcademicYear{
+				Uuid: item.AcademicYear.Uuid,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
+			},
+			Subject: &response.Subject{
+				Uuid: item.Subject.Uuid,
+				Name: item.Subject.Name,
+				Code: item.Subject.Code,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}

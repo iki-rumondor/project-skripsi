@@ -69,15 +69,14 @@ func (s *PracticalModuleService) CreatePracticalModule(userUuid string, req *req
 	return nil
 }
 
-func (s *PracticalModuleService) GetAllPracticalModules(userUuid string) (*[]models.PracticalModule, error) {
+func (s *PracticalModuleService) GetAllPracticalModules(userUuid, yearUuid string) (*[]models.PracticalModule, error) {
 
-	// department, err := s.Repo.FindUserBy("uuid")
-	// if err != nil{
-	// 	log.Println(err.Error())
-	// 	return nil, response.SERVICE_INTERR
-	// }
+	year, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+	if err != nil {
+		return nil, response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
 
-	result, err := s.Repo.FindPracticalModules(userUuid)
+	result, err := s.Repo.FindPracticalModules(userUuid, year.ID)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR
@@ -148,4 +147,27 @@ func (s *PracticalModuleService) DeletePracticalModule(userUuid, uuid string) er
 	}
 
 	return nil
+}
+
+func (s *PracticalModuleService) GetByDepartment(departmentUuid, yearUuid string) (*[]models.PracticalModule, error) {
+
+	department, err := s.Repo.FindDepartment(departmentUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	year, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	result, err := s.Repo.FindByDepartment(department.ID, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
 }

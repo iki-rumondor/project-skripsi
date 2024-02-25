@@ -55,7 +55,9 @@ func (h *PracticalModuleHandler) GetAllPracticalModules(c *gin.Context) {
 		return
 	}
 
-	result, err := h.Service.GetAllPracticalModules(userUuid)
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetAllPracticalModules(userUuid, yearUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -168,4 +170,41 @@ func (h *PracticalModuleHandler) DeletePracticalModule(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Modul Praktikum Berhasil Dihapus"))
+}
+
+func (h *PracticalModuleHandler) GetByDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetByDepartment(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.PracticalModule
+	for _, item := range *result {
+		resp = append(resp, &response.PracticalModule{
+			Uuid:      item.Uuid,
+			Available: item.Available,
+			Note:      item.Note,
+			AcademicYear: &response.AcademicYear{
+				Uuid: item.AcademicYear.Uuid,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
+			},
+			Subject: &response.Subject{
+				Uuid: item.Subject.Uuid,
+				Name: item.Subject.Name,
+				Code: item.Subject.Code,
+			},
+			Laboratory: &response.Laboratory{
+				Uuid: item.Laboratory.Uuid,
+				Name: item.Laboratory.Name,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }

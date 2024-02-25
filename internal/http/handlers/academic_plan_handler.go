@@ -54,8 +54,45 @@ func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
+	yearUuid := c.Param("yearUuid")
 
-	result, err := h.Service.GetAllAcademicPlans(userUuid)
+	result, err := h.Service.GetAllAcademicPlans(userUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.AcademicPlan
+	for _, item := range *result {
+		yearName := fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year)
+		resp = append(resp, &response.AcademicPlan{
+			Uuid:      item.Uuid,
+			Available: item.Available,
+			Note:      item.Note,
+			Middle:    item.Middle,
+			Last:      item.Last,
+			AcademicYear: &response.AcademicYear{
+				Uuid: item.AcademicYear.Uuid,
+				Name: yearName,
+			},
+			Subject: &response.Subject{
+				Uuid: item.Subject.Uuid,
+				Name: item.Subject.Name,
+				Code: item.Subject.Code,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *AcademicPlanHandler) GetDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetDepartment(departmentUuid, yearUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return

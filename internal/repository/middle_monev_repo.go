@@ -4,6 +4,7 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type MiddleMonevRepository struct {
@@ -158,4 +159,13 @@ func (r *MiddleMonevRepository) DeleteTeacherAttendence(model *models.TeacherAtt
 
 func (r *MiddleMonevRepository) DeleteStudentAttendence(model *models.StudentAttendence) error {
 	return r.db.Delete(model).Error
+}
+
+func (r *MiddleMonevRepository) FindDepartment(uuid string) (*models.Department, error) {
+	var department models.Department
+	if err := r.db.Preload(clause.Associations).First(&department, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &department, nil
 }

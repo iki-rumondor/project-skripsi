@@ -145,3 +145,4 @@ func (s *UserService) GetAll(tableName string) ([]map[string]interface{}, error)
 
 	return result, nil
 }
+

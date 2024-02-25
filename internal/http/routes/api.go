@@ -60,7 +60,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.DELETE("teachers/:uuid", handlers.TeacherHandler.DeleteTeacher)
 
 		department.POST("academic-plans", handlers.AcademicPlanHandler.CreateAcademicPlan)
-		department.GET("academic-plans", handlers.AcademicPlanHandler.GetAllAcademicPlans)
+		department.GET("academic-plans/years/:yearUuid", handlers.AcademicPlanHandler.GetAllAcademicPlans)
 		department.GET("academic-plans/:uuid", handlers.AcademicPlanHandler.GetAcademicPlan)
 		department.PUT("academic-plans/:uuid", handlers.AcademicPlanHandler.UpdateAcademicPlan)
 		department.DELETE("academic-plans/:uuid", handlers.AcademicPlanHandler.DeleteAcademicPlan)
@@ -70,13 +70,13 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		department.PATCH("academic-plans/:uuid/last", handlers.AcademicPlanHandler.UpdateLast)
 
 		department.POST("practical-modules", handlers.PracticalModuleHandler.CreatePracticalModule)
-		department.GET("practical-modules", handlers.PracticalModuleHandler.GetAllPracticalModules)
+		department.GET("practical-modules/years/:yearUuid", handlers.PracticalModuleHandler.GetAllPracticalModules)
 		department.GET("practical-modules/:uuid", handlers.PracticalModuleHandler.GetPracticalModule)
 		department.PUT("practical-modules/:uuid", handlers.PracticalModuleHandler.UpdatePracticalModule)
 		department.DELETE("practical-modules/:uuid", handlers.PracticalModuleHandler.DeletePracticalModule)
 
 		department.POST("practical-tools", handlers.PracticalToolHandler.CreatePracticalTool)
-		department.GET("practical-tools", handlers.PracticalToolHandler.GetAllPracticalTools)
+		department.GET("practical-tools/years/:yearUuid", handlers.PracticalToolHandler.GetAllPracticalTools)
 		department.GET("practical-tools/:uuid", handlers.PracticalToolHandler.GetPracticalTool)
 		department.PUT("practical-tools/:uuid", handlers.PracticalToolHandler.UpdatePracticalTool)
 		department.DELETE("practical-tools/:uuid", handlers.PracticalToolHandler.DeletePracticalTool)
@@ -117,6 +117,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		department.GET("subjects/practical", handlers.SubjectHandler.GetAllPracticalSubjects)
 		department.GET("users/first-monev/years/:yearUuid", handlers.UserHandler.CountMonevByYear)
+		department.GET("users/:userUuid", handlers.UserHandler.GetDepartmentData)
 	}
 
 	admin := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("ADMIN"))
@@ -139,9 +140,15 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
 
 		admin.PATCH("settings/step", handlers.UserHandler.UpdateStepMonev)
-		
-		admin.GET("monev/departments/:departmentUuid/years/:yearUuid", handlers.UserHandler.GetDepartmentMonev)
 
+		admin.GET("monev/departments/:departmentUuid/years/:yearUuid", handlers.UserHandler.GetDepartmentMonev)
+		admin.GET("academic-plans/departments/:departmentUuid/years/:yearUuid", handlers.AcademicPlanHandler.GetDepartment)
+		admin.GET("practical-modules/departments/:departmentUuid/years/:yearUuid", handlers.PracticalModuleHandler.GetByDepartment)
+		admin.GET("practical-tools/departments/:departmentUuid/years/:yearUuid", handlers.PracticalToolHandler.GetByDepartment)
+		admin.GET("teacher-skills/departments/:departmentUuid/years/:yearUuid", handlers.TeacherSkillHandler.GetByDepartment)
+		admin.GET("facility-conditions/departments/:departmentUuid/years/:yearUuid", handlers.FacilityConditionHandler.GetByDepartment)
+		admin.GET("teacher-attendences/departments/:departmentUuid/years/:yearUuid", handlers.MiddleMonevHandler.GetTeacherAttendencesByDepartment)
+		admin.GET("student-attendences/departments/:departmentUuid/years/:yearUuid", handlers.MiddleMonevHandler.GetStudentAttendencesByDepartment)
 	}
 
 	return router

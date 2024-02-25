@@ -226,3 +226,49 @@ func (s *MiddleMonevService) DeleteStudentAttendence(userUuid, uuid string) erro
 
 	return nil
 }
+
+func (s *MiddleMonevService) GetTeacherAttendencesByDepartment(departmentUuid, yearUuid string) (*[]models.TeacherAttendence, error) {
+
+	department, err := s.Repo.FindDepartment(departmentUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	year, err := s.Repo.FindAcademicYear(yearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
+
+	result, err := s.Repo.FindTeacherAttendences(department.User.Uuid, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *MiddleMonevService) GetStudentAttendencesByDepartment(departmentUuid, yearUuid string) (*[]models.StudentAttendence, error) {
+
+	department, err := s.Repo.FindDepartment(departmentUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	year, err := s.Repo.FindAcademicYear(yearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
+
+	result, err := s.Repo.FindStudentAttendences(department.User.Uuid, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}

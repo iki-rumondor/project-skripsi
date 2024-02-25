@@ -60,15 +60,14 @@ func (s *PracticalToolService) CreatePracticalTool(userUuid string, req *request
 	return nil
 }
 
-func (s *PracticalToolService) GetAllPracticalTools(userUuid string) (*[]models.PracticalTool, error) {
+func (s *PracticalToolService) GetAllPracticalTools(userUuid, yearUuid string) (*[]models.PracticalTool, error) {
 
-	// department, err := s.Repo.FindUserBy("uuid")
-	// if err != nil{
-	// 	log.Println(err.Error())
-	// 	return nil, response.SERVICE_INTERR
-	// }
+	year, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+	if err != nil {
+		return nil, response.NOTFOUND_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
 
-	result, err := s.Repo.FindPracticalTools(userUuid)
+	result, err := s.Repo.FindPracticalTools(userUuid, year.ID)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR
@@ -134,4 +133,27 @@ func (s *PracticalToolService) DeletePracticalTool(userUuid, uuid string) error 
 	}
 
 	return nil
+}
+
+func (s *PracticalToolService) GetByDepartment(departmentUuid, yearUuid string) (*[]models.PracticalTool, error) {
+
+	department, err := s.Repo.FindDepartment(departmentUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	year, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	result, err := s.Repo.FindByDepartment(department.ID, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+	
+	return result, nil
 }

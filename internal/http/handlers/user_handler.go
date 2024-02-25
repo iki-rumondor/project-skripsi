@@ -134,6 +134,21 @@ func (h *UserHandler) GetDepartmentMonev(c *gin.Context) {
 			result["skills"],
 			result["facilities"],
 		},
+		"middle_monev": []int{
+			result["t_att"],
+			result["s_att"],
+			result["mid_plans"],
+		},
+		"middle_last_monev": []int{
+			result["lt_att"],
+			result["ls_att"],
+			result["last_plans"],
+		},
+		"last_monev": []int{
+			result["final"],
+			result["passed"],
+			result["grade"],
+		},
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
@@ -157,4 +172,24 @@ func (h *UserHandler) UpdateStepMonev(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Tahapan Monev Berhasil Diperbarui"))
+}
+
+func (h *UserHandler) GetDepartmentData(c *gin.Context) {
+	userUuid := c.Param("userUuid")
+
+	user, err := h.Service.GetUser("uuid", userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	resp := &response.Department{
+		Uuid:      user.Department.Uuid,
+		Name:      user.Department.Name,
+		Head:      user.Department.Head,
+		CreatedAt: user.Department.CreatedAt,
+		UpdatedAt: user.Department.UpdatedAt,
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }

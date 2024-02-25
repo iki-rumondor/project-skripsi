@@ -13,6 +13,8 @@ type FacilityConditionHandlerInterface interface {
 	GetFacilityCondition(*gin.Context)
 	UpdateFacilityCondition(*gin.Context)
 	DeleteFacilityCondition(*gin.Context)
+
+	GetByDepartment(*gin.Context)
 }
 
 type FacilityConditionServiceInterface interface {
@@ -22,6 +24,8 @@ type FacilityConditionServiceInterface interface {
 	GetFacilityCondition(userUuid, uuid string) (*models.FacilityCondition, error)
 	UpdateFacilityCondition(userUuid, uuid string, req *request.UpdateFacilityCondition) error
 	DeleteFacilityCondition(userUuid, uuid string) error
+	
+	GetByDepartment(departmentUuid, yearUuid string) (*[]models.FacilityCondition, error)
 }
 
 type FacilityConditionRepoInterface interface {
@@ -33,4 +37,7 @@ type FacilityConditionRepoInterface interface {
 	CreateFacilityCondition(*models.FacilityCondition) error
 	UpdateFacilityCondition(*models.FacilityCondition) error
 	DeleteFacilityCondition(*models.FacilityCondition) error
+
+	FindDepartment(uuid string) (*models.Department, error)
+	FindByDepartment(departmentID, yearID uint) (*[]models.FacilityCondition, error)
 }

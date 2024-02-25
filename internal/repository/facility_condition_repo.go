@@ -6,6 +6,7 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type FacilityConditionRepository struct {
@@ -92,4 +93,23 @@ func (r *FacilityConditionRepository) UpdateFacilityCondition(model *models.Faci
 
 func (r *FacilityConditionRepository) DeleteFacilityCondition(model *models.FacilityCondition) error {
 	return r.db.Delete(model).Error
+}
+
+func (r *FacilityConditionRepository) FindDepartment(uuid string) (*models.Department, error) {
+	var department models.Department
+	if err := r.db.First(&department, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &department, nil
+}
+
+func (r *FacilityConditionRepository) FindByDepartment(departmentID, yearID uint) (*[]models.FacilityCondition, error) {
+	var result []models.FacilityCondition
+
+	if err := r.db.Joins("Facility").Preload(clause.Associations).Find(&result, "facility.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

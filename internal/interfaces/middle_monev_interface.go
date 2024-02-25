@@ -16,6 +16,9 @@ type MiddleMonevHandlerInterface interface {
 	UpdateLastStudentAttendence(*gin.Context)
 	DeleteTeacherAttendence(*gin.Context)
 	DeleteStudentAttendence(*gin.Context)
+
+	GetTeacherAttendencesByDepartment(*gin.Context)
+	GetStudentAttendencesByDepartment(*gin.Context)
 }
 
 type MiddleMonevServiceInterface interface {
@@ -30,6 +33,9 @@ type MiddleMonevServiceInterface interface {
 	UpdateStudentAttendence(userUuid, uuid string, model *models.StudentAttendence) error
 	DeleteTeacherAttendence(userUuid, uuid string) error
 	DeleteStudentAttendence(userUuid, uuid string) error
+
+	GetTeacherAttendencesByDepartment(departmentUuid, yearUuid string) (*[]models.TeacherAttendence, error)
+	GetStudentAttendencesByDepartment(departmentUuid, yearUuid string) (*[]models.StudentAttendence, error)
 }
 
 type MiddleMonevRepoInterface interface {
@@ -47,4 +53,6 @@ type MiddleMonevRepoInterface interface {
 	UpdateStudentAttendence(model *models.StudentAttendence) error
 	DeleteTeacherAttendence(*models.TeacherAttendence) error
 	DeleteStudentAttendence(*models.StudentAttendence) error
+
+	FindDepartment(uuid string) (*models.Department, error)
 }

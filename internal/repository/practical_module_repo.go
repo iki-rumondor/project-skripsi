@@ -18,7 +18,7 @@ func NewPracticalModuleRepository(db *gorm.DB) interfaces.PracticalModuleRepoInt
 	}
 }
 
-func (r *PracticalModuleRepository) FindPracticalModules(userUuid string) (*[]models.PracticalModule, error) {
+func (r *PracticalModuleRepository) FindPracticalModules(userUuid string, yearID uint) (*[]models.PracticalModule, error) {
 	var user models.User
 	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func (r *PracticalModuleRepository) FindPracticalModules(userUuid string) (*[]mo
 
 	var result []models.PracticalModule
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "subject.department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -84,4 +84,23 @@ func (r *PracticalModuleRepository) UpdatePracticalModule(model *models.Practica
 
 func (r *PracticalModuleRepository) DeletePracticalModule(model *models.PracticalModule) error {
 	return r.db.Delete(model).Error
+}
+
+func (r *PracticalModuleRepository) FindDepartment(uuid string) (*models.Department, error) {
+	var department models.Department
+	if err := r.db.First(&department, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &department, nil
+}
+
+func (r *PracticalModuleRepository) FindByDepartment(departmentID, yearID uint) (*[]models.PracticalModule, error) {
+	var result []models.PracticalModule
+
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

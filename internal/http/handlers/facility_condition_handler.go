@@ -193,3 +193,37 @@ func (h *FacilityConditionHandler) DeleteFacilityCondition(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kondisi Fasilitas Berhasil Dihapus"))
 }
+
+func (h *FacilityConditionHandler) GetByDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetByDepartment(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.FacilityCondition
+	for _, item := range *result {
+		resp = append(resp, &response.FacilityCondition{
+			Uuid:     item.Uuid,
+			Amount:   fmt.Sprintf("%v", item.Amount),
+			Unit:     item.Unit,
+			Deactive: fmt.Sprintf("%v", item.Deactive),
+			Note:     item.Note,
+			AcademicYear: &response.AcademicYear{
+				Uuid: item.AcademicYear.Uuid,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
+			},
+			Facility: &response.Facility{
+				Uuid: item.Facility.Uuid,
+				Name: item.Facility.Name,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}

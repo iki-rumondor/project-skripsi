@@ -59,9 +59,37 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.A
 	return nil
 }
 
-func (s *AcademicPlanService) GetAllAcademicPlans(userUuid string) (*[]models.AcademicPlan, error) {
+func (s *AcademicPlanService) GetAllAcademicPlans(userUuid, yearUuid string) (*[]models.AcademicPlan, error) {
 
-	result, err := s.Repo.FindAcademicPlans(userUuid)
+	year, err := s.GetAcademicYear(yearUuid)
+	if err != nil {
+		return nil, err
+	}
+	
+	result, err := s.Repo.FindAcademicPlans(userUuid, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *AcademicPlanService) GetDepartment(departmentUuid, yearUuid string) (*[]models.AcademicPlan, error) {
+
+	department, err := s.Repo.FindDepartmentBy("uuid", departmentUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	year, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	result, err := s.Repo.FindBy(department.ID, year.ID, "academic_year_id", year.ID)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR
@@ -136,14 +164,13 @@ func (s *AcademicPlanService) UpdateOne(userUuid, uuid, column string, value int
 		return err
 	}
 
-	if err := s.Repo.UpdateOne(result.ID, column, value); err != nil{
+	if err := s.Repo.UpdateOne(result.ID, column, value); err != nil {
 		log.Println(err.Error())
 		return response.SERVICE_INTERR
 	}
 
 	return nil
 }
-
 
 func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid string, req *request.UpdateAcademicPlan) error {
 

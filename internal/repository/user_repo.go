@@ -59,6 +59,14 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	var studentAttendeces []models.StudentAttendence
 	var academicPlans []models.AcademicPlan
 
+	var lastTeacherAttendeces []models.TeacherAttendence
+	var lastStudentAttendeces []models.StudentAttendence
+	var lastAcademicPlans []models.AcademicPlan
+
+	var studentPassed []models.StudentAttendence
+	var studentFinal []models.StudentAttendence
+	var grade []models.TeacherAttendence
+
 	r.db.Find(&plans, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&modules, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&tools, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
@@ -67,7 +75,15 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 
 	r.db.Find(&teacherAttendeces, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&studentAttendeces, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
-	r.db.Find(&academicPlans, "subject_id IN (?) AND academic_year_id = ? AND available = ?", subjects, yearID, true)
+	r.db.Find(&academicPlans, "subject_id IN (?) AND academic_year_id = ? AND middle = ?", subjects, yearID, true)
+
+	r.db.Find(&lastTeacherAttendeces, "subject_id IN (?) AND academic_year_id = ? AND last != ?", subjects, yearID, 0)
+	r.db.Find(&lastStudentAttendeces, "subject_id IN (?) AND academic_year_id = ? AND last != ?", subjects, yearID, 0)
+	r.db.Find(&lastAcademicPlans, "subject_id IN (?) AND academic_year_id = ? AND last = ?", subjects, yearID, true)
+
+	r.db.Find(&studentFinal, "subject_id IN (?) AND academic_year_id = ? AND final_amount != 0", subjects, yearID, 0)
+	r.db.Find(&studentPassed, "subject_id IN (?) AND academic_year_id = ? AND passed_amount != 0", subjects, yearID, 0)
+	r.db.Find(&grade, "subject_id IN (?) AND academic_year_id = ? AND grade_on_time = ?", subjects, yearID, true)
 
 	res := map[string]int{
 		"plans":      len(plans),
@@ -77,7 +93,13 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 		"facilities": len(facilities),
 		"t_att":      len(teacherAttendeces),
 		"s_att":      len(studentAttendeces),
-		"av_plans":   len(academicPlans),
+		"mid_plans":  len(academicPlans),
+		"lt_att":     len(teacherAttendeces),
+		"ls_att":     len(studentAttendeces),
+		"last_plans": len(academicPlans),
+		"passed":     len(studentPassed),
+		"final":      len(studentFinal),
+		"grade":      len(grade),
 	}
 
 	return res, nil

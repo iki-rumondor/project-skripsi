@@ -166,3 +166,26 @@ func (s *TeacherSkillService) DeleteTeacherSkill(userUuid, uuid string) error {
 
 	return nil
 }
+
+func (s *TeacherSkillService) GetByDepartment(departmentUuid, yearUuid string) (*[]models.TeacherSkill, error) {
+
+	department, err := s.Repo.FindDepartment(departmentUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	year, err := s.Repo.FindAcademicYearBy("uuid", yearUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	result, err := s.Repo.FindByDepartment(department.ID, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+	
+	return result, nil
+}

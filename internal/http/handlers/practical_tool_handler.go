@@ -55,7 +55,9 @@ func (h *PracticalToolHandler) GetAllPracticalTools(c *gin.Context) {
 		return
 	}
 
-	result, err := h.Service.GetAllPracticalTools(userUuid)
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetAllPracticalTools(userUuid, yearUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -162,4 +164,38 @@ func (h *PracticalToolHandler) DeletePracticalTool(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Alat Praktikum Berhasil Dihapus"))
+}
+
+func (h *PracticalToolHandler) GetByDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetByDepartment(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.PracticalTool
+	for _, item := range *result {
+		resp = append(resp, &response.PracticalTool{
+			Uuid:      item.Uuid,
+			Available: item.Available,
+			Note:      item.Note,
+			Condition: item.Condition,
+			AcademicYear: &response.AcademicYear{
+				Uuid: item.AcademicYear.Uuid,
+				Name: fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year),
+			},
+			Subject: &response.Subject{
+				Uuid: item.Subject.Uuid,
+				Name: item.Subject.Name,
+				Code: item.Subject.Code,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }

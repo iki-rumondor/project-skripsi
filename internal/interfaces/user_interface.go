@@ -14,11 +14,13 @@ type UserHandlerInterface interface {
 	UpdateStepMonev(*gin.Context)
 	GetSettings(*gin.Context)
 	GetDepartmentMonev(*gin.Context)
+	GetDepartmentData(*gin.Context)
 }
 
 type UserServiceInterface interface {
 	VerifyUser(*request.SignIn) (string, error)
 	GetCountSubjects() (*response.SubjectsCount, error)
+	GetUser(column string, value interface{}) (*models.User, error)
 	CountMonevByYear(userUuid, yearUuid string) (map[string]int, error)
 	CountDepartmentMonev(departmentUuid, yearUuid string) (map[string]int, error)
 	Update(id uint, tableName, column string, value interface{}) error

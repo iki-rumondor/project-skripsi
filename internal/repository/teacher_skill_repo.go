@@ -6,6 +6,7 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type TeacherSkillRepository struct {
@@ -97,4 +98,32 @@ func (r *TeacherSkillRepository) UpdateTeacherSkill(model *models.TeacherSkill) 
 
 func (r *TeacherSkillRepository) DeleteTeacherSkill(model *models.TeacherSkill) error {
 	return r.db.Delete(model).Error
+}
+
+func (r *TeacherSkillRepository) FindDepartment(uuid string) (*models.Department, error) {
+	var department models.Department
+	if err := r.db.First(&department, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &department, nil
+}
+
+func (r *TeacherSkillRepository) FindByDepartment(departmentID, yearID uint) (*[]models.TeacherSkill, error) {
+	var result []models.TeacherSkill
+
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *TeacherSkillRepository) FindAcademicYearBy(column string, value interface{}) (*models.AcademicYear, error) {
+	var model models.AcademicYear
+	if err := r.db.First(&model, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+		return nil, err
+	}
+
+	return &model, nil
 }

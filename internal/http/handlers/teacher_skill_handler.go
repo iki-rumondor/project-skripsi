@@ -204,3 +204,39 @@ func (h *TeacherSkillHandler) DeleteTeacherSkill(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kemampuan Dosen Berhasil Dihapus"))
 }
+
+
+func (h *TeacherSkillHandler) GetByDepartment(c *gin.Context) {
+	departmentUuid := c.Param("departmentUuid")
+	yearUuid := c.Param("yearUuid")
+
+	result, err := h.Service.GetByDepartment(departmentUuid, yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []*response.TeacherSkill
+	for _, item := range *result {
+		resp = append(resp, &response.TeacherSkill{
+			Uuid:  item.Uuid,
+			Skill: item.Skill,
+			Teacher: &response.Teacher{
+				Uuid:      item.Teacher.Uuid,
+				Name:      item.Teacher.Name,
+				CreatedAt: item.Teacher.CreatedAt,
+				UpdatedAt: item.Teacher.UpdatedAt,
+			},
+			Subject: &response.Subject{
+				Uuid:      item.Subject.Uuid,
+				Name:      item.Subject.Name,
+				Code:      item.Subject.Code,
+				Practical: item.Subject.Practical,
+			},
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}

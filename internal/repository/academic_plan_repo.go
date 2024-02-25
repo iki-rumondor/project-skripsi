@@ -18,7 +18,7 @@ func NewAcademicPlanRepository(db *gorm.DB) interfaces.AcademicPlanRepoInterface
 	}
 }
 
-func (r *AcademicPlanRepository) FindAcademicPlans(userUuid string) (*[]models.AcademicPlan, error) {
+func (r *AcademicPlanRepository) FindAcademicPlans(userUuid string, yearID uint) (*[]models.AcademicPlan, error) {
 	var user models.User
 	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func (r *AcademicPlanRepository) FindAcademicPlans(userUuid string) (*[]models.A
 
 	var result []models.AcademicPlan
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -97,4 +97,13 @@ func (r *AcademicPlanRepository) UpdateOne(id uint, column string, value interfa
 
 func (r *AcademicPlanRepository) DeleteAcademicPlan(model *models.AcademicPlan) error {
 	return r.db.Delete(model).Error
+}
+
+func (r *AcademicPlanRepository) FindDepartmentBy(column string, value interface{}) (*models.Department, error) {
+	var department models.Department
+	if err := r.db.Preload("Major").Preload("Subjects").Preload("User.Role").First(&department, fmt.Sprintf("%s = ?", column), value).Error; err != nil {
+		return nil, err
+	}
+
+	return &department, nil
 }
