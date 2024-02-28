@@ -139,6 +139,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PATCH("academic-years/:uuid/open", handlers.AcademicYearHandler.UpdateOpen)
 		admin.DELETE("academic-years/:uuid", handlers.AcademicYearHandler.DeleteAcademicYear)
 
+		admin.PUT("academic-years/:uuid/monev", handlers.AcademicYearHandler.UpdateTimeMonev)
+
 		admin.PATCH("settings/step", handlers.UserHandler.UpdateStepMonev)
 
 		admin.GET("monev/departments/:departmentUuid/years/:yearUuid", handlers.UserHandler.GetDepartmentMonev)

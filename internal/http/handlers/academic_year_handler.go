@@ -74,12 +74,49 @@ func (h *AcademicYearHandler) GetAllAcademicYears(c *gin.Context) {
 
 		yearName := fmt.Sprintf("%s %s", item.Semester, item.Year)
 
+		first := utils.AddDate(item.FirstDate, item.FirstDays)
+		middle := utils.AddDate(item.MiddleDate, item.MiddleDays)
+		middle_last := utils.AddDate(item.MiddleLastDate, item.MiddleLastDays)
+		last := utils.AddDate(item.LastDate, item.LastDays)
+
+		open := false
+		status := "Tidak Ada Jadwal"
+
+		if ok := utils.IsNowInRange(first); ok {
+			open = true
+			status = "Monev Awal Semester"
+		}
+
+		if ok := utils.IsNowInRange(middle); ok {
+			open = true
+			status = "Monev Tengah Semester"
+		}
+
+		if ok := utils.IsNowInRange(middle_last); ok {
+			open = true
+			status = "Monev Sebelum UAS"
+		}
+
+		if ok := utils.IsNowInRange(last); ok {
+			open = true
+			status = "Monev Setelah UAS"
+		}
+
 		resp = append(resp, &response.AcademicYear{
 			Uuid:            item.Uuid,
 			Name:            yearName,
 			Semester:        item.Semester,
 			Year:            item.Year,
-			Open:            item.Open,
+			FirstDate:       item.FirstDate,
+			MiddleDate:      item.MiddleDate,
+			MiddleLastDate:  item.MiddleLastDate,
+			LastDate:        item.LastDate,
+			FirstDays:       item.FirstDays,
+			MiddleDays:      item.MiddleDays,
+			MiddleLastDays:  item.MiddleLastDays,
+			LastDays:        item.LastDays,
+			Status:          status,
+			Open:            open,
 			AcademicPlan:    &plans,
 			PracticalTool:   &tools,
 			PracticalModule: &modules,
@@ -100,14 +137,55 @@ func (h *AcademicYearHandler) GetAcademicYear(c *gin.Context) {
 	}
 	yearName := fmt.Sprintf("%s %s", result.Semester, result.Year)
 
+	first := utils.AddDate(result.FirstDate, result.FirstDays)
+	middle := utils.AddDate(result.MiddleDate, result.MiddleDays)
+	middle_last := utils.AddDate(result.MiddleLastDate, result.MiddleLastDays)
+	last := utils.AddDate(result.LastDate, result.LastDays)
+
+	open := false
+	status := "Tidak Ada Jadwal"
+
+	if ok := utils.IsNowInRange(first); ok {
+		open = true
+		status = "Monev Awal Semester"
+	}
+
+	if ok := utils.IsNowInRange(middle); ok {
+		open = true
+		status = "Monev Tengah Semester"
+	}
+
+	if ok := utils.IsNowInRange(middle_last); ok {
+		open = true
+		status = "Monev Sebelum UAS"
+	}
+
+	if ok := utils.IsNowInRange(last); ok {
+		open = true
+		status = "Monev Setelah UAS"
+	}
+
 	resp := &response.AcademicYear{
-		Uuid:      result.Uuid,
-		Semester:  result.Semester,
-		Year:      result.Year,
-		Open:      result.Open,
-		Name:      yearName,
-		CreatedAt: result.CreatedAt,
-		UpdatedAt: result.UpdatedAt,
+		Uuid:            result.Uuid,
+		Semester:        result.Semester,
+		Year:            result.Year,
+		Status:          status,
+		Open:            open,
+		FirstDate:       result.FirstDate,
+		MiddleDate:      result.MiddleDate,
+		MiddleLastDate:  result.MiddleLastDate,
+		LastDate:        result.LastDate,
+		FirstDays:       result.FirstDays,
+		MiddleDays:      result.MiddleDays,
+		MiddleLastDays:  result.MiddleLastDays,
+		LastDays:        result.LastDays,
+		FirstRange:      first,
+		MiddleRange:     middle,
+		MiddleLastRange: middle_last,
+		LastRange:       last,
+		Name:            yearName,
+		CreatedAt:       result.CreatedAt,
+		UpdatedAt:       result.UpdatedAt,
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
@@ -130,6 +208,24 @@ func (h *AcademicYearHandler) UpdateAcademicYear(c *gin.Context) {
 
 	uuid := c.Param("uuid")
 	if err := h.Service.UpdateAcademicYear(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Tahun Ajaran Berhasil Diperbarui"))
+}
+
+func (h *AcademicYearHandler) UpdateTimeMonev(c *gin.Context) {
+	var body request.UpdateTimeMonev
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, &response.Error{
+			Code:    400,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateTimeMonev(uuid, &body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}

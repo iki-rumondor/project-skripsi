@@ -12,7 +12,8 @@ type AcademicYearHandlerInterface interface {
 	GetAcademicYear(*gin.Context)
 	UpdateAcademicYear(*gin.Context)
 	UpdateOpen(*gin.Context)
-	DeleteAcademicYear(*gin.Context)
+	DeleteAcademicYear(*gin.Context)	
+	UpdateTimeMonev(*gin.Context)
 }
 
 type AcademicYearServiceInterface interface {
@@ -20,6 +21,7 @@ type AcademicYearServiceInterface interface {
 	GetAllAcademicYears() (*[]models.AcademicYear, error)
 	GetAcademicYear(string) (*models.AcademicYear, error)
 	UpdateAcademicYear(string, *request.AcademicYear) error
+	UpdateTimeMonev(string, *request.UpdateTimeMonev) error
 	DeleteAcademicYear(string) error
 	UpdateOne(uuid, column string, value interface{}) error
 }
