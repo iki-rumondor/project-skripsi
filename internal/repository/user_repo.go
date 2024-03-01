@@ -35,6 +35,14 @@ func (r *UserRepository) FindSubjects() (*[]models.Subject, error) {
 	return &model, nil
 }
 
+func (r *UserRepository) FindUsers() (*[]models.User, error) {
+	var model []models.User
+	if err := r.db.Preload(clause.Associations).Find(&model).Error; err != nil {
+		return nil, err
+	}
+	return &model, nil
+}
+
 func (r *UserRepository) FindPracticalSubjects() (*[]models.Subject, error) {
 	var model []models.Subject
 	if err := r.db.Find(&model, "practical = 1").Error; err != nil {
@@ -123,4 +131,8 @@ func (r *UserRepository) GetOne(tableName, column string, value interface{}) (ma
 		return nil, err
 	}
 	return result, nil
+}
+
+func (r *UserRepository) CreateUser(model *models.User) error {
+	return r.db.Create(model).Error
 }

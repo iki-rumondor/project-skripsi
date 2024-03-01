@@ -24,6 +24,7 @@ type Handlers struct {
 	FacilityConditionHandler interfaces.FacilityConditionHandlerInterface
 	MiddleMonevHandler       interfaces.MiddleMonevHandlerInterface
 	LastMonevHandler         interfaces.LastMonevHandlerInterface
+	PdfHandler               interfaces.PdfHandlerInterface
 }
 
 func GetAppHandlers(db *gorm.DB) *Handlers {
@@ -88,6 +89,10 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	last_monev_service := services.NewLastMonevService(last_monev_repo)
 	last_monev_handler := handlers.NewLastMonevHandler(last_monev_service)
 
+	pdf_repo := repository.NewPdfRepository(db)
+	pdf_service := services.NewPdfService(pdf_repo)
+	pdf_handler := handlers.NewPdfHandler(pdf_service)
+
 	return &Handlers{
 		UserHandler:              user_handler,
 		DepartmentHandler:        department_handler,
@@ -104,5 +109,6 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 		FacilityConditionHandler: facility_condition_handler,
 		MiddleMonevHandler:       middle_monev_handler,
 		LastMonevHandler:         last_monev_handler,
+		PdfHandler:               pdf_handler,
 	}
 }

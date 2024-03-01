@@ -34,6 +34,16 @@ func (s *UserService) GetUser(column string, value interface{}) (*models.User, e
 
 	return user, nil
 }
+
+func (s *UserService) GetAllUser() (*[]models.User, error) {
+	user, err := s.Repo.FindUsers()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	return user, nil
+}
+
 func (s *UserService) VerifyUser(req *request.SignIn) (string, error) {
 
 	user, err := s.Repo.FindUserBy("username", req.Username)
@@ -84,17 +94,29 @@ func (s *UserService) GetDashboardAdmin() (map[string]interface{}, error) {
 		return nil, response.SERVICE_INTERR
 	}
 
+	departments, err := s.Repo.GetAll("departments")
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	majors, err := s.Repo.GetAll("majors")
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
 	setting, err := s.Repo.GetOne("settings", "name", "step_monev")
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
 
 	resp := map[string]interface{}{
-		"g_subject": len(*subjects),
-		"p_subject": len(*practicalSubjects),
-		"teacher":   len(teachers),
-		"year":      len(years),
-		"step":      setting["value"],
+		"g_subject":   len(*subjects),
+		"p_subject":   len(*practicalSubjects),
+		"teacher":     len(teachers),
+		"year":        len(years),
+		"departments": len(departments),
+		"majors":      len(majors),
+		"step":        setting["value"],
 	}
 
 	return resp, nil
@@ -164,4 +186,24 @@ func (s *UserService) GetAll(tableName string) ([]map[string]interface{}, error)
 	}
 
 	return result, nil
+}
+
+func (s *UserService) CreateUser(req *request.CreateUser) error {
+	role, err := s.Repo.GetOne("roles", "uuid", req.RoleUuid)
+	if err != nil {
+		return response.NOTFOUND_ERR("Role Tidak Ditemukan")
+	}
+
+	model := models.User{
+		Username: req.Username,
+		Password: req.Password,
+		RoleID:   role["id"].(uint),
+	}
+
+	if err := s.Repo.CreateUser(&model); err != nil {
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	return nil
 }

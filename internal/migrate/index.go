@@ -47,6 +47,14 @@ func freshDatabase(db *gorm.DB) error {
 		Name: "DEPARTMENT",
 	})
 
+	db.Create(&models.Role{
+		Name: "HEAD",
+		User: &models.User{
+			Username: "head",
+			Password: "123",
+		},
+	})
+
 	db.Create(&models.Setting{
 		Name: "step_monev",
 		Value: "1",

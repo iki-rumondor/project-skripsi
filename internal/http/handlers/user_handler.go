@@ -116,6 +116,45 @@ func (h *UserHandler) GetSettings(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *UserHandler) GetUsers(c *gin.Context) {
+
+	result, err := h.Service.GetAllUser()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []response.User
+	for _, item := range *result {
+		resp = append(resp, response.User{
+			Uuid:     item.Uuid,
+			Username: item.Username,
+			Role:     item.Role.Name,
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *UserHandler) GetRoles(c *gin.Context) {
+
+	result, err := h.Service.GetAll("roles")
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	var resp []response.Role
+	for _, item := range result {
+		resp = append(resp, response.Role{
+			Uuid: item["uuid"].(string),
+			Name: item["name"].(string),
+		})
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *UserHandler) GetDepartmentMonev(c *gin.Context) {
 	departmentUuid := c.Param("departmentUuid")
 	yearUuid := c.Param("yearUuid")
@@ -192,4 +231,24 @@ func (h *UserHandler) GetDepartmentData(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *UserHandler) CreateUser(c *gin.Context) {
+	var body request.CreateUser
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.CreateUser(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Pengguna Berhasil Ditambahkan"))
 }

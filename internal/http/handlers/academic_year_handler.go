@@ -79,27 +79,22 @@ func (h *AcademicYearHandler) GetAllAcademicYears(c *gin.Context) {
 		middle_last := utils.AddDate(item.MiddleLastDate, item.MiddleLastDays)
 		last := utils.AddDate(item.LastDate, item.LastDays)
 
-		open := false
-		status := "Tidak Ada Jadwal"
+		status := "0"
 
 		if ok := utils.IsNowInRange(first); ok {
-			open = true
-			status = "Monev Awal Semester"
+			status = "1"
 		}
 
 		if ok := utils.IsNowInRange(middle); ok {
-			open = true
-			status = "Monev Tengah Semester"
+			status = "2"
 		}
 
 		if ok := utils.IsNowInRange(middle_last); ok {
-			open = true
-			status = "Monev Sebelum UAS"
+			status = "3"
 		}
 
 		if ok := utils.IsNowInRange(last); ok {
-			open = true
-			status = "Monev Setelah UAS"
+			status = "4"
 		}
 
 		resp = append(resp, &response.AcademicYear{
@@ -115,8 +110,11 @@ func (h *AcademicYearHandler) GetAllAcademicYears(c *gin.Context) {
 			MiddleDays:      item.MiddleDays,
 			MiddleLastDays:  item.MiddleLastDays,
 			LastDays:        item.LastDays,
+			FirstRange:      first,
+			MiddleRange:     middle,
+			MiddleLastRange: middle_last,
+			LastRange:       last,
 			Status:          status,
-			Open:            open,
 			AcademicPlan:    &plans,
 			PracticalTool:   &tools,
 			PracticalModule: &modules,
@@ -142,27 +140,22 @@ func (h *AcademicYearHandler) GetAcademicYear(c *gin.Context) {
 	middle_last := utils.AddDate(result.MiddleLastDate, result.MiddleLastDays)
 	last := utils.AddDate(result.LastDate, result.LastDays)
 
-	open := false
-	status := "Tidak Ada Jadwal"
+	status := "0"
 
 	if ok := utils.IsNowInRange(first); ok {
-		open = true
-		status = "Monev Awal Semester"
+		status = "1"
 	}
 
 	if ok := utils.IsNowInRange(middle); ok {
-		open = true
-		status = "Monev Tengah Semester"
+		status = "2"
 	}
 
 	if ok := utils.IsNowInRange(middle_last); ok {
-		open = true
-		status = "Monev Sebelum UAS"
+		status = "3"
 	}
 
 	if ok := utils.IsNowInRange(last); ok {
-		open = true
-		status = "Monev Setelah UAS"
+		status = "4"
 	}
 
 	resp := &response.AcademicYear{
@@ -170,7 +163,6 @@ func (h *AcademicYearHandler) GetAcademicYear(c *gin.Context) {
 		Semester:        result.Semester,
 		Year:            result.Year,
 		Status:          status,
-		Open:            open,
 		FirstDate:       result.FirstDate,
 		MiddleDate:      result.MiddleDate,
 		MiddleLastDate:  result.MiddleLastDate,

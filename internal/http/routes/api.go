@@ -31,6 +31,18 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
 		user.GET("dashboards", handlers.UserHandler.GetDashboardAdmin)
 		user.GET("settings", handlers.UserHandler.GetSettings)
+
+		user.GET("departments", handlers.DepartmentHandler.GetAllDepartments)
+		user.GET("monev/departments/:departmentUuid/years/:yearUuid", handlers.UserHandler.GetDepartmentMonev)
+		user.GET("academic-plans/departments/:departmentUuid/years/:yearUuid", handlers.AcademicPlanHandler.GetDepartment)
+		user.GET("practical-modules/departments/:departmentUuid/years/:yearUuid", handlers.PracticalModuleHandler.GetByDepartment)
+		user.GET("practical-tools/departments/:departmentUuid/years/:yearUuid", handlers.PracticalToolHandler.GetByDepartment)
+		user.GET("teacher-skills/departments/:departmentUuid/years/:yearUuid", handlers.TeacherSkillHandler.GetByDepartment)
+		user.GET("facility-conditions/departments/:departmentUuid/years/:yearUuid", handlers.FacilityConditionHandler.GetByDepartment)
+		user.GET("teacher-attendences/departments/:departmentUuid/years/:yearUuid", handlers.MiddleMonevHandler.GetTeacherAttendencesByDepartment)
+		user.GET("student-attendences/departments/:departmentUuid/years/:yearUuid", handlers.MiddleMonevHandler.GetStudentAttendencesByDepartment)
+
+		user.GET("report/:typeReport/departments/:departmentUuid/years/:yearUuid", handlers.PdfHandler.CreateReport)
 	}
 
 	department := router.Group("api").Use(middleware.IsValidJWT(), middleware.IsRole("DEPARTMENT"), middleware.SetUserUuid())
@@ -129,7 +141,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.DELETE("majors/:uuid", handlers.MajorHandler.DeleteMajor)
 
 		admin.POST("departments", handlers.DepartmentHandler.CreateDepartment)
-		admin.GET("departments", handlers.DepartmentHandler.GetAllDepartments)
 		admin.GET("departments/:uuid", handlers.DepartmentHandler.GetDepartment)
 		admin.PUT("departments/:uuid", handlers.DepartmentHandler.UpdateDepartment)
 		admin.DELETE("departments/:uuid", handlers.DepartmentHandler.DeleteDepartment)
@@ -143,14 +154,10 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		admin.PATCH("settings/step", handlers.UserHandler.UpdateStepMonev)
 
-		admin.GET("monev/departments/:departmentUuid/years/:yearUuid", handlers.UserHandler.GetDepartmentMonev)
-		admin.GET("academic-plans/departments/:departmentUuid/years/:yearUuid", handlers.AcademicPlanHandler.GetDepartment)
-		admin.GET("practical-modules/departments/:departmentUuid/years/:yearUuid", handlers.PracticalModuleHandler.GetByDepartment)
-		admin.GET("practical-tools/departments/:departmentUuid/years/:yearUuid", handlers.PracticalToolHandler.GetByDepartment)
-		admin.GET("teacher-skills/departments/:departmentUuid/years/:yearUuid", handlers.TeacherSkillHandler.GetByDepartment)
-		admin.GET("facility-conditions/departments/:departmentUuid/years/:yearUuid", handlers.FacilityConditionHandler.GetByDepartment)
-		admin.GET("teacher-attendences/departments/:departmentUuid/years/:yearUuid", handlers.MiddleMonevHandler.GetTeacherAttendencesByDepartment)
-		admin.GET("student-attendences/departments/:departmentUuid/years/:yearUuid", handlers.MiddleMonevHandler.GetStudentAttendencesByDepartment)
+		admin.POST("users", handlers.UserHandler.CreateUser)
+		admin.GET("users", handlers.UserHandler.GetUsers)
+		admin.GET("users/roles", handlers.UserHandler.GetRoles)
+
 	}
 
 	return router

@@ -6,6 +6,11 @@ type User struct {
 	Role     string `json:"role"`
 }
 
+type Role struct {
+	Uuid string `json:"uuid"`
+	Name string `json:"name"`
+}
+
 type SubjectsCount struct {
 	General   int `json:"general"`
 	Practical int `json:"practical"`

@@ -31,7 +31,7 @@ func IsNowInRange(rangeString string) bool {
 		return false
 	}
 
-	lokasi, err := time.LoadLocation("Asia/Jakarta")
+	lokasi, err := time.LoadLocation("Asia/Makassar")
 	if err != nil {
 		return false
 	}

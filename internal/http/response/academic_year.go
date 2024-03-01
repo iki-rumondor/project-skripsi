@@ -18,7 +18,6 @@ type AcademicYear struct {
 	Year            string             `json:"year"`
 	Semester        string             `json:"semester"`
 	Status          string             `json:"status"`
-	Open            bool               `json:"open"`
 	AcademicPlan    *[]AcademicPlan    `json:"academic_plans"`
 	PracticalTool   *[]PracticalTool   `json:"practical_tools"`
 	PracticalModule *[]PracticalModule `json:"practical_modules"`
