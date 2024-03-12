@@ -32,9 +32,9 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.A
 		return response.SERVICE_INTERR
 	}
 
-	if subject.Department.User.Uuid != userUuid {
-		return response.NOTFOUND_ERR("RPS Tidak Ditemukan")
-	}
+	// if subject.Department.User.Uuid != userUuid {
+	// 	return response.NOTFOUND_ERR("RPS Tidak Ditemukan")
+	// }
 
 	academic_year, err := s.Repo.FindAcademicYearBy("uuid", req.AcademicYearUuid)
 	if err != nil {
