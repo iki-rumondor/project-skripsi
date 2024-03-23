@@ -22,12 +22,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	public := router.Group("api")
 	{
 		public.POST("signin", handlers.UserHandler.SignIn)
-
+		public.GET("chart/departments/year/:yearUuid", handlers.UserHandler.GetDepartmentsChart)
+		public.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
 	}
-
+	
 	user := router.Group("api").Use(middleware.IsValidJWT())
 	{
-		user.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
 		user.GET("academic-years/:uuid", handlers.AcademicYearHandler.GetAcademicYear)
 		user.GET("dashboards", handlers.UserHandler.GetDashboardAdmin)
 		user.GET("settings", handlers.UserHandler.GetSettings)

@@ -17,6 +17,7 @@ type UserHandlerInterface interface {
 	GetUsers(*gin.Context)
 	CreateUser(*gin.Context)
 	GetRoles(*gin.Context)
+	GetDepartmentsChart(*gin.Context)
 }
 
 type UserServiceInterface interface {
@@ -29,6 +30,7 @@ type UserServiceInterface interface {
 	Update(id uint, tableName, column string, value interface{}) error
 	GetAll(tableName string) ([]map[string]interface{}, error)
 	CreateUser(req *request.CreateUser) error
+	GetDepartmentsChart(yearUuid string) (map[string]interface{}, error)
 }
 
 type UserRepoInterface interface {
@@ -41,4 +43,6 @@ type UserRepoInterface interface {
 	GetOne(tableName, column string, value interface{}) (map[string]interface{}, error)
 	Update(id uint, tableName, column string, value interface{}) error
 	CreateUser(model *models.User) error
+	First(dest interface{}, condition string) error
+	FindDepartments(dest *[]models.Department) error
 }

@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/iki-rumondor/go-monev/internal/http/request"
@@ -206,4 +207,38 @@ func (s *UserService) CreateUser(req *request.CreateUser) error {
 	}
 
 	return nil
+}
+
+func (s *UserService) GetDepartmentsChart(yearUuid string) (map[string]interface{}, error) {
+	var model models.AcademicYear
+	condition := fmt.Sprintf("uuid = '%s'", yearUuid)
+	if err := s.Repo.First(&model, condition); err != nil {
+		return nil, response.BADREQ_ERR("Tahun Ajaran Tidak Ditemukan")
+	}
+	var departments []models.Department
+	if err := s.Repo.FindDepartments(&departments); err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var depNames []string
+	var subjects []int
+	var rps []int
+	for _, item := range departments {
+		var rpsAmount int
+		depNames = append(depNames, item.Name)
+		subjects = append(subjects, len(*item.Subjects))
+		for _, item := range *item.Subjects {
+			if item.AcademicPlan != nil && *item.AcademicPlan.Available {
+				rpsAmount++
+			}
+		}
+		rps = append(rps, rpsAmount)
+	}
+
+	resp := map[string]interface{}{
+		"departments": depNames,
+		"subjects":    subjects,
+		"rps":         rps,
+	}
+	return resp, nil
 }

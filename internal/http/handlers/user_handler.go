@@ -252,3 +252,15 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, response.SUCCESS_RES("Pengguna Berhasil Ditambahkan"))
 }
+
+func (h *UserHandler) GetDepartmentsChart(c *gin.Context) {
+
+	yearUuid := c.Param("yearUuid")
+	resp, err := h.Service.GetDepartmentsChart(yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.DATA_RES(resp))
+}

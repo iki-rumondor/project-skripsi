@@ -136,3 +136,11 @@ func (r *UserRepository) GetOne(tableName, column string, value interface{}) (ma
 func (r *UserRepository) CreateUser(model *models.User) error {
 	return r.db.Create(model).Error
 }
+
+func (r *UserRepository) First(dest interface{}, condition string) error {
+	return r.db.First(dest, condition).Error
+}
+
+func (r *UserRepository) FindDepartments(dest *[]models.Department) error {
+	return r.db.Preload("Subjects.AcademicPlan").Find(dest).Error
+}
