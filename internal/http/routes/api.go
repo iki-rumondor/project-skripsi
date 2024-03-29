@@ -23,6 +23,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	{
 		public.POST("signin", handlers.UserHandler.SignIn)
 		public.GET("chart/departments/year/:yearUuid", handlers.UserHandler.GetDepartmentsChart)
+		public.GET("academic-years/current", handlers.UserHandler.GetCurrentAcademicYear)
 		public.GET("academic-years", handlers.AcademicYearHandler.GetAllAcademicYears)
 	}
 	

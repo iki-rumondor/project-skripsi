@@ -44,6 +44,9 @@ func (s *AcademicYearService) CreateAcademicYear(req *request.AcademicYear) erro
 
 	if err := s.Repo.CreateAcademicYear(&model); err != nil {
 		log.Println(err.Error())
+		if utils.IsErrorType(err){
+			return err
+		}
 		return response.SERVICE_INTERR
 	}
 	return nil

@@ -145,7 +145,7 @@ func (s *UserService) CountMonevByYear(userUuid, yearUuid string) (map[string]in
 	return result, nil
 }
 
-func (s *UserService) CountDepartmentMonev(departmentUuid, yearUuid string) (map[string]int, error) {
+func (s *UserService) CountDepartmentMonev(departmentUuid, yearUuid string) (map[string]interface{}, error) {
 
 	department, err := s.Repo.GetOne("departments", "uuid", departmentUuid)
 	if err != nil {
@@ -166,7 +166,51 @@ func (s *UserService) CountDepartmentMonev(departmentUuid, yearUuid string) (map
 		return nil, response.SERVICE_INTERR
 	}
 
-	return result, nil
+	var subjects []models.Subject
+	condition := fmt.Sprintf("department_id = '%d'", departmentID)
+	if err := s.Repo.Find(&subjects, condition); err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var teacherSkill []models.TeacherSkill
+	if err := s.Repo.FindTeacherSkills(&teacherSkill, uint(departmentID), uint(yearID)); err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var skills string
+	for _, item := range teacherSkill {
+		skills += item.Skill + " "
+	}
+
+	resp := map[string]interface{}{
+		"first_monev": []int{
+			result["plans"],
+			result["modules"],
+			result["tools"],
+			result["skills"],
+			result["facilities"],
+		},
+		"middle_monev": []int{
+			result["t_att"],
+			result["s_att"],
+			result["mid_plans"],
+		},
+		"middle_last_monev": []int{
+			result["lt_att"],
+			result["ls_att"],
+			result["last_plans"],
+		},
+		"last_monev": []int{
+			result["final"],
+			result["passed"],
+			result["grade"],
+		},
+		"subjects":       len(subjects),
+		"plansAvailable": result["plansAvailable"],
+		"skills":         skills,
+	}
+
+	return resp, nil
 }
 
 func (s *UserService) Update(id uint, tableName, column string, value interface{}) error {
@@ -215,6 +259,7 @@ func (s *UserService) GetDepartmentsChart(yearUuid string) (map[string]interface
 	if err := s.Repo.First(&model, condition); err != nil {
 		return nil, response.BADREQ_ERR("Tahun Ajaran Tidak Ditemukan")
 	}
+
 	var departments []models.Department
 	if err := s.Repo.FindDepartments(&departments); err != nil {
 		return nil, response.SERVICE_INTERR
@@ -228,7 +273,7 @@ func (s *UserService) GetDepartmentsChart(yearUuid string) (map[string]interface
 		depNames = append(depNames, item.Name)
 		subjects = append(subjects, len(*item.Subjects))
 		for _, item := range *item.Subjects {
-			if item.AcademicPlan != nil && *item.AcademicPlan.Available {
+			if item.AcademicPlan != nil && *item.AcademicPlan.Available && item.AcademicPlan.AcademicYearID == model.ID {
 				rpsAmount++
 			}
 		}
@@ -241,4 +286,38 @@ func (s *UserService) GetDepartmentsChart(yearUuid string) (map[string]interface
 		"rps":         rps,
 	}
 	return resp, nil
+}
+
+func (s *UserService) GetCurrentAcademicYear() (*response.AcademicYear, error) {
+	var year models.AcademicYear
+	if err := s.Repo.FirstWithOrder(&year, "", "year desc, semester desc"); err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	first := utils.AddDate(year.FirstDate, year.FirstDays)
+	middle := utils.AddDate(year.MiddleDate, year.MiddleDays)
+	middle_last := utils.AddDate(year.MiddleLastDate, year.MiddleLastDays)
+	last := utils.AddDate(year.LastDate, year.LastDays)
+
+	resp := response.AcademicYear{
+		Uuid:            year.Uuid,
+		Semester:        year.Semester,
+		Year:            year.Year,
+		FirstDate:       year.FirstDate,
+		MiddleDate:      year.MiddleDate,
+		MiddleLastDate:  year.MiddleLastDate,
+		LastDate:        year.LastDate,
+		FirstDays:       year.FirstDays,
+		MiddleDays:      year.MiddleDays,
+		MiddleLastDays:  year.MiddleLastDays,
+		LastDays:        year.LastDays,
+		FirstRange:      first,
+		MiddleRange:     middle,
+		MiddleLastRange: middle_last,
+		LastRange:       last,
+		CreatedAt:       year.CreatedAt,
+		UpdatedAt:       year.UpdatedAt,
+	}
+
+	return &resp, nil
 }

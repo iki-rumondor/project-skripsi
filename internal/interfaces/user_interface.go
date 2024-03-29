@@ -3,6 +3,7 @@ package interfaces
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-monev/internal/http/request"
+	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/models"
 )
 
@@ -18,6 +19,7 @@ type UserHandlerInterface interface {
 	CreateUser(*gin.Context)
 	GetRoles(*gin.Context)
 	GetDepartmentsChart(*gin.Context)
+	GetCurrentAcademicYear(*gin.Context)
 }
 
 type UserServiceInterface interface {
@@ -26,11 +28,12 @@ type UserServiceInterface interface {
 	GetUser(column string, value interface{}) (*models.User, error)
 	GetAllUser() (*[]models.User, error)
 	CountMonevByYear(userUuid, yearUuid string) (map[string]int, error)
-	CountDepartmentMonev(departmentUuid, yearUuid string) (map[string]int, error)
+	CountDepartmentMonev(departmentUuid, yearUuid string) (map[string]interface{}, error)
 	Update(id uint, tableName, column string, value interface{}) error
 	GetAll(tableName string) ([]map[string]interface{}, error)
 	CreateUser(req *request.CreateUser) error
 	GetDepartmentsChart(yearUuid string) (map[string]interface{}, error)
+	GetCurrentAcademicYear() (*response.AcademicYear, error)
 }
 
 type UserRepoInterface interface {
@@ -44,5 +47,8 @@ type UserRepoInterface interface {
 	Update(id uint, tableName, column string, value interface{}) error
 	CreateUser(model *models.User) error
 	First(dest interface{}, condition string) error
+	Find(dest interface{}, condition string) error
 	FindDepartments(dest *[]models.Department) error
+	FirstWithOrder(dest interface{}, condition, order string) error
+	FindTeacherSkills(dest *[]models.TeacherSkill, departmentID, yearID uint) error
 }

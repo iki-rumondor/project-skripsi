@@ -9,7 +9,7 @@ import (
 type Subject struct {
 	ID              uint   `gorm:"primaryKey"`
 	Uuid            string `gorm:"not_null;unique;size:64"`
-	Name            string `gorm:"not_null;size:32"`
+	Name            string `gorm:"not_null;size:64"`
 	Code            string `gorm:"not_null;size:16"`
 	DepartmentID    uint   `gorm:"not_null"`
 	CreatedAt       int64  `gorm:"autoCreateTime:milli"`

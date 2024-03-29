@@ -165,32 +165,7 @@ func (h *UserHandler) GetDepartmentMonev(c *gin.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{
-		"first_monev": []int{
-			result["plans"],
-			result["modules"],
-			result["tools"],
-			result["skills"],
-			result["facilities"],
-		},
-		"middle_monev": []int{
-			result["t_att"],
-			result["s_att"],
-			result["mid_plans"],
-		},
-		"middle_last_monev": []int{
-			result["lt_att"],
-			result["ls_att"],
-			result["last_plans"],
-		},
-		"last_monev": []int{
-			result["final"],
-			result["passed"],
-			result["grade"],
-		},
-	}
-
-	c.JSON(http.StatusOK, response.DATA_RES(resp))
+	c.JSON(http.StatusOK, response.DATA_RES(result))
 }
 
 func (h *UserHandler) UpdateStepMonev(c *gin.Context) {
@@ -257,6 +232,17 @@ func (h *UserHandler) GetDepartmentsChart(c *gin.Context) {
 
 	yearUuid := c.Param("yearUuid")
 	resp, err := h.Service.GetDepartmentsChart(yearUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.DATA_RES(resp))
+}
+
+func (h *UserHandler) GetCurrentAcademicYear(c *gin.Context) {
+
+	resp, err := h.Service.GetCurrentAcademicYear()
 	if err != nil {
 		utils.HandleError(c, err)
 		return

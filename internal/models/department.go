@@ -11,7 +11,7 @@ type Department struct {
 	MajorID   uint   `gorm:"not_null"`
 	UserID    uint   `gorm:"not_null"`
 	Name      string `gorm:"not_null;size:32"`
-	Head      string `gorm:"not_null;size:32"`
+	Head      string `gorm:"not_null;size:64"`
 	CreatedAt int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt int64  `gorm:"autoCreateTime:milli; autoUpdateTime:milli"`
 	Major     *Major

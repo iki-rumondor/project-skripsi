@@ -58,6 +58,7 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	teachers := r.db.Model(&models.Teacher{}).Where("department_id = ?", departmentID).Select("id")
 
 	var plans []models.AcademicPlan
+	var plansAvailable []models.AcademicPlan
 	var modules []models.PracticalModule
 	var tools []models.PracticalTool
 	var skills []models.TeacherSkill
@@ -76,6 +77,7 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	var grade []models.TeacherAttendence
 
 	r.db.Find(&plans, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
+	r.db.Find(&plansAvailable, "subject_id IN (?) AND academic_year_id = ? AND available = ?", subjects, yearID, true)
 	r.db.Find(&modules, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&tools, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&skills, "teacher_id IN (?) AND academic_year_id = ?", teachers, yearID)
@@ -94,20 +96,21 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	r.db.Find(&grade, "subject_id IN (?) AND academic_year_id = ? AND grade_on_time = ?", subjects, yearID, true)
 
 	res := map[string]int{
-		"plans":      len(plans),
-		"modules":    len(modules),
-		"tools":      len(tools),
-		"skills":     len(skills),
-		"facilities": len(facilities),
-		"t_att":      len(teacherAttendeces),
-		"s_att":      len(studentAttendeces),
-		"mid_plans":  len(academicPlans),
-		"lt_att":     len(teacherAttendeces),
-		"ls_att":     len(studentAttendeces),
-		"last_plans": len(academicPlans),
-		"passed":     len(studentPassed),
-		"final":      len(studentFinal),
-		"grade":      len(grade),
+		"plans":          len(plans),
+		"plansAvailable": len(plansAvailable),
+		"modules":        len(modules),
+		"tools":          len(tools),
+		"skills":         len(skills),
+		"facilities":     len(facilities),
+		"t_att":          len(teacherAttendeces),
+		"s_att":          len(studentAttendeces),
+		"mid_plans":      len(academicPlans),
+		"lt_att":         len(teacherAttendeces),
+		"ls_att":         len(studentAttendeces),
+		"last_plans":     len(academicPlans),
+		"passed":         len(studentPassed),
+		"final":          len(studentFinal),
+		"grade":          len(grade),
 	}
 
 	return res, nil
@@ -141,6 +144,19 @@ func (r *UserRepository) First(dest interface{}, condition string) error {
 	return r.db.First(dest, condition).Error
 }
 
+func (r *UserRepository) Find(dest interface{}, condition string) error {
+	return r.db.Find(dest, condition).Error
+}
+
 func (r *UserRepository) FindDepartments(dest *[]models.Department) error {
 	return r.db.Preload("Subjects.AcademicPlan").Find(dest).Error
+}
+
+func (r *UserRepository) FindTeacherSkills(dest *[]models.TeacherSkill, departmentID, yearID uint) error {
+	teachers := r.db.Model(&models.Teacher{}).Where("department_id = ?", departmentID).Select("id")
+	return r.db.Find(dest, "teacher_id IN (?) AND academic_year_id = ?", teachers, yearID).Error
+}
+
+func (r *UserRepository) FirstWithOrder(dest interface{}, condition, order string) error {
+	return r.db.Order(order).First(dest, condition).Error
 }

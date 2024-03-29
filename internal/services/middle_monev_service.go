@@ -190,6 +190,10 @@ func (s *MiddleMonevService) UpdateStudentAttendence(userUuid, uuid string, mode
 		return err
 	}
 
+	if result.StudentAmount < model.Last {
+		return response.BADREQ_ERR("Jumlah Mahasiswa Hadir Tidak Boleh Lebih Dari Jumlah Seluruh Mahasiswa")
+	}
+
 	model.ID = result.ID
 
 	if err := s.Repo.UpdateStudentAttendence(model); err != nil {

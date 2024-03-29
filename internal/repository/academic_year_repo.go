@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
 	"gorm.io/gorm"
@@ -37,6 +38,9 @@ func (r *AcademicYearRepository) FindAcademicYearBy(column string, value interfa
 }
 
 func (r *AcademicYearRepository) CreateAcademicYear(model *models.AcademicYear) error {
+	if result := r.db.First(&models.AcademicYear{}, "year = ? AND semester = ?", model.Year, model.Semester).RowsAffected; result > 0 {
+		return response.BADREQ_ERR("Tahun Ajaran Sudah Ada")
+	}
 	return r.db.Create(model).Error
 }
 
