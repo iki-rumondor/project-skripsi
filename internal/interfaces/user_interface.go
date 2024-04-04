@@ -20,6 +20,7 @@ type UserHandlerInterface interface {
 	GetRoles(*gin.Context)
 	GetDepartmentsChart(*gin.Context)
 	GetCurrentAcademicYear(*gin.Context)
+	// GetTeacherAttendanceClasses(*gin.Context)
 }
 
 type UserServiceInterface interface {
@@ -34,6 +35,7 @@ type UserServiceInterface interface {
 	CreateUser(req *request.CreateUser) error
 	GetDepartmentsChart(yearUuid string) (map[string]interface{}, error)
 	GetCurrentAcademicYear() (*response.AcademicYear, error)
+	// GetTeacherAttendanceClasses() ([]string, error)
 }
 
 type UserRepoInterface interface {

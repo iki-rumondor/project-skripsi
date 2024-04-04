@@ -9,6 +9,7 @@ import (
 	"github.com/iki-rumondor/go-monev/internal/http/response"
 	"github.com/iki-rumondor/go-monev/internal/interfaces"
 	"github.com/iki-rumondor/go-monev/internal/models"
+	"github.com/iki-rumondor/go-monev/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -48,10 +49,14 @@ func (s *MiddleMonevService) CreateTeacherAttendence(userUuid string, req *reque
 		AcademicYearID: academicYear.ID,
 		TeacherID:      teacher.ID,
 		Middle:         uint(middle),
+		Class:          req.Class,
 	}
 
 	if err := s.Repo.CreateTeacherAttendence(&model); err != nil {
 		log.Println(err.Error())
+		if utils.IsErrorType(err) {
+			return err
+		}
 		return response.SERVICE_INTERR
 	}
 
@@ -83,10 +88,14 @@ func (s *MiddleMonevService) CreateStudentAttendence(userUuid string, req *reque
 		AcademicYearID: academicYear.ID,
 		Middle:         uint(middle),
 		StudentAmount:  uint(students),
+		Class:          req.Class,
 	}
 
 	if err := s.Repo.CreateStudentAttendence(&model); err != nil {
 		log.Println(err.Error())
+		if utils.IsErrorType(err) {
+			return err
+		}
 		return response.SERVICE_INTERR
 	}
 

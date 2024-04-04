@@ -60,6 +60,7 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	var plans []models.AcademicPlan
 	var plansAvailable []models.AcademicPlan
 	var modules []models.PracticalModule
+	var modulesAvailable []models.PracticalModule
 	var tools []models.PracticalTool
 	var skills []models.TeacherSkill
 	var facilities []models.FacilityCondition
@@ -79,6 +80,7 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	r.db.Find(&plans, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&plansAvailable, "subject_id IN (?) AND academic_year_id = ? AND available = ?", subjects, yearID, true)
 	r.db.Find(&modules, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
+	r.db.Find(&modulesAvailable, "subject_id IN (?) AND academic_year_id = ? AND available = ?", subjects, yearID, true)
 	r.db.Find(&tools, "subject_id IN (?) AND academic_year_id = ?", subjects, yearID)
 	r.db.Find(&skills, "teacher_id IN (?) AND academic_year_id = ?", teachers, yearID)
 	r.db.Find(&facilities, "facility_id IN (?) AND academic_year_id = ?", fas, yearID)
@@ -96,21 +98,22 @@ func (r *UserRepository) CountMonevByYear(departmentID, yearID uint) (map[string
 	r.db.Find(&grade, "subject_id IN (?) AND academic_year_id = ? AND grade_on_time = ?", subjects, yearID, true)
 
 	res := map[string]int{
-		"plans":          len(plans),
-		"plansAvailable": len(plansAvailable),
-		"modules":        len(modules),
-		"tools":          len(tools),
-		"skills":         len(skills),
-		"facilities":     len(facilities),
-		"t_att":          len(teacherAttendeces),
-		"s_att":          len(studentAttendeces),
-		"mid_plans":      len(academicPlans),
-		"lt_att":         len(teacherAttendeces),
-		"ls_att":         len(studentAttendeces),
-		"last_plans":     len(academicPlans),
-		"passed":         len(studentPassed),
-		"final":          len(studentFinal),
-		"grade":          len(grade),
+		"plans":            len(plans),
+		"plansAvailable":   len(plansAvailable),
+		"modules":          len(modules),
+		"modulesAvailable": len(modulesAvailable),
+		"tools":            len(tools),
+		"skills":           len(skills),
+		"facilities":       len(facilities),
+		"t_att":            len(teacherAttendeces),
+		"s_att":            len(studentAttendeces),
+		"mid_plans":        len(academicPlans),
+		"lt_att":           len(teacherAttendeces),
+		"ls_att":           len(studentAttendeces),
+		"last_plans":       len(academicPlans),
+		"passed":           len(studentPassed),
+		"final":            len(studentFinal),
+		"grade":            len(grade),
 	}
 
 	return res, nil

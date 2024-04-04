@@ -205,9 +205,11 @@ func (s *UserService) CountDepartmentMonev(departmentUuid, yearUuid string) (map
 			result["passed"],
 			result["grade"],
 		},
-		"subjects":       len(subjects),
-		"plansAvailable": result["plansAvailable"],
-		"skills":         skills,
+		"subjects":         len(subjects),
+		"practical":        len(subjects),
+		"plansAvailable":   result["plansAvailable"],
+		"modulesAvailable": result["modulesAvailable"],
+		"skills":           skills,
 	}
 
 	return resp, nil

@@ -250,3 +250,4 @@ func (h *UserHandler) GetCurrentAcademicYear(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, response.DATA_RES(resp))
 }
+
