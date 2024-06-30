@@ -27,7 +27,7 @@ func (r *PracticalToolRepository) FindPracticalTools(userUuid string, yearID uin
 
 	var result []models.PracticalTool
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -41,7 +41,7 @@ func (r *PracticalToolRepository) FindUserPracticalTool(userUuid, uuid string) (
 	}
 
 	var model models.PracticalTool
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&model, "practical_tools.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&model, "Practical_tools.uuid = ? AND Subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -90,7 +90,7 @@ func (r *PracticalToolRepository) FindDepartment(uuid string) (*models.Departmen
 func (r *PracticalToolRepository) FindByDepartment(departmentID, yearID uint) (*[]models.PracticalTool, error) {
 	var result []models.PracticalTool
 
-	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 

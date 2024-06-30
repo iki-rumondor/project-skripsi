@@ -28,7 +28,7 @@ func (r *MiddleMonevRepository) FindTeacherAttendences(userUuid string, yearID u
 	}
 
 	var result []models.TeacherAttendence
-	if err := r.db.Joins("Subject").Preload("Teacher").Preload("AcademicYear").Order("subject_id desc, class asc").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("Teacher").Preload("AcademicYear").Order("subject_id desc, class asc").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -42,7 +42,7 @@ func (r *MiddleMonevRepository) FindTeacherAttendence(userUuid, uuid string) (*m
 	}
 
 	var result models.TeacherAttendence
-	if err := r.db.Joins("Subject").Preload("Teacher").Preload("AcademicYear").First(&result, "subject.department_id = ? AND teacher_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("Teacher").Preload("AcademicYear").First(&result, "Subject.department_id = ? AND teacher_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
 		return nil, err
 	}
 
@@ -60,7 +60,7 @@ func (r *MiddleMonevRepository) FindStudentAttendences(userUuid string, yearID u
 	}
 
 	var result []models.StudentAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Order("subject_id asc, class asc").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Order("subject_id asc, class asc").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -74,7 +74,7 @@ func (r *MiddleMonevRepository) FindStudentAttendence(userUuid, uuid string) (*m
 	}
 
 	var result models.StudentAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "subject.department_id = ? AND student_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "Subject.department_id = ? AND Student_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
 		return nil, err
 	}
 

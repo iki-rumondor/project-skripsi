@@ -67,7 +67,7 @@ func (r *PdfRepository) FindAcademicPlans(departmentID, yearID uint) (*[]models.
 
 	var result []models.AcademicPlan
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -77,7 +77,7 @@ func (r *PdfRepository) FindAcademicPlans(departmentID, yearID uint) (*[]models.
 func (r *PdfRepository) FindModules(departmentID, yearID uint) (*[]models.PracticalModule, error) {
 	var result []models.PracticalModule
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Preload("Laboratory").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -87,7 +87,7 @@ func (r *PdfRepository) FindModules(departmentID, yearID uint) (*[]models.Practi
 func (r *PdfRepository) FindTools(departmentID, yearID uint) (*[]models.PracticalTool, error) {
 	var result []models.PracticalTool
 
-	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -97,7 +97,7 @@ func (r *PdfRepository) FindTools(departmentID, yearID uint) (*[]models.Practica
 func (r *PdfRepository) FindSkills(departmentID, yearID uint) (*[]models.TeacherSkill, error) {
 	var result []models.TeacherSkill
 
-	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -107,7 +107,7 @@ func (r *PdfRepository) FindSkills(departmentID, yearID uint) (*[]models.Teacher
 func (r *PdfRepository) FindFacilities(departmentID, yearID uint) (*[]models.FacilityCondition, error) {
 	var result []models.FacilityCondition
 
-	if err := r.db.Joins("Facility").Preload(clause.Associations).Find(&result, "facility.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Facility").Preload(clause.Associations).Find(&result, "Facility.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -116,7 +116,7 @@ func (r *PdfRepository) FindFacilities(departmentID, yearID uint) (*[]models.Fac
 
 func (r *PdfRepository) FindStudentAttendences(departmentID, yearID uint) (*[]models.StudentAttendence, error) {
 	var result []models.StudentAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -125,7 +125,7 @@ func (r *PdfRepository) FindStudentAttendences(departmentID, yearID uint) (*[]mo
 
 func (r *PdfRepository) FindTeacherAttendences(departmentID, yearID uint) (*[]models.TeacherAttendence, error) {
 	var result []models.TeacherAttendence
-	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 

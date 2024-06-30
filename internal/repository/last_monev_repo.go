@@ -48,7 +48,7 @@ func (r *LastMonevRepository) FindStudentAttendence(userUuid, uuid string) (*mod
 	}
 
 	var result models.StudentAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "subject.department_id = ? AND student_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "Subject.department_id = ? AND Student_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
 		return nil, err
 	}
 
@@ -62,7 +62,7 @@ func (r *LastMonevRepository) FindTeacherAttendence(userUuid, uuid string) (*mod
 	}
 
 	var result models.TeacherAttendence
-	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "subject.department_id = ? AND teacher_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").First(&result, "Subject.department_id = ? AND Teacher_attendences.uuid = ?", user.Department.ID, uuid).Error; err != nil {
 		return nil, err
 	}
 

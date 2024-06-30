@@ -26,7 +26,7 @@ func (r *TeacherSkillRepository) FindTeacherSkills(userUuid string) (*[]models.T
 	}
 
 	var result []models.TeacherSkill
-	if err := r.db.Joins("Teacher").Preload("Subject").Find(&result, "teacher.department_id = ?", user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Teacher").Preload("Subject").Find(&result, "Teacher.department_id = ?", user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -40,7 +40,7 @@ func (r *TeacherSkillRepository) FindUserTeacherSkill(userUuid, uuid string) (*m
 	}
 
 	var result models.TeacherSkill
-	if err := r.db.Joins("Teacher").Preload("Subject").First(&result, "teacher_skills.uuid = ? AND teacher.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Teacher").Preload("Subject").First(&result, "Teacher_skills.uuid = ? AND Teacher.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -54,7 +54,7 @@ func (r *TeacherSkillRepository) FindTeacherSkillsByYear(userUuid string, yearID
 	}
 
 	var result []models.TeacherSkill
-	if err := r.db.Joins("Teacher").Preload("Subject").Find(&result, "teacher.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Teacher").Preload("Subject").Find(&result, "Teacher.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -112,7 +112,7 @@ func (r *TeacherSkillRepository) FindDepartment(uuid string) (*models.Department
 func (r *TeacherSkillRepository) FindByDepartment(departmentID, yearID uint) (*[]models.TeacherSkill, error) {
 	var result []models.TeacherSkill
 
-	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload(clause.Associations).Find(&result, "Subject.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 

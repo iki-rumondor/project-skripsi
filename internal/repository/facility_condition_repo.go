@@ -27,7 +27,7 @@ func (r *FacilityConditionRepository) FindFacilityConditionsByYear(userUuid stri
 
 	var result []models.FacilityCondition
 
-	if err := r.db.Joins("Facility").Preload("AcademicYear").Find(&result, "facility.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Facility").Preload("AcademicYear").Find(&result, "Facility.department_id = ? AND Academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -58,7 +58,7 @@ func (r *FacilityConditionRepository) FindUserFacilityCondition(userUuid, uuid s
 	}
 
 	var model models.FacilityCondition
-	if err := r.db.Joins("Facility").Preload("AcademicYear").First(&model, "facility_conditions.uuid = ? AND facility.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Joins("Facility").Preload("AcademicYear").First(&model, "Facility_conditions.uuid = ? AND Facility.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -107,7 +107,7 @@ func (r *FacilityConditionRepository) FindDepartment(uuid string) (*models.Depar
 func (r *FacilityConditionRepository) FindByDepartment(departmentID, yearID uint) (*[]models.FacilityCondition, error) {
 	var result []models.FacilityCondition
 
-	if err := r.db.Joins("Facility").Preload(clause.Associations).Find(&result, "facility.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
+	if err := r.db.Joins("Facility").Preload(clause.Associations).Find(&result, "Facility.department_id = ? AND academic_year_id = ?", departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
