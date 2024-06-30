@@ -69,7 +69,7 @@ func (r *AcademicPlanRepository) FirstRps(userUuid, uuid string) (*models.Rps, e
 	}
 
 	var model models.Rps
-	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "Rps.uuid = ? AND Subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "rps.uuid = ? AND Subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
