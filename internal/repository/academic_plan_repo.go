@@ -26,7 +26,7 @@ func (r *AcademicPlanRepository) FindAcademicPlans(userUuid string, yearID uint)
 
 	var result []models.AcademicPlan
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -41,7 +41,7 @@ func (r *AcademicPlanRepository) FindRps(userUuid string, yearID uint) (*[]model
 
 	var result []models.Rps
 
-	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "Subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
 		return nil, err
 	}
 
@@ -55,7 +55,7 @@ func (r *AcademicPlanRepository) FindUserAcademicPlan(userUuid, uuid string) (*m
 	}
 
 	var model models.AcademicPlan
-	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "academic_plans.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "academic_plans.uuid = ? AND Subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -69,7 +69,7 @@ func (r *AcademicPlanRepository) FirstRps(userUuid, uuid string) (*models.Rps, e
 	}
 
 	var model models.Rps
-	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "rps.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "Rps.uuid = ? AND Subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -105,7 +105,7 @@ func (r *AcademicPlanRepository) FindUser(userUuid string) (*models.User, error)
 
 func (r *AcademicPlanRepository) FindBy(departmentID, yearID uint, column string, value interface{}) (*[]models.AcademicPlan, error) {
 	var model []models.AcademicPlan
-	if err := r.db.Preload("AcademicYear").Joins("Subject").Find(&model, fmt.Sprintf("academic_plans.%s = ? AND subject.department_id = ? AND academic_plans.academic_year_id = ?", column), value, departmentID, yearID).Error; err != nil {
+	if err := r.db.Preload("AcademicYear").Joins("Subject").Find(&model, fmt.Sprintf("academic_plans.%s = ? AND Subject.department_id = ? AND Scademic_plans.academic_year_id = ?", column), value, departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
