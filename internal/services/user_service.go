@@ -293,6 +293,9 @@ func (s *UserService) GetDepartmentsChart(yearUuid string) (map[string]interface
 func (s *UserService) GetCurrentAcademicYear() (*response.AcademicYear, error) {
 	var year models.AcademicYear
 	if err := s.Repo.FirstWithOrder(&year, "", "year desc, semester desc"); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, response.NOTFOUND_ERR("Tahun Ajaran Belum Diinputkan Admin")
+		}
 		return nil, response.SERVICE_INTERR
 	}
 
