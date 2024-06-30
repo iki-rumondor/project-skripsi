@@ -25,5 +25,6 @@ func GetAllModels() []Model {
 		{Model: models.TeacherAttendence{}},
 		{Model: models.StudentAttendence{}},
 		{Model: models.Setting{}},
+		{Model: models.Rps{}},
 	}
 }

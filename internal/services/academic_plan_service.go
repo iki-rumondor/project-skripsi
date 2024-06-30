@@ -3,6 +3,8 @@ package services
 import (
 	"errors"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/iki-rumondor/go-monev/internal/http/request"
 	"github.com/iki-rumondor/go-monev/internal/http/response"
@@ -21,7 +23,7 @@ func NewAcademicPlanService(repo interfaces.AcademicPlanRepoInterface) interface
 	}
 }
 
-func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.AcademicPlan) error {
+func (s *AcademicPlanService) CreateAcademicPlan(userUuid, fileName string, req *request.AcademicPlan) error {
 
 	subject, err := s.Repo.FindSubjectBy("uuid", req.SubjectUuid)
 	if err != nil {
@@ -32,10 +34,6 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.A
 		return response.SERVICE_INTERR
 	}
 
-	// if subject.Department.User.Uuid != userUuid {
-	// 	return response.NOTFOUND_ERR("RPS Tidak Ditemukan")
-	// }
-
 	academic_year, err := s.Repo.FindAcademicYearBy("uuid", req.AcademicYearUuid)
 	if err != nil {
 		log.Println(err.Error())
@@ -45,14 +43,28 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.A
 		return response.SERVICE_INTERR
 	}
 
-	model := models.AcademicPlan{
-		Available:      req.Available,
-		Note:           req.Note,
-		SubjectID:      subject.ID,
-		AcademicYearID: academic_year.ID,
+	if !req.Available && req.Note == "" {
+		return response.BADREQ_ERR("Keterangan Tidak Valid")
 	}
 
-	if err := s.Repo.CreateAcademicPlan(&model); err != nil {
+	rps := models.Rps{
+		Status:         req.Available,
+		Note:           &req.Note,
+		FileName:       &fileName,
+		SubjectID:      subject.ID,
+		AcademicYearID: academic_year.ID,
+		Accept:         false,
+	}
+
+	if req.Note == "" {
+		rps.Note = nil
+	}
+
+	if fileName == "" {
+		rps.FileName = nil
+	}
+
+	if err := s.Repo.Create(&rps); err != nil {
 		log.Println(err.Error())
 		return response.SERVICE_INTERR
 	}
@@ -65,8 +77,24 @@ func (s *AcademicPlanService) GetAllAcademicPlans(userUuid, yearUuid string) (*[
 	if err != nil {
 		return nil, err
 	}
-	
+
 	result, err := s.Repo.FindAcademicPlans(userUuid, year.ID)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *AcademicPlanService) GetAllRps(userUuid, yearUuid string) (*[]models.Rps, error) {
+
+	year, err := s.GetAcademicYear(yearUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := s.Repo.FindRps(userUuid, year.ID)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, response.SERVICE_INTERR
@@ -100,6 +128,19 @@ func (s *AcademicPlanService) GetDepartment(departmentUuid, yearUuid string) (*[
 
 func (s *AcademicPlanService) GetAcademicPlan(userUuid, uuid string) (*models.AcademicPlan, error) {
 	result, err := s.Repo.FindUserAcademicPlan(userUuid, uuid)
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, response.NOTFOUND_ERR("RPS Tidak Ditemukan")
+		}
+		return nil, response.SERVICE_INTERR
+	}
+
+	return result, nil
+}
+
+func (s *AcademicPlanService) GetRps(userUuid, uuid string) (*models.Rps, error) {
+	result, err := s.Repo.FirstRps(userUuid, uuid)
 	if err != nil {
 		log.Println(err.Error())
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -172,22 +213,48 @@ func (s *AcademicPlanService) UpdateOne(userUuid, uuid, column string, value int
 	return nil
 }
 
-func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid string, req *request.UpdateAcademicPlan) error {
+func (s *AcademicPlanService) UpdateAcademicPlan(userUuid, uuid, fileName string, req *request.UpdateAcademicPlan) error {
 
-	result, err := s.GetAcademicPlan(userUuid, uuid)
+	result, err := s.GetRps(userUuid, uuid)
 	if err != nil {
 		return err
 	}
 
-	model := models.AcademicPlan{
-		ID:        result.ID,
-		Available: req.Available,
-		Note:      req.Note,
+	if !req.Status && req.Note == "" {
+		return response.BADREQ_ERR("Keterangan Tidak Valid")
 	}
 
-	if err := s.Repo.UpdateAcademicPlan(&model); err != nil {
+	dataUpdate := map[string]interface{}{
+		"status":    req.Status,
+		"note":      req.Note,
+		"file_name": fileName,
+	}
+
+	if req.Note == "" || req.Note == "null" {
+		dataUpdate["note"] = nil
+	}
+
+	if fileName == "" || fileName == "null" {
+		dataUpdate["file_name"] = nil
+	}
+
+	model := models.Rps{
+		ID: result.ID,
+		// Status:   req.Status,
+		// Note:     req.Note,
+		// FileName: fileName,
+	}
+
+	if err := s.Repo.Updates(&model, dataUpdate); err != nil {
 		log.Println(err.Error())
 		return response.SERVICE_INTERR
+	}
+
+	if result.FileName != nil {
+		pathFile := filepath.Join("internal/files/rps", *result.FileName)
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
 	}
 
 	return nil

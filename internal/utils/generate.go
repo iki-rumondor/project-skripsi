@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
+	"mime/multipart"
+	"strings"
 	"time"
 )
 
@@ -14,4 +17,12 @@ func GenerateRandomString(length int) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+func RandomFileName(file *multipart.FileHeader) string {
+
+	fileExt := strings.ToLower(file.Filename[strings.LastIndex(file.Filename, ".")+1:])
+	randString := GenerateRandomString(12)
+
+	return fmt.Sprintf("%s.%s", randString, fileExt)
 }

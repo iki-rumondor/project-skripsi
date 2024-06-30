@@ -2,7 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
@@ -24,7 +27,7 @@ func NewAcademicPlanHandler(service interfaces.AcademicPlanServiceInterface) int
 
 func (h *AcademicPlanHandler) CreateAcademicPlan(c *gin.Context) {
 	var body request.AcademicPlan
-	if err := c.BindJSON(&body); err != nil {
+	if err := c.Bind(&body); err != nil {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
@@ -34,14 +37,35 @@ func (h *AcademicPlanHandler) CreateAcademicPlan(c *gin.Context) {
 		return
 	}
 
+	var fileName, pathFile string
+
+	if body.Available {
+		file, _ := c.FormFile("rps_file")
+		if file == nil {
+			utils.HandleError(c, response.BADREQ_ERR("File Rps tidak ditemukan"))
+			return
+		}
+		fileName = utils.RandomFileName(file)
+		tempFolder := "internal/files/rps"
+		pathFile = filepath.Join(tempFolder, fileName)
+
+		if err := c.SaveUploadedFile(file, pathFile); err != nil {
+			utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+			return
+		}
+	}
+
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
 
-	if err := h.Service.CreateAcademicPlan(userUuid, &body); err != nil {
+	if err := h.Service.CreateAcademicPlan(userUuid, fileName, &body); err != nil {
 		utils.HandleError(c, err)
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
 
@@ -56,21 +80,20 @@ func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 	}
 	yearUuid := c.Param("yearUuid")
 
-	result, err := h.Service.GetAllAcademicPlans(userUuid, yearUuid)
+	result, err := h.Service.GetAllRps(userUuid, yearUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	var resp []*response.AcademicPlan
+	var resp []*response.Rps
 	for _, item := range *result {
 		yearName := fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year)
-		resp = append(resp, &response.AcademicPlan{
-			Uuid:      item.Uuid,
-			Available: item.Available,
-			Note:      item.Note,
-			Middle:    item.Middle,
-			Last:      item.Last,
+		resp = append(resp, &response.Rps{
+			Uuid:     item.Uuid,
+			Status:   item.Status,
+			Note:     item.Note,
+			FileName: item.FileName,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
 				Name: yearName,
@@ -131,7 +154,7 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
-	result, err := h.Service.GetAcademicPlan(userUuid, uuid)
+	result, err := h.Service.GetRps(userUuid, uuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -139,12 +162,11 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 
 	yearName := fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year)
 
-	resp := &response.AcademicPlan{
-		Uuid:      result.Uuid,
-		Available: result.Available,
-		Note:      result.Note,
-		Middle:    result.Middle,
-		Last:      result.Last,
+	resp := &response.Rps{
+		Uuid:     result.Uuid,
+		Status:   result.Status,
+		Note:     result.Note,
+		FileName: result.FileName,
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
 			Name: yearName,
@@ -204,7 +226,7 @@ func (h *AcademicPlanHandler) GetMiddle(c *gin.Context) {
 
 func (h *AcademicPlanHandler) UpdateAcademicPlan(c *gin.Context) {
 	var body request.UpdateAcademicPlan
-	if err := c.BindJSON(&body); err != nil {
+	if err := c.Bind(&body); err != nil {
 		utils.HandleError(c, &response.Error{
 			Code:    400,
 			Message: err.Error(),
@@ -217,6 +239,24 @@ func (h *AcademicPlanHandler) UpdateAcademicPlan(c *gin.Context) {
 		return
 	}
 
+	var fileName, pathFile string
+
+	if body.Status {
+		file, _ := c.FormFile("rps_file")
+		if file == nil {
+			utils.HandleError(c, response.BADREQ_ERR("File Rps tidak ditemukan"))
+			return
+		}
+		fileName = utils.RandomFileName(file)
+		tempFolder := "internal/files/rps"
+		pathFile = filepath.Join(tempFolder, fileName)
+
+		if err := c.SaveUploadedFile(file, pathFile); err != nil {
+			utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+			return
+		}
+	}
+
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
 		utils.HandleError(c, response.HANDLER_INTERR)
@@ -224,10 +264,14 @@ func (h *AcademicPlanHandler) UpdateAcademicPlan(c *gin.Context) {
 	}
 
 	uuid := c.Param("uuid")
-	if err := h.Service.UpdateAcademicPlan(userUuid, uuid, &body); err != nil {
+	if err := h.Service.UpdateAcademicPlan(userUuid, uuid, fileName, &body); err != nil {
 		utils.HandleError(c, err)
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
 		return
 	}
+
 	c.JSON(http.StatusOK, response.SUCCESS_RES("RPS Berhasil Diperbarui"))
 }
 

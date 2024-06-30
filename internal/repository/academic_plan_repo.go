@@ -33,6 +33,21 @@ func (r *AcademicPlanRepository) FindAcademicPlans(userUuid string, yearID uint)
 	return &result, nil
 }
 
+func (r *AcademicPlanRepository) FindRps(userUuid string, yearID uint) (*[]models.Rps, error) {
+	var user models.User
+	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var result []models.Rps
+
+	if err := r.db.Joins("Subject").Preload("AcademicYear").Find(&result, "subject.department_id = ? AND academic_year_id = ?", user.Department.ID, yearID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func (r *AcademicPlanRepository) FindUserAcademicPlan(userUuid, uuid string) (*models.AcademicPlan, error) {
 	var user models.User
 	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
@@ -41,6 +56,20 @@ func (r *AcademicPlanRepository) FindUserAcademicPlan(userUuid, uuid string) (*m
 
 	var model models.AcademicPlan
 	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "academic_plans.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
+
+func (r *AcademicPlanRepository) FirstRps(userUuid, uuid string) (*models.Rps, error) {
+	var user models.User
+	if err := r.db.Preload("Department").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var model models.Rps
+	if err := r.db.Preload("AcademicYear").Joins("Subject").First(&model, "rps.uuid = ? AND subject.department_id = ?", uuid, user.Department.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -83,7 +112,7 @@ func (r *AcademicPlanRepository) FindBy(departmentID, yearID uint, column string
 	return &model, nil
 }
 
-func (r *AcademicPlanRepository) CreateAcademicPlan(model *models.AcademicPlan) error {
+func (r *AcademicPlanRepository) CreateAcademicPlan(model *models.Rps) error {
 	return r.db.Create(model).Error
 }
 
@@ -106,4 +135,12 @@ func (r *AcademicPlanRepository) FindDepartmentBy(column string, value interface
 	}
 
 	return &department, nil
+}
+
+func (r *AcademicPlanRepository) Updates(model interface{}, data map[string]interface{}) error {
+	return r.db.Model(model).Updates(data).Error
+}
+
+func (r *AcademicPlanRepository) Create(model interface{}) error {
+	return r.db.Create(model).Error
 }
