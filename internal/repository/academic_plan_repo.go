@@ -105,7 +105,7 @@ func (r *AcademicPlanRepository) FindUser(userUuid string) (*models.User, error)
 
 func (r *AcademicPlanRepository) FindBy(departmentID, yearID uint, column string, value interface{}) (*[]models.AcademicPlan, error) {
 	var model []models.AcademicPlan
-	if err := r.db.Preload("AcademicYear").Joins("Subject").Find(&model, fmt.Sprintf("Academic_plans.%s = ? AND Subject.department_id = ? AND Academic_plans.academic_year_id = ?", column), value, departmentID, yearID).Error; err != nil {
+	if err := r.db.Preload("AcademicYear").Joins("Subject").Find(&model, fmt.Sprintf("academic_plans.%s = ? AND subject.department_id = ? AND academic_plans.academic_year_id = ?", column), value, departmentID, yearID).Error; err != nil {
 		return nil, err
 	}
 
