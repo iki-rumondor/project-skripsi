@@ -1,10 +1,10 @@
 package request
 
 type AcademicPlan struct {
-	Available        bool   `form:"available"`
-	Note             string `form:"note"`
-	SubjectUuid      string `form:"subject_uuid" valid:"required~field subject_uuid tidak ditemukan"`
-	AcademicYearUuid string `form:"academic_year_uuid" valid:"required~field academic_year_uuid tidak ditemukan"`
+	Available        bool   `json:"available"`
+	Note             string `json:"note"`
+	SubjectUuid      string `json:"subject_uuid" valid:"required~field subject_uuid tidak ditemukan"`
+	AcademicYearUuid string `json:"academic_year_uuid" valid:"required~field academic_year_uuid tidak ditemukan"`
 }
 
 type UpdateAcademicPlan struct {

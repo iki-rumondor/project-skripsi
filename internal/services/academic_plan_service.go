@@ -23,7 +23,7 @@ func NewAcademicPlanService(repo interfaces.AcademicPlanRepoInterface) interface
 	}
 }
 
-func (s *AcademicPlanService) CreateAcademicPlan(userUuid, fileName string, req *request.AcademicPlan) error {
+func (s *AcademicPlanService) CreateAcademicPlan(userUuid string, req *request.AcademicPlan) error {
 
 	subject, err := s.Repo.FindSubjectBy("uuid", req.SubjectUuid)
 	if err != nil {
@@ -47,21 +47,11 @@ func (s *AcademicPlanService) CreateAcademicPlan(userUuid, fileName string, req 
 		return response.BADREQ_ERR("Keterangan Tidak Valid")
 	}
 
-	rps := models.Rps{
-		Status:         req.Available,
-		Note:           &req.Note,
-		FileName:       &fileName,
+	rps := models.AcademicPlan{
+		Available:      &req.Available,
+		Note:           req.Note,
 		SubjectID:      subject.ID,
 		AcademicYearID: academic_year.ID,
-		Accept:         false,
-	}
-
-	if req.Note == "" {
-		rps.Note = nil
-	}
-
-	if fileName == "" {
-		rps.FileName = nil
 	}
 
 	if err := s.Repo.Create(&rps); err != nil {

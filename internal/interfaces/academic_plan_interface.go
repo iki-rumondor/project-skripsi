@@ -20,7 +20,7 @@ type AcademicPlanHandlerInterface interface {
 }
 
 type AcademicPlanServiceInterface interface {
-	CreateAcademicPlan(userUuid, fileName string, req *request.AcademicPlan) error
+	CreateAcademicPlan(userUuid string, req *request.AcademicPlan) error
 	GetAllAcademicPlans(userUuid, yearUuid string) (*[]models.AcademicPlan, error)
 	GetAcademicPlan(userUuid, uuid string) (*models.AcademicPlan, error)
 	UpdateAcademicPlan(userUuid, uuid, fileName string, req *request.UpdateAcademicPlan) error

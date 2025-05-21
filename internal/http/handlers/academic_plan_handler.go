@@ -37,40 +37,66 @@ func (h *AcademicPlanHandler) CreateAcademicPlan(c *gin.Context) {
 		return
 	}
 
-	var fileName, pathFile string
-
-	if body.Available {
-		file, _ := c.FormFile("rps_file")
-		if file == nil {
-			utils.HandleError(c, response.BADREQ_ERR("File Rps tidak ditemukan"))
-			return
-		}
-		fileName = utils.RandomFileName(file)
-		tempFolder := "internal/files/rps"
-		pathFile = filepath.Join(tempFolder, fileName)
-
-		if err := c.SaveUploadedFile(file, pathFile); err != nil {
-			utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-			return
-		}
-	}
-
 	userUuid := c.GetString("uuid")
 	if userUuid == "" {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
 
-	if err := h.Service.CreateAcademicPlan(userUuid, fileName, &body); err != nil {
+	if err := h.Service.CreateAcademicPlan(userUuid, &body); err != nil {
 		utils.HandleError(c, err)
-		if err := os.Remove(pathFile); err != nil {
-			log.Println(err.Error())
-		}
 		return
 	}
 
 	c.JSON(http.StatusCreated, response.SUCCESS_RES("RPS Berhasil Ditambahkan"))
 }
+
+// func (h *AcademicPlanHandler) CreateAcademicPlan(c *gin.Context) {
+// 	var body request.AcademicPlan
+// 	if err := c.Bind(&body); err != nil {
+// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 		return
+// 	}
+
+// 	if _, err := govalidator.ValidateStruct(&body); err != nil {
+// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 		return
+// 	}
+
+// 	var fileName, pathFile string
+
+// 	if body.Available {
+// 		file, _ := c.FormFile("rps_file")
+// 		if file == nil {
+// 			utils.HandleError(c, response.BADREQ_ERR("File Rps tidak ditemukan"))
+// 			return
+// 		}
+// 		fileName = utils.RandomFileName(file)
+// 		tempFolder := "internal/files/rps"
+// 		pathFile = filepath.Join(tempFolder, fileName)
+
+// 		if err := c.SaveUploadedFile(file, pathFile); err != nil {
+// 			utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 			return
+// 		}
+// 	}
+
+// 	userUuid := c.GetString("uuid")
+// 	if userUuid == "" {
+// 		utils.HandleError(c, response.HANDLER_INTERR)
+// 		return
+// 	}
+
+// 	if err := h.Service.CreateAcademicPlan(userUuid, fileName, &body); err != nil {
+// 		utils.HandleError(c, err)
+// 		if err := os.Remove(pathFile); err != nil {
+// 			log.Println(err.Error())
+// 		}
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusCreated, response.SUCCESS_RES("RPS Berhasil Ditambahkan"))
+// }
 
 func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 	userUuid := c.GetString("uuid")
@@ -80,20 +106,18 @@ func (h *AcademicPlanHandler) GetAllAcademicPlans(c *gin.Context) {
 	}
 	yearUuid := c.Param("yearUuid")
 
-	result, err := h.Service.GetAllRps(userUuid, yearUuid)
+	result, err := h.Service.GetAllAcademicPlans(userUuid, yearUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	var resp []*response.Rps
+	var resp []*response.AcademicPlan
 	for _, item := range *result {
 		yearName := fmt.Sprintf("%s %s", item.AcademicYear.Semester, item.AcademicYear.Year)
-		resp = append(resp, &response.Rps{
-			Uuid:     item.Uuid,
-			Status:   item.Status,
-			Note:     item.Note,
-			FileName: item.FileName,
+		resp = append(resp, &response.AcademicPlan{
+			Uuid: item.Uuid,
+			Note: item.Note,
 			AcademicYear: &response.AcademicYear{
 				Uuid: item.AcademicYear.Uuid,
 				Name: yearName,
@@ -154,7 +178,7 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 		utils.HandleError(c, response.HANDLER_INTERR)
 		return
 	}
-	result, err := h.Service.GetRps(userUuid, uuid)
+	result, err := h.Service.GetAcademicPlan(userUuid, uuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -162,11 +186,9 @@ func (h *AcademicPlanHandler) GetAcademicPlan(c *gin.Context) {
 
 	yearName := fmt.Sprintf("%s %s", result.AcademicYear.Semester, result.AcademicYear.Year)
 
-	resp := &response.Rps{
-		Uuid:     result.Uuid,
-		Status:   result.Status,
-		Note:     result.Note,
-		FileName: result.FileName,
+	resp := &response.AcademicPlan{
+		Uuid: result.Uuid,
+		Note: result.Note,
 		AcademicYear: &response.AcademicYear{
 			Uuid: result.AcademicYear.Uuid,
 			Name: yearName,
